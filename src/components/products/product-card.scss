@@ -1,0 +1,8 @@
+@import "../../variables.scss";
+
+.card-container {
+    width: 248px;
+    height: 366px;
+    border: 1px solid $secondary-color;
+    border-radius: 10px;
+}
