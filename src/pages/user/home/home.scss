@@ -1,0 +1,20 @@
+.home-container {
+    flex-direction: column;
+    display: flex;
+    gap: 20px
+}
+
+.carousel {
+    height: 290px;
+    border: 1px solid red;
+}
+
+.category {
+    height: 380px;
+    border: 1px solid red;
+}
+
+.suggested {
+    height: 50px;
+    border: 1px solid red;
+}

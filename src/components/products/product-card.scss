@@ -1,8 +1,89 @@
 @import "../../variables.scss";
 
 .card-container {
+    border-radius: $border-radius-medium;
+    border: 1px solid $secondary-color; 
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+    outline: none;
+    cursor: pointer;
+}
+
+.card-container-web {
     width: 248px;
     height: 366px;
-    border: 1px solid $secondary-color;
-    border-radius: 10px;
+}
+
+.card-container-app {
+    width: 180px;
+    height: 300px;
+}
+
+.card-image-web {
+    width: 240px;
+    height: 240px;
+}
+
+.card-image-app {
+    width: 160px;
+    height: 160px;
+}
+
+.card-container:hover {
+    background-color: $muted-color;
+}
+
+.card-image {
+    border-radius: $border-radius-medium;
+
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 0 10px;
+    gap: 2px;
+}
+
+.card-deal {
+    height: 18px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.card-span {
+    padding: 0 2px 0 2px;
+}
+
+.card-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.card-price {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-text span {
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: normal;
+    display: block;
+    height: 3em;
+    overflow: hidden;    
+}
+
+.discount-tag {
+    padding-left: 5px;
+    padding-right: 5px;
 }
