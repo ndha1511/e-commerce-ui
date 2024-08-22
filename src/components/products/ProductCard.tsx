@@ -1,7 +1,7 @@
 import './product-card.scss';
 
 const ProductCard = () => {
-    return <a className='card-container card-container-web' href='#'>
+    return <a className='card-container card-container-web a-disable-default' href='#'>
         <img src='https://img.alicdn.com/bao/uploaded/i2/2200675516807/O1CN01OjgC41209esL41uZm_!!0-item_pic.jpg'
             alt='image'
             className='card-image-web card-image '
@@ -28,7 +28,7 @@ const ProductCard = () => {
                 </div>
             </div>
             <div className='card-price'>
-                <span className='text-large primary'>400.000 đ</span>
+                <span className='text-medium primary'>400.000 đ</span>
                 <span className='text-small text-line-through'>500.000 đ</span>
                 <span className='text-small background-primary border-color-primary discount-tag'>-20%</span>
             </div>

@@ -9,9 +9,11 @@ body {
   box-sizing: border-box;
   font-family: "Roboto", system-ui;
   font-size: $font-normal;
+  -webkit-font-smoothing: antialiased;
   font-weight: 500;
 }
 
+// ======================== text ===============================
 
 .primary {
   color: $primary-color;
@@ -25,8 +27,16 @@ body {
   color: $warning-color;
 }
 
+.muted {
+  color: $muted-color;
+}
+
 .text-small {
   font-size: $font-small;
+}
+
+.text-medium {
+  font-size: $font-medium;
 }
 
 .text-large {
@@ -38,9 +48,32 @@ body {
   color: rgba(0, 0, 0, 0.5);
 }
 
+// ================================================================
+
+// ======================== background ============================
+
 .background-primary {
   background-color: $primary-color;
   color: #fff;
+}
+
+.background-secondary {
+  background-color: $secondary-color;
+  color: #fff;
+}
+
+.background-warning {
+  background-color: $warning-color;
+  color: #fff;
+}
+
+// ================================================================
+
+// ======================== border ================================
+
+.border-color-secondary {
+  border: 1px solid $secondary-color;
+  border-radius: $border-radius-small;
 }
 
 .border-color-primary {
@@ -48,7 +81,34 @@ body {
   border-radius: $border-radius-small;
 }
 
-.border-color-secondary {
-  border: 1px solid $secondary-color;
-  border-radius: $border-radius-small;
+// ================================================================
+
+// ======================== tag a =================================
+
+.a-disable-default {
+  text-decoration: none;
+  color: inherit;
+  outline: none;
 }
+
+// ================================================================
+
+// ========================= button ===============================
+
+.button-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 5px 10px 5px;
+  border-radius: $border-radius-small;
+  transition: background-color 0.3s ease;
+}
+
+.button-hover {
+  transition: opacity 0.3s ease;
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+// ================================================================

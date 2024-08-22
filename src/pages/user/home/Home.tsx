@@ -12,7 +12,9 @@ const Home = () => {
         <div className='suggested'>
             ĐỀ XUẤT
         </div>
-        <div className='d-flex flex-wrap gap-2 justify-content-center'>
+        <div className='d-flex flex-wrap justify-content-center' style={{
+            gap: '12.5px'
+        }}>
             <ProductCard />
             <ProductCard />
             <ProductCard />
