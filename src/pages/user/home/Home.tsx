@@ -1,13 +1,15 @@
+import CarouselHome from '../../../components/carousel/CarouselHome';
+import CategoriesCarousel from '../../../components/categories/CategoriesCarousel ';
 import ProductCard from '../../../components/products/ProductCard';
 import './home.scss'
 
 const Home = () => {
     return <div className='container home-container'>
-        <div className='carousel'>
-            CAROUSELS
+        <div className='carousel-home'>
+            <CarouselHome/>
         </div>
         <div className='category'>
-            PHÂN LOẠI
+            <CategoriesCarousel/>
         </div>
         <div className='suggested'>
             ĐỀ XUẤT
