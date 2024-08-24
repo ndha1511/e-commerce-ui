@@ -10,7 +10,7 @@ body {
   font-family: "Roboto", system-ui;
   font-size: $font-normal;
   -webkit-font-smoothing: antialiased;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 // ======================== text ===============================
@@ -39,6 +39,10 @@ body {
   font-size: $font-medium;
 }
 
+.text-bold {
+  font-weight: bold;
+}
+
 .text-large {
   font-size: $font-large;
 }
@@ -65,6 +69,11 @@ body {
 .background-warning {
   background-color: $warning-color;
   color: #fff;
+}
+
+.background-muted {
+  background-color: $muted-color;
+  color: black;
 }
 
 // ================================================================
@@ -99,9 +108,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 5px 10px 5px;
+  padding: 5px 15px 5px 15px;
   border-radius: $border-radius-small;
   transition: background-color 0.3s ease;
+  border: none;
 }
 
 .button-hover {
@@ -109,6 +119,23 @@ body {
   &:hover {
     opacity: 0.7;
   }
+}
+
+// ================================================================
+
+// ========================= input ================================
+
+.hidden-button-file[type="file"] {
+  display: none;
+}
+
+// ================================================================
+
+// ========================= ul ===================================
+
+.disable-dot {
+  list-style-type: none;
+  padding-left: 0;
 }
 
 // ================================================================
