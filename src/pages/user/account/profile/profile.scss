@@ -20,3 +20,13 @@
     padding-left: 40px;
     padding-right: 40px;
 }
+
+@media (max-width: 768px) {
+    .profile-container form {
+        padding-left: 0;
+    }
+
+    .profile-content {
+        flex-direction: column-reverse;
+    }
+}

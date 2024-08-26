@@ -1,11 +1,14 @@
 import './product-card.scss';
 
 const ProductCard = () => {
-    return <a className='card-container card-container-web a-disable-default' href='#'>
-        <img src='https://img.alicdn.com/bao/uploaded/i2/2200675516807/O1CN01OjgC41209esL41uZm_!!0-item_pic.jpg'
-            alt='image'
-            className='card-image-web card-image '
-        />
+    return <a className='card-container card-container-size a-disable-default' href='#'>
+        <div className='img-container'>
+            <img src='https://img.alicdn.com/bao/uploaded/i2/2200675516807/O1CN01OjgC41209esL41uZm_!!0-item_pic.jpg'
+                alt='image'
+                className='card-image '
+            />
+            <span className='text-medium border-color-primary background-primary discount-tag'>-20%</span>
+        </div>
         <div className='card-content'>
             <div className='card-text'>
                 <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
@@ -30,7 +33,8 @@ const ProductCard = () => {
             <div className='card-price'>
                 <span className='text-medium primary'>400.000 đ</span>
                 <span className='text-small text-line-through'>500.000 đ</span>
-                <span className='text-small background-primary border-color-primary discount-tag'>-20%</span>
+                <div></div>
+                <span className='text-blur text-small'>Vũng Tàu</span>
             </div>
         </div>
     </a>

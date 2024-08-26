@@ -7,6 +7,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    padding: 0 10px 0 10px;
 }
 
 .fixed-search {
@@ -38,14 +39,13 @@
     border: none;
     border-radius: $border-radius-medium;
     outline: none;
-    
+
 }
 
 .search-arround {
     width: 25%;
     display: flex;
     align-items: center;
-    padding-left: 50px;
     color: $primary-color;
     font-size: $font-large;
 }
@@ -56,4 +56,15 @@
     border: none;
     font-size: $font-medium;
     font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .search-arround {
+        display: none;
+    }
+
+    .search {
+        padding: 0 30px 0 30px;
+    }
+
 }

@@ -48,7 +48,7 @@ const Profile: React.FC = () => {
                 <Form onSubmit={handleSubmit} className='col-12 col-md-6'>
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formName">
-                            <Form.Label>Tên</Form.Label>
+                            <Form.Label className='text-normal'>Tên</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="name"
@@ -61,7 +61,7 @@ const Profile: React.FC = () => {
 
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formEmail">
-                            <Form.Label>Email</Form.Label>
+                            <Form.Label className='text-normal'>Email</Form.Label>
                             <Form.Control
                                 type="email"
                                 name="email"
@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
 
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formPhone">
-                            <Form.Label>Số điện thoại</Form.Label>
+                            <Form.Label className='text-normal'>Số điện thoại</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="phone"
@@ -87,9 +87,10 @@ const Profile: React.FC = () => {
 
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formGender">
-                            <Form.Label>Giới tính</Form.Label>
+                            <Form.Label className='text-normal'>Giới tính</Form.Label>
                             <div>
                                 <Form.Check
+                                    className='text-normal'
                                     inline
                                     type="radio"
                                     label="Nam"
@@ -99,6 +100,7 @@ const Profile: React.FC = () => {
                                     onChange={handleChange}
                                 />
                                 <Form.Check
+                                    className='text-normal'
                                     inline
                                     type="radio"
                                     label="Nữ"
@@ -113,7 +115,7 @@ const Profile: React.FC = () => {
 
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formDob">
-                            <Form.Label>Ngày sinh</Form.Label>
+                            <Form.Label className='text-normal'>Ngày sinh</Form.Label>
                             <Form.Control
                                 type="date"
                                 name="dob"
@@ -126,11 +128,7 @@ const Profile: React.FC = () => {
                         Lưu
                     </button>
                 </Form>
-                <div className='col-12 col-md-6 d-flex align-items-center flex-column gap-2'
-                    style={{
-                        paddingTop: '100px'
-                    }}
-                >
+                <div className='col-12 col-md-6 d-flex align-items-center justify-content-center flex-column gap-2'>
                     <div>
                         {url ? <img
                             src={url}

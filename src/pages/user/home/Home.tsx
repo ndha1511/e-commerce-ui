@@ -1,6 +1,7 @@
 import CarouselHome from '../../../components/carousel/CarouselHome';
 import CategoriesCarousel from '../../../components/categories/CategoriesCarousel ';
 import ProductCard from '../../../components/products/ProductCard';
+import Rating from '../../../components/rating/Rating';
 import './home.scss'
 
 const Home = () => {
@@ -12,11 +13,9 @@ const Home = () => {
             <CategoriesCarousel/>
         </div>
         <div className='suggested'>
-            ĐỀ XUẤT
+           <Rating star={1.5} variant={'warning'} size='text-medium'/>
         </div>
-        <div className='d-flex flex-wrap justify-content-center' style={{
-            gap: '12.5px'
-        }}>
+        <div className='products'>
             <ProductCard />
             <ProductCard />
             <ProductCard />
