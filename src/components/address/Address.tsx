@@ -3,7 +3,7 @@ import { BsGeoAltFill } from 'react-icons/bs';
 
 const Address = () => {
     return (
-        <div className="p-3 bg-white border rounded shadow-sm">
+        <div className="p-3 bg-white ">
             <Row className="align-items-center">
                 <Col md={10}>
                     <div className="d-flex align-items-center mb-2">

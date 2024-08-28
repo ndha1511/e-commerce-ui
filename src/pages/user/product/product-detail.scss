@@ -1,0 +1,48 @@
+@import '../../../variables.scss'; // Custom variables
+.btn-sc {
+    border: 0.2px solid rgb(219, 210, 210);
+
+    &:hover,
+    &.selected {
+        border: 0.2px solid $primary-color;
+
+        // Khi hover vào nút, hiển thị biểu tượng
+        ~.check-sc {
+            display: flex;
+        }
+    }
+}
+
+.btn-check-sc {
+    position: relative;
+
+    .check-sc {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: $primary-color;
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        padding: 1px;
+        display: none; // Ẩn biểu tượng mặc định
+        justify-content: center;
+        align-items: center;
+
+        &.show-icon {
+            display: flex;
+        }
+
+        .icon-check-size {
+            font-size: 6px;
+            margin-left: 3px;
+        }
+    }
+}
+// .fixed {
+//     position: fixed;
+//     top: 0; 
+//     width: 25%; /* Hoặc đặt giá trị cố định, ví dụ: 250px */
+//     left: calc(75%); /* Điều chỉnh giá trị này để giữ nguyên vị trí */
+//     z-index: 1000;
+// }

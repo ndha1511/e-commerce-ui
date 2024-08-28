@@ -1,5 +1,5 @@
 import './footer.scss'; // File SCSS tùy chỉnh của bạn
-
+import visa from '../../../assert/payment-methods/light/visa.jpg'
 const Footer = () => {
   return (
     <div className="footer bg-light pt-5 pb-3">
@@ -37,7 +37,7 @@ const Footer = () => {
               <img src="amex.png" alt="American Express" className="me-2" />
               <img src="installment.png" alt="Trả góp" className="me-2" />
             </div>
-            <h5 className="fw-bold text-medium">ĐƠN VỊ VẬN CHUYỂN</h5>
+            <h5 className="fw-bold">ĐƠN VỊ VẬN CHUYỂN</h5>
             <div className="d-flex">
               <img src="spx.png" alt="SPX" className="me-2" />
               <img src="giaohangnhanh.png" alt="Giao Hàng Nhanh" className="me-2" />
@@ -52,7 +52,7 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-
+        <hr />
         <div className="footer-bottom text-center mt-4">
           <p className="mb-1">Địa chỉ: 251/33 Vườn Lài, An Phú Đông, Q12, tp.HCM</p>
           <p className="mb-1">Email: tcm172@gmail.com</p>
