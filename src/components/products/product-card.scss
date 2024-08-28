@@ -11,24 +11,14 @@
     cursor: pointer;
 }
 
-.card-container-web {
-    width: 248px;
-    height: 366px;
+.card-container-size {
+    width: 210px;
 }
 
-.card-container-app {
-    width: 180px;
-    height: 300px;
-}
 
-.card-image-web {
-    width: 240px;
-    height: 240px;
-}
-
-.card-image-app {
-    width: 160px;
-    height: 160px;
+.card-image {
+    width: 200px;
+    height: 200px;
 }
 
 .card-container:hover {
@@ -68,7 +58,7 @@
     display: flex;
     flex: 1;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 }
 
 .card-text span {
@@ -83,4 +73,22 @@
 .discount-tag {
     padding-left: 5px;
     padding-right: 5px;
+    position: absolute;
+    right: 0;
+}
+
+.img-container {
+    position: relative;
+}
+
+
+@media (max-width: 768px) {
+    .card-container-size {
+        width: 180px;
+    }
+
+    .card-image {
+        width: 170px;
+        height: 170px;
+    }
 }

@@ -1,11 +1,9 @@
 .home-container {
-    flex-direction: column;
-    display: flex;
+    display: grid;
     gap: 20px
 }
 
 .carousel-home {
-    height: 290px;
     border: 1px solid red;
 }
 
@@ -17,4 +15,17 @@
 .suggested {
     height: 50px;
     border: 1px solid red;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    row-gap: 10px;
+    justify-items: center;
+}
+
+@media (max-width: 768px) {
+    .products {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
 }

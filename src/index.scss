@@ -19,6 +19,7 @@ body {
   box-shadow: none !important;
 }
 
+
 // ======================== text ===============================
 
 .primary {
@@ -39,12 +40,24 @@ body {
   color: $muted-color;
 }
 
+.text-blur {
+  color: rgba(0, 0, 0, 0.5)
+}
+
 .text-small {
   font-size: $font-small;
 }
 
+.text-normal {
+  font-size: $font-normal;
+}
+
 .text-medium {
   font-size: $font-medium;
+}
+
+.text-bold {
+  font-weight: bold;
 }
 
 .text-large {
@@ -73,6 +86,11 @@ body {
 .background-warning {
   background-color: $warning-color;
   color: #fff;
+}
+
+.background-muted {
+  background-color: $muted-color;
+  color: black;
 }
 
 // ================================================================
@@ -115,8 +133,10 @@ body {
   justify-content: center;
   align-items: center;
   padding: 10px 5px;
+  padding: 5px 15px 5px 15px;
   border-radius: $border-radius-small;
   transition: background-color 0.3s ease;
+  border: none;
 }
 
 .button-hover {
@@ -134,27 +154,35 @@ body {
 }
 
 // ================================================================
-// .image-gallery-right-nav {
-//   background-color: rgba(0, 0, 0, 0.5); /* Màu nền với độ mờ */
-//   border: none; /* Loại bỏ viền */
-//   padding: 10px; /* Khoảng cách bên trong nút */
-//   cursor: pointer; /* Con trỏ chuột sẽ hiển thị dạng "pointer" khi hover */
-//   border-radius: 50%; /* Làm nút tròn */
-//   transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền khi hover */
-// }
 
-// .image-gallery-right-nav:hover {
-//   background-color: rgba(232, 13, 13, 0.7); /* Tăng độ đậm của màu nền khi hover */
-// }
+// ========================= input ================================
 
-// .image-gallery-svg {
-//   width: 24px; /* Chiều rộng của SVG */
-//   height: 24px; /* Chiều cao của SVG */
-//   // stroke: rgb(194, 17, 17); /* Màu đường nét của SVG */
-//   transition: stroke 0.3s ease; /* Hiệu ứng chuyển màu khi hover */
-//   font-size: 10px;
-// }
+.hidden-button-file[type="file"] {
+  display: none;
+}
 
-// .image-gallery-right-nav:hover .image-gallery-svg {
-//   stroke: yellow; /* Đổi màu SVG khi hover */
-// }
+// ================================================================
+
+// ========================= ul ===================================
+
+.disable-dot {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+// ================================================================
+
+
+@media (max-width: 768px) {
+  body {
+    font-size: $font-small;
+  }
+  .text-medium {
+    font-size: $font-normal;
+  }
+
+  .text-small {
+    font-size: 8px;
+  }
+}
+
