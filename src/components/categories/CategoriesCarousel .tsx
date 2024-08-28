@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Carousel } from 'react-bootstrap';
 import './CategoriesCarousel .scss'; // Optional: Create a separate CSS file for additional styling.
 

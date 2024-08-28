@@ -24,7 +24,6 @@ const Home = () => {
             <ProductCard />
             <ProductCard />
         </div>
-
     </div>
 }
 
