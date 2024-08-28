@@ -4,9 +4,9 @@ const Footer = () => {
   return (
     <div className="footer bg-light pt-5 pb-3">
       <div className="container">
-        <div className="row " >
-          <div className="col-lg-3 col-md-6 mb-4">
-            <h5 className="fw-bold">CHĂM SÓC KHÁCH HÀNG</h5>
+        <div className="footer-content">
+          <div className="footer-section">
+            <h5 className="fw-bold text-medium">CHĂM SÓC KHÁCH HÀNG</h5>
             <ul className="list-unstyled">
               <li>Trung tâm trợ giúp</li>
               <li>Hướng dẫn mua hàng</li>
@@ -18,8 +18,8 @@ const Footer = () => {
               <li>Chính sách bảo hành</li>
             </ul>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
-            <h5 className="fw-bold">VỀ DỖ ÁN</h5>
+          <div className="footer-section">
+            <h5 className="fw-bold text-medium">VỀ DỖ ÁN</h5>
             <ul className="list-unstyled">
               <li>Giới thiệu về Dỗ Án Việt Nam</li>
               <li>Điều khoản Dỗ Án</li>
@@ -29,22 +29,22 @@ const Footer = () => {
               <li>Liên hệ với truyền thông</li>
             </ul>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
-            <h5 className="fw-bold">THANH TOÁN</h5>
+          <div className="footer-section">
+            <h5 className="fw-bold text-medium">THANH TOÁN</h5>
             <div className="d-flex mb-3">
               <img src="visa.png" alt="Visa" className="me-2" />
               <img src="mastercard.png" alt="Mastercard" className="me-2" />
               <img src="amex.png" alt="American Express" className="me-2" />
               <img src="installment.png" alt="Trả góp" className="me-2" />
             </div>
-            <h5 className="fw-bold">ĐƠN VỊ VẬN CHUYỂN</h5>
+            <h5 className="fw-bold text-medium">ĐƠN VỊ VẬN CHUYỂN</h5>
             <div className="d-flex">
               <img src="spx.png" alt="SPX" className="me-2" />
               <img src="giaohangnhanh.png" alt="Giao Hàng Nhanh" className="me-2" />
             </div>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4 ">
-            <h5 className="fw-bold">THEO CHÚNG TÔI TRÊN</h5>
+          <div className="footer-section">
+            <h5 className="fw-bold text-medium">THEO CHÚNG TÔI TRÊN</h5>
             <ul className="list-unstyled">
               <li className="mb-2"><i className="bi bi-facebook me-2"></i> FaceBook</li>
               <li className="mb-2"><i className="bi bi-instagram me-2"></i> Instagram</li>
@@ -52,6 +52,7 @@ const Footer = () => {
             </ul>
           </div>
         </div>
+
         <div className="footer-bottom text-center mt-4">
           <p className="mb-1">Địa chỉ: 251/33 Vườn Lài, An Phú Đông, Q12, tp.HCM</p>
           <p className="mb-1">Email: tcm172@gmail.com</p>

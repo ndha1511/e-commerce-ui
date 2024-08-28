@@ -1,8 +1,11 @@
+// Importing external styles
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
-@import 'variables.scss';
+@import 'variables.scss'; // Custom variables
+@import "react-image-gallery/styles/scss/image-gallery.scss";
 
+// Global styles and custom classes
 body {
   padding: 0;
   margin: 0;
@@ -11,6 +14,9 @@ body {
   font-size: $font-normal;
   -webkit-font-smoothing: antialiased;
   font-weight: 500;
+}
+.no-shadow {
+  box-shadow: none !important;
 }
 
 // ======================== text ===============================
@@ -26,7 +32,9 @@ body {
 .warning {
   color: $warning-color;
 }
-
+.info {
+  color: $info-color;
+}
 .muted {
   color: $muted-color;
 }
@@ -81,6 +89,13 @@ body {
   border-radius: $border-radius-small;
 }
 
+.border-radius-small {
+  border-radius: $border-radius-small;
+}
+.border-radius-medium {
+  border-radius: $border-radius-medium;
+}
+
 // ================================================================
 
 // ======================== tag a =================================
@@ -99,7 +114,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 5px 10px 5px;
+  padding: 10px 5px;
   border-radius: $border-radius-small;
   transition: background-color 0.3s ease;
 }
@@ -110,5 +125,36 @@ body {
     opacity: 0.7;
   }
 }
+.btn-pointer {
+  cursor: pointer;
+}
+.btn-ir {
+  width: 20px;
+  height: 20px;
+}
 
 // ================================================================
+// .image-gallery-right-nav {
+//   background-color: rgba(0, 0, 0, 0.5); /* Màu nền với độ mờ */
+//   border: none; /* Loại bỏ viền */
+//   padding: 10px; /* Khoảng cách bên trong nút */
+//   cursor: pointer; /* Con trỏ chuột sẽ hiển thị dạng "pointer" khi hover */
+//   border-radius: 50%; /* Làm nút tròn */
+//   transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền khi hover */
+// }
+
+// .image-gallery-right-nav:hover {
+//   background-color: rgba(232, 13, 13, 0.7); /* Tăng độ đậm của màu nền khi hover */
+// }
+
+// .image-gallery-svg {
+//   width: 24px; /* Chiều rộng của SVG */
+//   height: 24px; /* Chiều cao của SVG */
+//   // stroke: rgb(194, 17, 17); /* Màu đường nét của SVG */
+//   transition: stroke 0.3s ease; /* Hiệu ứng chuyển màu khi hover */
+//   font-size: 10px;
+// }
+
+// .image-gallery-right-nav:hover .image-gallery-svg {
+//   stroke: yellow; /* Đổi màu SVG khi hover */
+// }

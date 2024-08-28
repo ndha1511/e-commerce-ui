@@ -1,12 +1,20 @@
 @import "../../../variables.scss";
+
 .cart-item-image {
   width: 100px;
   height: 100px;
   object-fit: cover;
 }
-.checkbox-cart{
+
+.checkbox-cart {
   font-size: 18px;
 }
+
+.btn-buy {
+  width: 200px;
+  height: 45px;
+}
+
 .cart-item h6 {
   font-size: $font-large;
   margin-bottom: 0.5rem;
@@ -26,9 +34,11 @@
   padding: 0;
 }
 
+
 .cart-item .dropdown-toggle::after {
   display: none;
 }
+
 .variant-options {
   position: absolute;
   top: 40px;
@@ -36,17 +46,21 @@
   width: 300px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  
+
   // Mũi tên nhọn
   &::before {
     content: '';
     position: absolute;
-    top: -10px; /* Điều chỉnh vị trí theo nhu cầu */
-    left: 50%; /* Điều chỉnh để căn giữa hoặc thay đổi vị trí */
+    top: -10px;
+    /* Điều chỉnh vị trí theo nhu cầu */
+    left: 50%;
+    /* Điều chỉnh để căn giữa hoặc thay đổi vị trí */
     transform: translateX(-50%);
-    border-width: 0 10px 10px 10px; /* Độ rộng của mũi tên */
+    border-width: 0 10px 10px 10px;
+    /* Độ rộng của mũi tên */
     border-style: solid;
-    border-color: transparent transparent rgb(197, 20, 20) transparent; /* Màu sắc của mũi tên, tương ứng với màu nền */
+    border-color: transparent transparent rgb(197, 20, 20) transparent;
+    /* Màu sắc của mũi tên, tương ứng với màu nền */
   }
 
   .options-container {
@@ -55,5 +69,26 @@
     border: 1px solid #ddd;
     border-radius: 4px;
   }
+}
+
+.fixed-footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 30px); 
+  z-index: 2;
+  background-color: white;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+.fixed-header {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 30px); 
+  z-index: 1000;
+  // background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 

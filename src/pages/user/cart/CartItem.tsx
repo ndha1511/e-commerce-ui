@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Row, Col, Form, Button, Dropdown, Image, Badge, Modal } from 'react-bootstrap';
+import { Row, Col, Form, Button, Dropdown, Image, Badge } from 'react-bootstrap';
 import './cart-item.scss';
+import { BsChatDots } from 'react-icons/bs';
 
 interface CartItemProps {
     item: {
@@ -26,6 +27,18 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
     return (
         <div>
+            <div className="cart-product-row border p-3 bg-white mt-2">
+                <Row className="align-items-center">
+                    <Col md={12} className='d-flex  align-items-center'>
+                        <Form.Check type="checkbox" className='checkbox-cart me-4' />
+                        <div>
+                            <Badge bg="danger" className="me-2">Mall</Badge>
+                            <span className="fw-bold me-2">Giày ZAVAS</span>
+                            <BsChatDots color="#f05d23" />
+                        </div>
+                    </Col>
+                </Row>
+            </div>
             <div className="cart-item border-bottom p-3 pl-3 pt-5 pr-3 pb-5 bg-white">
                 <Row className="align-items-center">
                     <Col xs={12} md={4} className="d-flex align-items-center mb-3 mb-md-0">
@@ -105,7 +118,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
                         <p className="text-muted mb-1"><s>{item.originalPrice} đ</s></p>
-                        <p className="text-danger fw-bold mb-1">{item.discountedPrice} đ</p>
+                        <p className="primary fw-bold mb-1">{item.discountedPrice} đ</p>
                     </Col>
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
                         <div className="d-flex justify-content-center align-items-center">
@@ -115,10 +128,10 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                         </div>
                     </Col>
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
-                        <p className="text-danger fw-bold mb-1">{item.totalPrice} đ</p>
+                        <p className="primary fw-bold mb-1">{item.totalPrice} đ</p>
                     </Col>
                     <Col xs={6} md={2} className="text-end d-flex justify-content-center align-items-center flex-column">
-                        <Button variant="link" className="text-danger p-0">Xóa</Button>
+                        <Button variant="link" className="primary p-0">Xóa</Button>
                         <Dropdown align="end">
                             <Dropdown.Toggle variant="link" className="text-muted p-0">
                                 Tìm sản phẩm tương tự
