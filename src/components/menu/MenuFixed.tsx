@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { isAbsoluteLocation, isLocation, redirect } from "../../utils/location";
 import "./menu-fixed.scss";
+import { isMobile } from "../../utils/responsive";
 
 type Props = {
     fixedSearch: boolean;
@@ -9,7 +10,6 @@ type Props = {
 const MenuFixed = ({ fixedSearch }: Props) => {
 
     const [showMenu, setShowMenu] = useState<boolean>(true);
-    const isMobile: boolean = window.innerWidth <= 768;
 
     useEffect(() => {
         const container1: HTMLElement | null = document.querySelector('.menu-container');
@@ -81,13 +81,13 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                 <span className="text-small">Đầu trang</span>
             </div>}
 
-            {isMobile && <button className="show-menu border text-medium primary" onClick={() => setShowMenu(false)}>
-                <i className="bi bi-arrow-right-circle-fill"></i>
+            {isMobile() && <button className="show-menu border text-medium" onClick={() => setShowMenu(false)}>
+                <span aria-hidden="true" className="carousel-control-next-icon"></span>
             </button>}
         </div>
         <div className="menu-container-2">
-            <button className="show-menu border text-medium primary" onClick={() => setShowMenu(true)}>
-                <i className="bi bi-arrow-left-circle-fill"></i>
+            <button className="show-menu border text-medium" onClick={() => setShowMenu(true)}>
+            <span aria-hidden="true" className="carousel-control-prev-icon"></span>
             </button>
         </div>
     </>
