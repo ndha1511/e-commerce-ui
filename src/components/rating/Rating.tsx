@@ -30,8 +30,8 @@ const Rating = ({star, variant, size} : Props) => {
     }
 
     return (
-        <div className={`rating ${variant} ${size}`}>
-            {getStars()}
+        <div className={`${variant} ${size} d-inline-flex gap-1`}>
+            {getStars().map((star, index) => <div key={index}>{star}</div>)}
         </div>
     );
 

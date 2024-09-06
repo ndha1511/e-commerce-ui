@@ -1,7 +1,9 @@
-import { isAbsoluteLocation, redirect } from '../../../utils/location';
+import useRedirect from '../../../components/hooks/useRedirect';
+import { isAbsoluteLocation } from '../../../utils/location';
 import './side-bar.scss';
 
 const SideBar = () => {
+    const redirect = useRedirect();
     return <div className='side-bar-container'>
         <div className='container side-bar-container'>
             <div className={`side-bar-content`}>
