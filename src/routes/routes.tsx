@@ -12,7 +12,6 @@ import Password from "../pages/user/account/password/Password";
 import Purchase from "../pages/user/account/purchase/Purchase";
 import Notification from "../pages/user/account/notification/Notification";
 import Voucher from "../pages/user/account/voucher/Voucher";
-import Test from "../pages/user/product/test";
 
 
 export const router = createBrowserRouter([
@@ -67,9 +66,5 @@ export const router = createBrowserRouter([
     , {
         path: "/product-detail",
         element: <UserLayout><ProductDetail/></UserLayout>
-    },
-    {
-        path: "/test",
-        element: <UserLayout><Test/></UserLayout>
     },
 ]);
