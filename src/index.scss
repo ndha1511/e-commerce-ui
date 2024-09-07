@@ -1,8 +1,11 @@
+// Importing external styles
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
-@import 'variables.scss';
+@import 'variables.scss'; // Custom variables
+@import "react-image-gallery/styles/scss/image-gallery.scss";
 
+// Global styles and custom classes
 body {
   padding: 0;
   margin: 0;
@@ -11,6 +14,9 @@ body {
   font-size: $font-normal;
   -webkit-font-smoothing: antialiased;
   font-weight: 500;
+}
+.no-shadow {
+  box-shadow: none !important;
 }
 
 
@@ -27,9 +33,14 @@ body {
 .warning {
   color: $warning-color;
 }
-
+.info {
+  color: $info-color;
+}
 .muted {
   color: $muted-color;
+}
+.success {
+  color: $success-color;
 }
 
 .text-blur {
@@ -99,6 +110,13 @@ body {
   border-radius: $border-radius-small;
 }
 
+.border-radius-small {
+  border-radius: $border-radius-small;
+}
+.border-radius-medium {
+  border-radius: $border-radius-medium;
+}
+
 // ================================================================
 
 // ======================== tag a =================================
@@ -117,6 +135,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 10px 5px;
   padding: 5px 15px 5px 15px;
   border-radius: $border-radius-small;
   transition: background-color 0.3s ease;
@@ -128,6 +147,13 @@ body {
   &:hover {
     opacity: 0.7;
   }
+}
+.btn-pointer {
+  cursor: pointer;
+}
+.btn-ir {
+  width: 20px;
+  height: 20px;
 }
 
 // ================================================================
@@ -162,3 +188,10 @@ body {
     font-size: 8px;
   }
 }
+
+
+pre {
+  white-space: pre; /* Đảm bảo giữ nguyên định dạng dòng và khoảng trắng */
+}
+
+

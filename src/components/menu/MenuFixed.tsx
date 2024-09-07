@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { isAbsoluteLocation, isLocation } from "../../utils/location";
 import "./menu-fixed.scss";
 import { isMobile } from "../../utils/responsive";
-import useRedirect from "../hooks/useRedirect";
+import useRedirect from "../../hooks/useRedirect";
 
 type Props = {
     fixedSearch: boolean;

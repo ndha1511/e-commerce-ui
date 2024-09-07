@@ -1,24 +1,12 @@
 import type { BaseQueryFn } from '@reduxjs/toolkit/query'
 import axios from 'axios'
 import type { AxiosRequestConfig, AxiosError } from 'axios'
+import { ErrorResponse } from '../dtos/response/error-response'
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 })
 
-
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
 
 axiosInstance.interceptors.response.use(
   (response) => {
@@ -58,11 +46,12 @@ export const axiosBaseQuery =
       return { data: result.data }
     } catch (axiosError) {
       const err = axiosError as AxiosError
+      const errorResponse: ErrorResponse = {
+        status: err.response?.status,
+        data: err.response?.data || err.message,
+      }
       return {
-        error: {
-          status: err.response?.status,
-          data: err.response?.data || err.message,
-        },
+        error: errorResponse,
       }
     }
   }
