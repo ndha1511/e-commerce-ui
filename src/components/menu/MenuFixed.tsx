@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { isAbsoluteLocation, isLocation, redirect } from "../../utils/location";
+import { isAbsoluteLocation, isLocation } from "../../utils/location";
 import "./menu-fixed.scss";
 import { isMobile } from "../../utils/responsive";
+import useRedirect from "../../hooks/useRedirect";
 
 type Props = {
     fixedSearch: boolean;
@@ -10,6 +11,7 @@ type Props = {
 const MenuFixed = ({ fixedSearch }: Props) => {
 
     const [showMenu, setShowMenu] = useState<boolean>(true);
+    const redirect = useRedirect();
 
     useEffect(() => {
         const container1: HTMLElement | null = document.querySelector('.menu-container');
@@ -87,7 +89,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
         </div>
         <div className="menu-container-2">
             <button className="show-menu border text-medium" onClick={() => setShowMenu(true)}>
-            <span aria-hidden="true" className="carousel-control-prev-icon"></span>
+                <span aria-hidden="true" className="carousel-control-prev-icon"></span>
             </button>
         </div>
     </>

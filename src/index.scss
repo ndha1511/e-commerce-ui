@@ -50,6 +50,9 @@ pre {
 .muted {
   color: $muted-color;
 }
+.success {
+  color: $success-color;
+}
 
 .text-blur {
   color: rgba(0, 0, 0, 0.5)
@@ -221,6 +224,8 @@ pre {
 
 
 pre {
+
   white-space: pre;
   /* Đảm bảo giữ nguyên định dạng dòng và khoảng trắng */
 }
+

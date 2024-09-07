@@ -1,9 +1,12 @@
+import { Link } from 'react-router-dom';
+import { Product } from '../../models/product';
+import { convertPrice } from '../../utils/convert-price';
 import './product-card.scss';
 
-const ProductCard = () => {
-    return <a className='card-container card-container-size a-disable-default' href='#'>
+const ProductCard = ({ product }: { product: Product }) => {
+    return <Link className='card-container card-container-size a-disable-default' to={'/product/' + product.urlPath}>
         <div className='img-container'>
-            <img src='https://img.alicdn.com/bao/uploaded/i2/2200675516807/O1CN01OjgC41209esL41uZm_!!0-item_pic.jpg'
+            <img src={product.thumbnail}
                 alt='image'
                 className='card-image '
             />
@@ -11,7 +14,7 @@ const ProductCard = () => {
         </div>
         <div className='card-content'>
             <div className='card-text'>
-                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+                <span>{product.productName}</span>
             </div>
             <div className='card-deal'>
                 <span className='text-small primary border-color-primary card-span'>
@@ -22,22 +25,23 @@ const ProductCard = () => {
                 </span>
             </div>
             <div className='card-rating'>
-                <div>
+                {product.rating != 0 ? <> <div>
                     <span className='text-small'>4.9/5</span>
                     <i className="bi bi-star-fill warning text-small"></i>
                 </div>
-                <div>
-                    <span className='text-small'>Đã bán 42,5k</span>
-                </div>
+                    <div>
+                        <span className='text-small'>Đã bán 42,5k</span>
+                    </div> </> : <div className='text-muted'>Chưa có đánh giá</div>}
             </div>
             <div className='card-price'>
-                <span className='text-medium primary'>400.000 đ</span>
-                <span className='text-small text-line-through'>500.000 đ</span>
-                <div></div>
-                <span className='text-blur text-small'>Vũng Tàu</span>
+                <div className='d-inline-flex gap-1 align-items-center'>
+                    <span className='text-medium primary'>{convertPrice(product.regularPrice)}</span>
+                    <span className='text-small text-line-through'>500.000 đ</span>
+                </div>
+                <span className='text-blur text-small'>{product.city}</span>
             </div>
         </div>
-    </a>
+    </Link>
 }
 
 export default ProductCard;

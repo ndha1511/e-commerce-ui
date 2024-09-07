@@ -13,6 +13,9 @@ import Purchase from "../pages/user/account/purchase/Purchase";
 import Notification from "../pages/user/account/notification/Notification";
 import Voucher from "../pages/user/account/voucher/Voucher";
 import InsertProduct from "../pages/seller/product/InsertProduct";
+import AuthLayout from "../layout/user/auth/AuthLayout";
+import Register from "../pages/user/auth/register/Register";
+import VerifyEmail from "../pages/user/auth/register/VerifyEmail";
 
 
 
@@ -29,9 +32,18 @@ export const router = createBrowserRouter([
 
         path: "/payment",
         element: <UserLayout><Payment/></UserLayout>
-    }, {
+    }, 
+    {
         path: "/login",
-        element: <Login/>
+        element: <AuthLayout><Login/></AuthLayout>
+    },
+    {
+        path: "/register",
+        element: <AuthLayout><Register/></AuthLayout>
+    },
+    {
+        path: "/verify-email",
+        element: <AuthLayout><VerifyEmail/></AuthLayout>
     },
     {
         path: "/user",
@@ -66,11 +78,12 @@ export const router = createBrowserRouter([
         element: <UserLayout><Account><Voucher/></Account></UserLayout>
     }
     , {
-        path: "/product-detail",
+        path: "/product/:key",
         element: <UserLayout><ProductDetail/></UserLayout>
     },
     {
         path: "/seller/insert-product",
         element: <InsertProduct/>
     },
+
 ]);

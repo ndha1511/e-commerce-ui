@@ -71,10 +71,10 @@ const Cart: React.FC = () => {
 
     const handleScroll = () => {
         const cartItemsHeight = document.getElementById('cart-items')?.offsetHeight || 0;
-        const scrollPosition = window.pageYOffset + window.innerHeight;
+        const scrollPosition = window.scrollY + window.innerHeight;
 
         // Điều kiện để cố định header khi cuộn xuống
-        if (window.pageYOffset > 150) { // Giá trị 150 là tùy chỉnh, bạn có thể điều chỉnh để phù hợp với yêu cầu thực tế
+        if (window.scrollY > 150) { // Giá trị 150 là tùy chỉnh, bạn có thể điều chỉnh để phù hợp với yêu cầu thực tế
             setIsHeaderFixed(true);
         } else {
             setIsHeaderFixed(false);
@@ -93,7 +93,7 @@ const Cart: React.FC = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
     return (
-        <Container className="mt-4 bg-light p-3 border-radius-small">
+        <Container className="bg-light p-3 border-radius-small">
             <div className={`cart-header border p-3 bg-white ${isHeaderFixed ? 'fixed-header container' : ''}`}>
                 <Row className="align-items-center">
                     <Col md={4} >
