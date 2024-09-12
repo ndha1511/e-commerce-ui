@@ -5,8 +5,10 @@ import Rating from '../../../components/rating/Rating';
 import { useGetProductsQuery } from '../../../services/product.service';
 import './home.scss'
 
+
 const Home = () => {
     const {data} = useGetProductsQuery();
+
     return <div className='container home-container'>
         <div className='carousel-home'>
             <CarouselHome/>

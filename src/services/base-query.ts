@@ -12,36 +12,43 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response
   },
-  (error) => {
+  async (error: AxiosError) => {
     if (error.response?.status === 401) {
-      console.log('Unauthorized, redirecting to login...')
+      const config: AxiosRequestConfig<any> | undefined = error.config;
+      if (config) {
+        console.log('start refresh token.............');
+        try {
+          await axiosInstance.get("/auth/refresh-token", config);
+          return axiosInstance(config);
+        } catch (error) {
+          return Promise.reject(error);
+        }
+      }
     }
     return Promise.reject(error)
   }
 )
 
-export const axiosBaseQuery =
-  (
-    { baseUrl }: { baseUrl: string } = { baseUrl: '' }
-  ): BaseQueryFn<
-    {
-      url: string
-      method?: AxiosRequestConfig['method']
-      data?: AxiosRequestConfig['data']
-      params?: AxiosRequestConfig['params']
-      headers?: AxiosRequestConfig['headers']
-    },
-    unknown,
-    unknown
-  > =>
+export const axiosBaseQuery = (): BaseQueryFn<
+  {
+    url: string
+    method?: AxiosRequestConfig['method']
+    data?: AxiosRequestConfig['data']
+    params?: AxiosRequestConfig['params']
+    headers?: AxiosRequestConfig['headers']
+  },
+  unknown,
+  unknown
+> =>
   async ({ url, method, data, params, headers }) => {
     try {
       const result = await axiosInstance({
-        url: baseUrl + url,
+        url,
         method,
         data,
         params,
         headers,
+        withCredentials: true
       })
       return { data: result.data }
     } catch (axiosError) {

@@ -2,19 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import useGetParam from "../../../../hooks/useGetParam";
 import useRedirect from "../../../../hooks/useRedirect";
 import "./verify-email.scss";
-import { useLazySendOtpQuery, useLazyVerifyEmailQuery } from "../../../../services/auth.service";
-import { BaseResponse } from "../../../../dtos/response/base-response";
-import { TokenResponse } from "../../../../dtos/response/auth/token-response";
+import { useLazySendOtpQuery, useLazyVerifyEmailQuery, useLazyVerifyEmailResetPasswordQuery } from "../../../../services/auth.service";
 import ModalLoading from "../../../../components/loading/ModalLoading";
-import { printError } from "../../../../utils/handle-error";
+import { printError } from "../../../../utils/error-handler";
 
 const VerifyEmail = () => {
     const email = useGetParam('email');
+    const type = useGetParam('type');
     const redirect = useRedirect();
     const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
     const [otp, setOtp] = useState<string[]>(Array.from({ length: 6 }, () => ''));
     const [verifyEmail, { error, isLoading }] = useLazyVerifyEmailQuery();
-    const [sendOtp, { error: otpError, isLoading: otpLoading }] = useLazySendOtpQuery();
+    const [sendOtp, { error: otpError, isFetching: otpLoading }] = useLazySendOtpQuery();
+    const [verifyEmailResetPwd, { error: resetErr, isFetching: resetFetching}] = useLazyVerifyEmailResetPasswordQuery();
     const [disable, setDisable] = useState(true);
 
 
@@ -50,12 +50,20 @@ const VerifyEmail = () => {
     const handleVerify = async () => {
         const otpString = otp.reduce((acc, val) => acc + val, '');
         if(email) {
-            try {
-                const result : BaseResponse<TokenResponse> = await verifyEmail({ email, otp: otpString }).unwrap();
-                alert(result);
-                redirect("/");
-            } catch (error) {
-                console.error(error);
+            if(type === 'reset-password') {
+                try {
+                    await verifyEmailResetPwd({ email, otp: otpString }).unwrap();
+                    redirect("/auth/create-new-password?email=" + email);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                try {
+                    await verifyEmail({ email, otp: otpString }).unwrap();
+                    window.location.href = "/";
+                } catch (error) {
+                    console.error(error);
+                }
             }
         }
         
@@ -94,7 +102,7 @@ const VerifyEmail = () => {
                 {error ? <span className="primary">{printError(error)}</span> : <></>}
             </div>
             <div className="text-center mb-4 input-number-wrapper">
-                {otpError ? <span className="primary">Đã xảy ra lỗi, vui lòng thử lại sau</span> : <></>}
+                {otpError || resetErr? <span className="primary">Đã xảy ra lỗi, vui lòng thử lại sau</span> : <></>}
             </div>
             <div className="d-grid pt-4">
                 <button disabled={disable} type="button" className="btn btn-danger background-primary text-medium"
@@ -108,6 +116,7 @@ const VerifyEmail = () => {
             </div>
             {isLoading && <ModalLoading loading={isLoading}/>}
             {otpLoading && <ModalLoading loading={otpLoading}/>}
+            {resetFetching && <ModalLoading loading={resetFetching}/>}
         </div>
     )
 }

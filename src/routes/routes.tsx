@@ -15,6 +15,8 @@ import Voucher from "../pages/user/account/voucher/Voucher";
 import AuthLayout from "../layout/user/auth/AuthLayout";
 import Register from "../pages/user/auth/register/Register";
 import VerifyEmail from "../pages/user/auth/register/VerifyEmail";
+import ForgotPassword from "../pages/user/auth/reset-password/ForgotPassword";
+import ResetPassword from "../pages/user/auth/reset-password/ResetPassword";
 
 
 export const router = createBrowserRouter([
@@ -32,16 +34,24 @@ export const router = createBrowserRouter([
         element: <UserLayout><Payment/></UserLayout>
     }, 
     {
-        path: "/login",
+        path: "/auth/login",
         element: <AuthLayout><Login/></AuthLayout>
     },
     {
-        path: "/register",
+        path: "/auth/register",
         element: <AuthLayout><Register/></AuthLayout>
     },
     {
-        path: "/verify-email",
+        path: "/auth/verify-email",
         element: <AuthLayout><VerifyEmail/></AuthLayout>
+    },
+    {
+        path: "/auth/forgot-password",
+        element: <AuthLayout><ForgotPassword/></AuthLayout>
+    },
+    {
+        path: "/auth/create-new-password",
+        element: <AuthLayout><ResetPassword/></AuthLayout>
     },
     {
         path: "/user",

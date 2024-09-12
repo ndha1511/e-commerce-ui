@@ -1,8 +1,8 @@
-export interface Product {
-    id: string;
+import { BaseModel } from "./base-model";
+
+export interface Product extends BaseModel{
     productName: string;
     regularPrice: number;
-    shopId: string;
     urlPath: string;
     city: string;
     categories: string[];

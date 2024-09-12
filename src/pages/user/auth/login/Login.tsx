@@ -4,9 +4,6 @@ import { FaFacebook, FaGoogle } from 'react-icons/fa';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; // Import icon mới
 import { Link } from 'react-router-dom';
 import { useLoginMutation } from '../../../../services/auth.service';
-import { BaseResponse } from '../../../../dtos/response/base-response';
-import { TokenResponse } from '../../../../dtos/response/auth/token-response';
-import { redirect } from '../../../../utils/location';
 import ModalLoading from '../../../../components/loading/ModalLoading';
 
 
@@ -26,9 +23,8 @@ function Login() {
       if(username && password) {
         setError("");
         try {
-          const result: BaseResponse<TokenResponse> = await loginRequest({ username, password }).unwrap();
-         
-          redirect("/")
+          await loginRequest({ username, password }).unwrap();
+          window.location.href = '/';
         } catch (error) {
           setError("Tên đăng nhập hoặc mật khẩu không chính xác");
         }
@@ -73,7 +69,7 @@ function Login() {
           <button type="button" onClick={handleLogin} className="button-flex button-hover background-primary text-medium">Đăng nhập</button>
         </div>
         <div className="text-end mt-3">
-          <a href="#" className="a-disable-default">Quên mật khẩu</a>
+          <Link to="/auth/forgot-password" className="a-disable-default">Quên mật khẩu</Link>
         </div>
         <hr />
         <div className="d-flex justify-content-center">
@@ -85,7 +81,7 @@ function Login() {
           </button>
         </div>
         <p className="text-center mt-3">
-          Bạn mới biết đến nền tảng? <Link to="/register" className="text-danger">Đăng ký</Link>
+          Bạn mới biết đến nền tảng? <Link to="/auth/register" className="text-danger">Đăng ký</Link>
         </p>
         <p className="text-center mt-3">
           <Link to="/" >Về trang chủ</Link>
