@@ -19,6 +19,7 @@ import VerifyEmail from "../pages/user/auth/register/VerifyEmail";
 
 
 
+
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -85,5 +86,6 @@ export const router = createBrowserRouter([
         path: "/seller/insert-product",
         element: <InsertProduct/>
     },
+   
 
 ]);

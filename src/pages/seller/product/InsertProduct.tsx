@@ -6,16 +6,18 @@ import ImgAndVideo from "../../../components/seller/insert-product/ImgAndVideo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import CategoryModal from "../../../components/seller/modal/CategoryModal";
+import CategoryInfo from "../../../components/seller/insert-product/CategoryInfo";
+import SaleInfo from "../../../components/seller/insert-product/SaleInfo";
 
 
 
 
 function InsertProduct() {
     const [showCategoryModal, setShowCategoryModal] = useState(false);
-    const handleCloseCategoryModal =()=>{
+    const handleCloseCategoryModal = () => {
         setShowCategoryModal(false);
     }
-    const handleOpenCategoryModal =()=>{
+    const handleOpenCategoryModal = () => {
         setShowCategoryModal(true);
     }
     return (
@@ -45,7 +47,7 @@ function InsertProduct() {
 
                                     <div className="category-seller" onClick={handleOpenCategoryModal}>
                                         <input readOnly className="input-basic-information-seller" placeholder="Chọn ngành hàng" type="text" />
-                                        <FontAwesomeIcon  style={{position:'absolute', right:20}} icon={faPen} />
+                                        <FontAwesomeIcon style={{ position: 'absolute', right: 20 }} icon={faPen} />
                                     </div>
 
                                 </Col>
@@ -58,6 +60,15 @@ function InsertProduct() {
                                     <textarea rows={8} cols={50} className="textarea-basic-information-seller" />
                                 </Col>
                             </Row></div>
+                    </div>
+
+                    <div className="bg-white  border-radius-medium mt-3 p-3" style={{ width: '95%' }}>
+                        <h4>Thông tin chi tiết</h4>
+                        <CategoryInfo />
+                    </div>
+                    <div className="bg-white  border-radius-medium mt-3 p-3" style={{ width: '95%' }}>
+                        <h4>Thông tin bán hàng</h4>
+                        <SaleInfo/>
                     </div>
 
                 </Col>

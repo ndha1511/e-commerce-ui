@@ -2,47 +2,13 @@ import { faImage, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import useChangeFile from "../../../hooks/useChangeFile";
 
 function ImgAndVideo() {
-  const [files, setFiles] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<(string | ArrayBuffer | null)[]>([]);
   const [previewVideoUrl, setPreviewVideoUrl] = useState<string>();
-
-  const maxImages = 9;
-  const shouldHideInput = files.length >= maxImages;
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = event.target.files;
-    if (newFiles) {
-      const newFileArray = Array.from(newFiles);
-      const availableSpace = maxImages - files.length;
-      if (availableSpace > 0) {
-        const filesToAdd = newFileArray.slice(0, availableSpace);
-        setFiles((prev) => [...prev, ...filesToAdd]);
-        const newUrls: (string | ArrayBuffer)[] = [];
-
-        filesToAdd.forEach((file) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            if (reader.result) {
-              newUrls.push(reader.result);
-              if (newUrls.length === filesToAdd.length) {
-                setPreviewUrls((prev) => [...prev, ...newUrls]);
-              }
-            }
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-    }
-  };
-
-  const handleDeleteImage = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
-  };
-
+  const { files, previewUrls, handleFileChange, shouldHideInput, handleDeleteImage,setPreviewUrls } = useChangeFile(9, [], []);
+  
   const handleDeleteVideo = () => {
     setPreviewVideoUrl(''); // Xóa URL vào state
   };
@@ -55,15 +21,16 @@ function ImgAndVideo() {
     }
   };
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
-    const items = Array.from(previewUrls);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const reorderedUrls = Array.from(previewUrls);
+    const [movedItem] = reorderedUrls.splice(result.source.index, 1);
+    reorderedUrls.splice(result.destination.index, 0, movedItem);
 
-    setPreviewUrls(items);
+    setPreviewUrls(reorderedUrls);
   };
+
 
   return (
     <div>
@@ -90,9 +57,10 @@ function ImgAndVideo() {
         <Row className="mb-2">
           <Col md={2}></Col>
           <Col md={10}>
+
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="images" direction="horizontal">
-                {(provided:any) => (
+                {(provided) => (
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
@@ -100,14 +68,19 @@ function ImgAndVideo() {
                     style={{ flexWrap: 'wrap', width: '90%' }}
                   >
                     {previewUrls.map((url, index) => (
-                      <Draggable key={index} draggableId={index.toString()} index={index}>
-                        {(provided : any) => (
+                      <Draggable key={`draggable-${index}`} draggableId={`draggable-${index}`} index={index}>
+                        {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className="ps-3 img-container"
-                            style={{ position: 'relative' }}
+                            className={`ps-3 img-container ${snapshot.isDragging ? 'draggable-shadow' : ''}`}
+                            style={{
+                              position: 'relative',
+                              transform: snapshot.isDragging ? 'scale(1.05)' : 'none',
+                              transition: 'transform 0.2s ease',
+                              ...provided.draggableProps.style,
+                            }}
                           >
                             <img
                               src={url as string}
@@ -133,6 +106,8 @@ function ImgAndVideo() {
                           </div>
                         )}
                       </Draggable>
+
+
                     ))}
                     {provided.placeholder}
                     {!shouldHideInput && (
@@ -140,9 +115,9 @@ function ImgAndVideo() {
                         <input
                           type="file"
                           id="fileInput"
-                          style={{ display: 'none' }} // Ẩn input file
+                          style={{ display: 'none' }}
                           onChange={handleFileChange}
-                          accept="image/*" // Chỉ chấp nhận file hình ảnh
+                          accept="image/*"
                         />
                         <label htmlFor="fileInput" className="d-flex align-items-center primary p-3">
                           <div className="image-insert-product-seller p-2">
@@ -166,7 +141,7 @@ function ImgAndVideo() {
                               />
                             </div>
                             <span className="w-100 text-center">
-                              Thêm hình ảnh ({files.length}/{maxImages})
+                              Thêm hình ảnh ({files.length}/9)
                             </span>
                           </div>
                         </label>
@@ -246,7 +221,8 @@ function ImgAndVideo() {
                         src={previewVideoUrl}
                         className="border-radius-small"
                         style={{ width: '80px', height: '80px' }}
-                        controls
+                        // controls
+                        autoPlay={false}
                       />
                       <FontAwesomeIcon
                         icon={faTrash}
