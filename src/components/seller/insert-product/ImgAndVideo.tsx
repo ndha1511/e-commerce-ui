@@ -7,7 +7,8 @@ import useChangeFile from "../../../hooks/useChangeFile";
 
 function ImgAndVideo() {
   const [previewVideoUrl, setPreviewVideoUrl] = useState<string>();
-  const { files, previewUrls, handleFileChange, shouldHideInput, handleDeleteImage,setPreviewUrls } = useChangeFile(9, [], []);
+  const { files, previewUrls, handleFileChange, shouldHideInput, handleDeleteImage, setPreviewUrls } = useChangeFile(9, [], []);
+  const [videoFile, setVideoFile] = useState<File>();
   
   const handleDeleteVideo = () => {
     setPreviewVideoUrl(''); // Xóa URL vào state
@@ -18,6 +19,7 @@ function ImgAndVideo() {
     if (file) {
       const videoUrl = URL.createObjectURL(file);
       setPreviewVideoUrl(videoUrl); // Lưu URL vào state
+      setVideoFile(file);
     }
   };
 
@@ -27,7 +29,6 @@ function ImgAndVideo() {
     const reorderedUrls = Array.from(previewUrls);
     const [movedItem] = reorderedUrls.splice(result.source.index, 1);
     reorderedUrls.splice(result.destination.index, 0, movedItem);
-
     setPreviewUrls(reorderedUrls);
   };
 

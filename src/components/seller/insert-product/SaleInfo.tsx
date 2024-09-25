@@ -4,19 +4,43 @@ import { Col, Row } from "react-bootstrap";
 import './sale-info.scss';
 import useChangeFile from "../../../hooks/useChangeFile";
 import AttributeSaleInfo from "./AttibuteSaleInfo";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import TableProduct from "./TableProduct";
 function SaleInfo() {
 
     const { previewUrls, handleFileChange } = useChangeFile(9, [], []);
-
     const [showAttributeSaleInfo, setShowAttributeSaleInfo] = useState(false);
     const [showAttributeSaleInfo1, setShowAttributeSaleInfo1] = useState(false);
+    const [attribute, setAttribute] = useState<string>('');
+    const [attributeList, setAttributeList] = useState<string[]>([]);
+    console.log(attributeList)
 
+    const handleAttributechange = (newAttribute: string) => {
+        setAttribute(newAttribute);
 
+        setAttributeList((prev) => {
+            let newList = [...prev];
+            // Đảm bảo rằng newList có ít nhất 2 vị trí
+            if (newList.length < 2) {
+                if (newList.length === 0) newList.push(''); // Thêm vị trí 0 nếu chưa có
+                if (newList.length === 1) newList.push(''); // Thêm vị trí 1 nếu chưa có
+            }
+
+            if (showAttributeSaleInfo1) {
+                // Chèn vào vị trí 1
+                newList[1] = newAttribute;
+            } else if (showAttributeSaleInfo) {
+                // Chèn vào vị trí 0, giữ nguyên nếu chưa có gì thì để rỗng
+                newList[0] = newAttribute || '';
+            }
+
+            return newList;
+        });
+    };
 
     // Hàm để thêm sản phẩm mới vào danh sách
     const addNewProduct = () => {
-        console.log('ádfasdfass')
+        console.log('ádfasdfsadf')
         const newProduct = {
             color: 'Đỏ',
             sizes: [
@@ -59,7 +83,9 @@ function SaleInfo() {
     };
 
 
+    const addAttribute = () => {
 
+    }
 
     const handleCloseAtribute = () => {
         setShowAttributeSaleInfo(false);
@@ -73,52 +99,6 @@ function SaleInfo() {
         setShowAttributeSaleInfo(true);
     };
     const products = [
-        {
-            color: 'Xanh',
-            sizes: [
-                {
-                    size: 'M',
-                    price: 100000,   // Giá cho size M
-                    weight: 500,     // Cân nặng cho size M (gram)
-                    stock: 20        // Kho hàng cho size M
-                },
-                {
-                    size: 'S',
-                    price: 95000,    // Giá cho size S
-                    weight: 450,     // Cân nặng cho size S (gram)
-                    stock: 15        // Kho hàng cho size S
-                },
-                {
-                    size: 'XL',
-                    price: 120000,   // Giá cho size XL
-                    weight: 700,     // Cân nặng cho size XL (gram)
-                    stock: 10        // Kho hàng cho size XL
-                }
-            ]
-        },
-        {
-            color: 'Xanh',
-            sizes: [
-                {
-                    size: 'M',
-                    price: 100000,   // Giá cho size M
-                    weight: 500,     // Cân nặng cho size M (gram)
-                    stock: 20        // Kho hàng cho size M
-                },
-                {
-                    size: 'S',
-                    price: 95000,    // Giá cho size S
-                    weight: 450,     // Cân nặng cho size S (gram)
-                    stock: 15        // Kho hàng cho size S
-                },
-                {
-                    size: 'XL',
-                    price: 120000,   // Giá cho size XL
-                    weight: 700,     // Cân nặng cho size XL (gram)
-                    stock: 10        // Kho hàng cho size XL
-                }
-            ]
-        },
         {
             color: 'Xanh',
             sizes: [
@@ -226,6 +206,9 @@ function SaleInfo() {
                                         previewUrls={previewUrls}
                                         handleFileChange={handleFileChange}
                                         handleCloseAtribute={handleCloseAtribute}
+                                        handleAttributechange={handleAttributechange}
+                                        index={0}
+                                        addNewProduct={addNewProduct}
                                     />
                                     <div className={`${showAttributeSaleInfo1 === false ? 'p-3' : ''} w-100 bg-light mt-3 border-radius-small `}>
                                         {showAttributeSaleInfo1 === false &&
@@ -238,6 +221,9 @@ function SaleInfo() {
                                                     previewUrls={previewUrls}
                                                     handleFileChange={handleFileChange}
                                                     handleCloseAtribute={handleCloseAtribute1}
+                                                    handleAttributechange={handleAttributechange}
+                                                    index={1}
+                                                    addNewProduct={addNewProduct}
                                                 />
                                             </>
                                         }
@@ -296,80 +282,8 @@ function SaleInfo() {
                                     </Col>
                                 </Row>
                             }
-                            <Row className="mt-3 custom-row p-3 ">
-                                <div >
-                                    {productList.map((product, index) => (
-                                        <div key={index} className="d-flex">
-                                            <Col md={3} className="bd-tb">
-                                                {index === 0 &&
-                                                    <div className="w-100  title-table bg-light p-2">
-                                                        <span>Phân loại 1</span>
-                                                    </div>}
-                                                <div className="w-100   ttt  p-2">
-                                                    <span>{product.color}</span>
-                                                </div>
-                                            </Col>
-                                            <Col md={3} className="bd-tb">
-                                                {index === 0 &&
-                                                    <div className="w-100   title-table bg-light p-2">
-                                                        <span>Phân loại 2</span>
-                                                    </div>}
-                                                {product.sizes.map((size) => (
-                                                    <div key={size.size} className="w-100 ttt bg-white p-2">
-                                                        <span>{size.size}</span>
-                                                    </div>
+                            {showAttributeSaleInfo && <TableProduct productList={productList} addNewProduct={addNewProduct} attribute={attributeList} />}
 
-                                                ))}
-                                            </Col>
-                                            <Col md={3} className="bd-tb">
-                                                {index === 0 &&
-                                                    <div className="w-100    title-table bg-light p-2">
-                                                        <span>Giá</span>
-                                                    </div>}
-                                                {product.sizes.map((size) => (
-                                                    <div key={size.size} className="w-100   bg-white ttt p-3">
-                                                        <div className="select-search-sale-info" >
-                                                            <div className=" p-1 pe-2" style={{ borderRight: '2px solid rgb(241, 236, 236)' }}>
-                                                                <span >₫</span>
-                                                            </div>
-                                                            <input
-                                                                className="select-sale-info"
-                                                                style={{ padding: 0, paddingLeft: 10 }}
-                                                                placeholder="Giá"
-                                                                type="text"
-                                                                value={size.price}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </Col>
-                                            <Col md={3} className="bd-tb">
-                                                {index === 0 &&
-                                                    <div className="w-100   title-table bg-light p-2">
-                                                        <span>Kho hàng</span>
-                                                    </div>}
-                                                {product.sizes.map((size) => (
-                                                    <div key={size.size} className="w-100   ttt bg-white p-2">
-                                                        <div className="select-search-sale-info" >
-                                                            <input
-                                                                className="select-sale-info"
-                                                                style={{ padding: 5, paddingLeft: 10 }}
-                                                                placeholder="Kho hàng"
-                                                                type="text"
-                                                                value={size.stock}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </Col>
-
-
-                                        </div>
-                                    ))}
-                                    <button onClick={addNewProduct}>test</button>
-                                </div>
-
-                            </Row>
                         </Col>
                     </Row>
                 </Col>
