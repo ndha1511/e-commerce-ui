@@ -55,7 +55,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
     return <>
         <div className="menu-container">
             {!isAbsoluteLocation('/') && <div className="menu-item" onClick={() => redirect('/')}>
-                <i className="bi bi-house-door"></i>
+                <i className="bi bi-shop"></i>
                 <span className="text-small">Trang chủ</span>
             </div>}
             {!isLocation('/user') && <div className="menu-item" onClick={() => redirect('/user/account/profile')}>

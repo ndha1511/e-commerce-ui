@@ -19,6 +19,7 @@ const Home = () => {
         <div className='suggested'>
            <Rating star={1.5} variant={'warning'} size='text-medium'/>
         </div>
+
         <div className='products'>
             {data && data.data.items.map(product => <ProductCard product={product} key={product.id}/>)}
         </div>

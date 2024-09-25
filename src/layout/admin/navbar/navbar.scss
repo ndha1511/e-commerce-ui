@@ -1,0 +1,15 @@
+@import '../../../variables.scss';
+
+.menu-navbar {
+    cursor: pointer;
+
+    &:hover {
+        color: $primary-color;
+        .menu-child {
+            pointer-events: none;
+        }
+    }
+    .menu-child {
+        pointer-events: all;
+    }
+}

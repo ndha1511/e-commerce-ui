@@ -1,4 +1,3 @@
-import Modal from "../../../../components/modal/Modal";
 
 const Address = () => {
     return <div className="profile-container">
@@ -8,9 +7,6 @@ const Address = () => {
                 <i className="bi bi-plus-lg"></i>
                 Thêm địa chỉ
             </button>
-            <Modal modelId="address-modal"/>
-            
-            
         </div>
     </div>
 }

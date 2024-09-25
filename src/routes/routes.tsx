@@ -17,6 +17,8 @@ import Register from "../pages/user/auth/register/Register";
 import VerifyEmail from "../pages/user/auth/register/VerifyEmail";
 import ForgotPassword from "../pages/user/auth/reset-password/ForgotPassword";
 import ResetPassword from "../pages/user/auth/reset-password/ResetPassword";
+import AdminLayout from "../layout/admin/AdminLayout";
+import Category from "../pages/admin/category/Category";
 
 
 export const router = createBrowserRouter([
@@ -85,9 +87,14 @@ export const router = createBrowserRouter([
         path: "/user/vouchers",
         element: <UserLayout><Account><Voucher/></Account></UserLayout>
     }
-    , {
+    ,
+    {
         path: "/product/:key",
         element: <UserLayout><ProductDetail/></UserLayout>
+    },
+    {
+        path: "/admin",
+        element: <AdminLayout><Category/></AdminLayout>
     },
 
 ]);

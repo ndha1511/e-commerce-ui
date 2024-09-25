@@ -18,7 +18,7 @@ const authApi = createApi({
             query: (registerRequest)  => ({
                 url: '/auth/register',
                 method: 'post',
-                data: registerRequest,
+                data: registerRequest
             })
         }),
         verifyEmail: build.query<BaseResponse<null>, {email: string, otp: string}>({
