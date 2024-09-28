@@ -185,7 +185,7 @@ function ProductDetail() {
                                             <img
                                                 src="https://vcdn.tikicdn.com/cache/w100/ts/seller/4b/54/1a/f385a79a716cb3505f152e7af8c769aa.png.webp"
                                                 alt="Product"
-                                                className="img-fluid"
+                                                className="img-fluid img-ft"
                                             />
                                             <div className="pe-4">
                                                 <span className="fw bold">SOMINAM</span> <br />
@@ -206,7 +206,7 @@ function ProductDetail() {
                                         <img
                                             src="https://salt.tikicdn.com/cache/280x280/ts/product/69/bf/e9/45164f5d8f4ef134197f2bb5aca85a5c.jpg.webp"
                                             alt="Product"
-                                            className="img-fluid"
+                                            className="img-fluid img-ft"
                                         />
                                         <div className="ps-1">
                                             <span>Sọc trắng đen</span> <br />

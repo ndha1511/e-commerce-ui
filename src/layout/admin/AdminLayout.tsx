@@ -8,7 +8,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         <div className="navbar-admin">
             <Navbar></Navbar>
         </div>
-        <div className="admin-layout-left ps-3 pe-3">
+        <div className="admin-layout-left">
             <div className="header-admin">
                 <Header></Header>
             </div>

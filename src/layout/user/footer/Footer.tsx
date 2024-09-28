@@ -32,15 +32,15 @@ const Footer = () => {
           <div className="footer-section">
             <h5 className="fw-bold text-medium">THANH TOÁN</h5>
             <div className="d-flex mb-3">
-              <img src="visa.png" alt="Visa" className="me-2" />
-              <img src="mastercard.png" alt="Mastercard" className="me-2" />
-              <img src="amex.png" alt="American Express" className="me-2" />
-              <img src="installment.png" alt="Trả góp" className="me-2" />
+              <img src="visa.png" alt="Visa" className="me-2 img-ft" />
+              <img src="mastercard.png" alt="Mastercard" className="me-2 img-ft" />
+              <img src="amex.png" alt="American Express" className="me-2 img-ft" />
+              <img src="installment.png" alt="Trả góp" className="me-2 img-ft" />
             </div>
             <h5 className="fw-bold">ĐƠN VỊ VẬN CHUYỂN</h5>
             <div className="d-flex">
-              <img src="spx.png" alt="SPX" className="me-2" />
-              <img src="giaohangnhanh.png" alt="Giao Hàng Nhanh" className="me-2" />
+              <img src="spx.png" alt="SPX" className="me-2 img-ft" />
+              <img src="giaohangnhanh.png" alt="Giao Hàng Nhanh" className="me-2 img-ft" />
             </div>
           </div>
           <div className="footer-section">
@@ -54,8 +54,8 @@ const Footer = () => {
         </div>
         <hr />
         <div className="footer-bottom text-center mt-4">
-          <p className="mb-1">Địa chỉ: 251/33 Vườn Lài, An Phú Đông, Q12, tp.HCM</p>
-          <p className="mb-1">Email: tcm172@gmail.com</p>
+          <p className="">Địa chỉ: 251/33 Vườn Lài, An Phú Đông, Q12, tp.HCM</p>
+          <p className="">Email: tcm172@gmail.com</p>
           <p>Điện thoại: 0961263780</p>
         </div>
       </div>

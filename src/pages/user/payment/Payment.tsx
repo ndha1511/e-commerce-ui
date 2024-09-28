@@ -98,44 +98,44 @@ const Payment = () => {
                             <BsCheckSquareFill className="text-primary me-2" />
                             <h6 className="mb-0">Thông tin đơn hàng</h6>
                         </div>
-                        <SimpleBar  className='order-payment'>
-                       <div>     {/* Tên shop */}
-                            <div className="mb-2">
-                                <span className="text-muted">Bán bởi shop: </span>
-                                <span className="fw-bold">trùm sỉ thời trang</span>
-                            </div>
-
-                            <div className="mb-2">
-                                <span className="text-muted">Voucher của shop: </span>
-                                <span className="primary fw-bold ms-2">15k</span>
-                                <span className="info fw-bold ms-2 btn-pointer">Chọn voucher khác</span>
-                            </div>
-
-                            {/* Danh sách sản phẩm */}
-
-                            {products.map((product) => (
-                                <div key={product.id} className="border-bottom mb-3 pb-3 order-items">
-                                    <Row>
-                                        <Col xs={2}>
-                                            <Image src={product.image} fluid />
-                                        </Col>
-                                        <Col xs={7}>
-                                            <p className="mb-1">{product.name}</p>
-                                            <div className='d-flex'>
-                                                <div className="primary fw-bold me-2">{product.salePrice}</div>
-                                                <div className="text-muted text-decoration-line-through">{product.originalPrice}</div>
-                                            </div>
-                                        </Col>
-                                        <Col xs={3} className="text-end">
-                                            <div>x {product.quantity}</div>
-                                        </Col>
-                                    </Row>
-                                    <div className="mt-2">
-                                        <span style={{ borderRight: '1px solid black' }} className='p-2'>{product.size}</span>
-                                        <span className='p-2'>{product.color}</span>
-                                    </div>
+                        <SimpleBar className='order-payment'>
+                            <div>     {/* Tên shop */}
+                                <div className="mb-2">
+                                    <span className="text-muted">Bán bởi shop: </span>
+                                    <span className="fw-bold">trùm sỉ thời trang</span>
                                 </div>
-                            ))}</div>
+
+                                <div className="mb-2">
+                                    <span className="text-muted">Voucher của shop: </span>
+                                    <span className="primary fw-bold ms-2">15k</span>
+                                    <span className="info fw-bold ms-2 btn-pointer">Chọn voucher khác</span>
+                                </div>
+
+                                {/* Danh sách sản phẩm */}
+
+                                {products.map((product) => (
+                                    <div key={product.id} className="border-bottom mb-3 pb-3 order-items">
+                                        <Row>
+                                            <Col xs={2}>
+                                                <Image src={product.image} fluid />
+                                            </Col>
+                                            <Col xs={7}>
+                                                <p className="mb-1">{product.name}</p>
+                                                <div className='d-flex'>
+                                                    <div className="primary fw-bold me-2">{product.salePrice}</div>
+                                                    <div className="text-muted text-decoration-line-through">{product.originalPrice}</div>
+                                                </div>
+                                            </Col>
+                                            <Col xs={3} className="text-end">
+                                                <div>x {product.quantity}</div>
+                                            </Col>
+                                        </Row>
+                                        <div className="mt-2">
+                                            <span style={{ borderRight: '1px solid black' }} className='p-2'>{product.size}</span>
+                                            <span className='p-2'>{product.color}</span>
+                                        </div>
+                                    </div>
+                                ))}</div>
                         </SimpleBar >
                         <div className="mb-2">
                             <span className="text-muted">Voucher ưu đãi của sàn: </span>

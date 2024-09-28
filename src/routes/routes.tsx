@@ -12,6 +12,7 @@ import Password from "../pages/user/account/password/Password";
 import Purchase from "../pages/user/account/purchase/Purchase";
 import Notification from "../pages/user/account/notification/Notification";
 import Voucher from "../pages/user/account/voucher/Voucher";
+import InsertProduct from "../pages/seller/product/InsertProduct";
 import AuthLayout from "../layout/user/auth/AuthLayout";
 import Register from "../pages/user/auth/register/Register";
 import VerifyEmail from "../pages/user/auth/register/VerifyEmail";
@@ -19,6 +20,8 @@ import ForgotPassword from "../pages/user/auth/reset-password/ForgotPassword";
 import ResetPassword from "../pages/user/auth/reset-password/ResetPassword";
 import AdminLayout from "../layout/admin/AdminLayout";
 import Category from "../pages/admin/category/Category";
+
+
 
 
 export const router = createBrowserRouter([
@@ -93,8 +96,13 @@ export const router = createBrowserRouter([
         element: <UserLayout><ProductDetail/></UserLayout>
     },
     {
+
         path: "/admin",
         element: <AdminLayout><Category/></AdminLayout>
+    },
+    {
+        path: "/seller/insert-product",
+        element: <InsertProduct/>
     },
 
 ]);

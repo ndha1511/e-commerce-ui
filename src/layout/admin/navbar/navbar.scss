@@ -9,6 +9,12 @@
             pointer-events: none;
         }
     }
+    span:hover {
+        color: $primary-color;
+        .menu-child {
+            pointer-events: none;
+        }
+    }
     .menu-child {
         pointer-events: all;
     }
