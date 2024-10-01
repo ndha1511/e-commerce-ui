@@ -122,6 +122,11 @@
     &:hover {
         background-color: rgb(245, 78, 78);
     }
+       // Khi nút bị khóa (disabled)
+       &:disabled {
+        background-color: rgb(239, 123, 123);
+        cursor: not-allowed; // Thay đổi con trỏ khi nút bị khóa
+    }
 }
 
 .equal-height {

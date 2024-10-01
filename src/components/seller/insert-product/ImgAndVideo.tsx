@@ -4,12 +4,17 @@ import { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import useChangeFile from "../../../hooks/useChangeFile";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../rtk/store/store";
+import { addImage, setVideo } from "../../../rtk/slice/product-slice";
 
 function ImgAndVideo() {
   const [previewVideoUrl, setPreviewVideoUrl] = useState<string>();
   const { files, previewUrls, handleFileChange, shouldHideInput, handleDeleteImage, setPreviewUrls } = useChangeFile(9, [], []);
   const [videoFile, setVideoFile] = useState<File>();
-  
+  const imgRedux: string[] = useSelector((state:RootState)=> state.product.images);
+  const videoRedux: string | undefined = useSelector((state:RootState)=> state.product.video);
+  const dispatch = useDispatch();
   const handleDeleteVideo = () => {
     setPreviewVideoUrl(''); // Xóa URL vào state
   };
@@ -32,7 +37,20 @@ function ImgAndVideo() {
     setPreviewUrls(reorderedUrls);
   };
 
-
+const handleFileChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
+    const newFiles = e.target.files;
+    if(newFiles){
+      const urls = Array.from(newFiles, file => URL.createObjectURL(file));
+      dispatch(addImage(urls));
+    }
+}
+const handleVideoChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
+  const newVideo = e.target.files;
+  if(newVideo){
+    const url: string = URL.createObjectURL(newVideo[0]);
+    dispatch(setVideo(url))
+  }
+}
   return (
     <div>
       <div className="d-flex gap-5 mt-4 p-3">
@@ -117,7 +135,7 @@ function ImgAndVideo() {
                           type="file"
                           id="fileInput"
                           style={{ display: 'none' }}
-                          onChange={handleFileChange}
+                          onChange={(e)=>{handleFileChange(e);handleFileChangeRedux(e)}}
                           accept="image/*"
                         />
                         <label htmlFor="fileInput" className="d-flex align-items-center primary p-3">
@@ -249,7 +267,7 @@ function ImgAndVideo() {
                     type="file"
                     id="fileInputVideo"
                     style={{ display: 'none' }} // Ẩn input file
-                    onChange={handleVideoChange}
+                    onChange={(e)=>{handleVideoChange(e); handleVideoChangeRedux(e)}}
                     accept="video/*" // Chỉ chấp nhận file video
                   />
                   <label htmlFor="fileInputVideo" className="d-flex align-items-center primary ps-3">

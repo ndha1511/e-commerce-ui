@@ -1,6 +1,6 @@
 import { AttributeValueDto } from "./attribute-value.reques";
 
-export interface ProductAttributeDto{
+export interface ProductAttributeDto {
     attributeName: string;
     attributeValues?: AttributeValueDto[];
 }

@@ -9,8 +9,12 @@ import CategoryModal from "../../../components/seller/modal/CategoryModal";
 import CategoryInfo from "../../../components/seller/insert-product/CategoryInfo";
 import SaleInfo from "../../../components/seller/insert-product/SaleInfo";
 import MenuProductInsert from "../../../components/seller/insert-product/MenuProductInsert";
-import { useGetCategoriesQuery } from "../../../services/category.service";
+import { useGetCategoriesQuery, useLazyGetCategoriesQuery } from "../../../services/category.service";
 import { Category } from "../../../models/category";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../rtk/store/store";
+import { setDescription, setProductName } from "../../../rtk/slice/product-slice";
+import { pageQueryHanlder } from "../../../utils/query-handler";
 
 
 
@@ -19,9 +23,9 @@ import { Category } from "../../../models/category";
 function InsertProduct() {
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [category, setCategory] = useState<Category | null>(null);
-    const [productName, setProductName] = useState<string | null>(null)
-    const [descriptions, setDescription] = useState<string | null>(null)
-
+    const products = useSelector((state: RootState) => state.product)
+    const params: string = pageQueryHanlder(1, 40, [{filed: 'parentId', operator: '=', value: 'null'}]);
+    const dispatch = useDispatch();
     const handleCategory = (categoryModal?: Category) => {
         if (categoryModal) {
             setCategory(categoryModal);
@@ -33,7 +37,7 @@ function InsertProduct() {
     const handleOpenCategoryModal = () => {
         setShowCategoryModal(true);
     }
-    const { data } = useGetCategoriesQuery();
+    const { data } = useGetCategoriesQuery(params);
     return (
         <div className="w-100 container-fluid">
             <Row>
@@ -50,7 +54,10 @@ function InsertProduct() {
                                 <div className="mt-2"> <span><span className="primary">*</span> Tên sản phẩm</span></div>
                             </Col>
                             <Col md={10}>
-                                <input className="input-basic-information-seller" onChange={(e)=>setProductName(e.target.value)} placeholder="Tên sản phẩm + Thương hiệu + Model" type="text" />
+                                <input className="input-basic-information-seller"
+                                    value={products.productName ? products.productName : ''}
+                                    onChange={(e) => { dispatch(setProductName(e.target.value)) }}
+                                    placeholder="Tên sản phẩm + Thương hiệu + Model" type="text" />
                             </Col>
                         </Row>
                             <Row>
@@ -71,7 +78,7 @@ function InsertProduct() {
                                     <div className="mt-2"><span><span className="primary">*</span> Mô tả sản phẩm</span></div>
                                 </Col>
                                 <Col md={10}>
-                                    <textarea rows={8} cols={50} onChange={(e)=>setDescription(e.target.value)} className="textarea-basic-information-seller" />
+                                    <textarea rows={8} cols={50} onChange={(e) => dispatch(setDescription(e.target.value))} className="textarea-basic-information-seller" />
                                 </Col>
                             </Row></div>
                     </div>

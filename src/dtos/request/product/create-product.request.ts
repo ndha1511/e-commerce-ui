@@ -10,8 +10,8 @@ export interface CreateProductDto {
     brandId: string;
     city: string;
     thumbnailIndex: number;
-    images: File[];
-    video?: File;
+    images: string[];
+    video?: string;
     attributesDto: ProductAttributeDto[];
     variantsDto: VariantDto[];
     description: string;

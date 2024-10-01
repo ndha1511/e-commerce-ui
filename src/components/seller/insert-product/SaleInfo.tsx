@@ -2,91 +2,25 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Col, Row } from "react-bootstrap";
 import './sale-info.scss';
-import useChangeFile from "../../../hooks/useChangeFile";
 import AttributeSaleInfo from "./AttibuteSaleInfo";
-import { useState } from "react";
-import TableProduct from "./TableProduct";
+import { useEffect, useState } from "react";
+import ProductTable from "./ProductTable";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../rtk/store/store";
+import { setRegularPrice, setVariantDto } from "../../../rtk/slice/product-slice";
+
+
+
 function SaleInfo() {
 
-    const { previewUrls, handleFileChange } = useChangeFile(9, [], []);
+    const products = useSelector((state: RootState) => state.product)
+    const variants = useSelector((state: RootState) => state.product.variantsDto)
+    const dispatch = useDispatch();
     const [showAttributeSaleInfo, setShowAttributeSaleInfo] = useState(false);
     const [showAttributeSaleInfo1, setShowAttributeSaleInfo1] = useState(false);
-    const [attribute, setAttribute] = useState<string>('');
-    const [attributeList, setAttributeList] = useState<string[]>([]);
-    console.log(attributeList)
-
-    const handleAttributechange = (newAttribute: string) => {
-        setAttribute(newAttribute);
-
-        setAttributeList((prev) => {
-            let newList = [...prev];
-            // Đảm bảo rằng newList có ít nhất 2 vị trí
-            if (newList.length < 2) {
-                if (newList.length === 0) newList.push(''); // Thêm vị trí 0 nếu chưa có
-                if (newList.length === 1) newList.push(''); // Thêm vị trí 1 nếu chưa có
-            }
-
-            if (showAttributeSaleInfo1) {
-                // Chèn vào vị trí 1
-                newList[1] = newAttribute;
-            } else if (showAttributeSaleInfo) {
-                // Chèn vào vị trí 0, giữ nguyên nếu chưa có gì thì để rỗng
-                newList[0] = newAttribute || '';
-            }
-
-            return newList;
-        });
-    };
-
-    // Hàm để thêm sản phẩm mới vào danh sách
-    const addNewProduct = () => {
-        console.log('ádfasdfsadf')
-        const newProduct = {
-            color: 'Đỏ',
-            sizes: [
-                {
-                    size: 'M',
-                    price: 110000,
-                    weight: 520,
-                    stock: 18
-                },
-                {
-                    size: 'L',
-                    price: 115000,
-                    weight: 600,
-                    stock: 12
-                },
-            ]
-        };
-
-        // Cập nhật state với sản phẩm mới
-        setProductList([...productList, newProduct]);
-
-    };
-
-    // Hàm để thêm kích thước mới vào sản phẩm đầu tiên
-    const addNewSize = () => {
-        const newSize = {
-            size: 'XXL',
-            price: 130000,
-            weight: 800,
-            stock: 8
-        };
-
-        // Sao chép danh sách hiện tại
-        const updatedProducts = [...productList];
-        // Thêm kích thước vào sản phẩm đầu tiên
-        updatedProducts[0].sizes.push(newSize);
-
-        // Cập nhật state
-        setProductList(updatedProducts);
-    };
-
-
-    const addAttribute = () => {
-
-    }
-
+    const [regularPrice, setRigularPrice] = useState<number>(0);
+    const [quantity, setQuantity] = useState<number>(0);
+    const [isApplyAll,setIsApplyAll] = useState<boolean>(true);
     const handleCloseAtribute = () => {
         setShowAttributeSaleInfo(false);
         setShowAttributeSaleInfo1(false);
@@ -98,35 +32,28 @@ function SaleInfo() {
     const handleAddAttribute = () => {
         setShowAttributeSaleInfo(true);
     };
-    const products = [
-        {
-            color: 'Xanh',
-            sizes: [
-                {
-                    size: 'M',
-                    price: 100000,   // Giá cho size M
-                    weight: 500,     // Cân nặng cho size M (gram)
-                    stock: 20        // Kho hàng cho size M
-                },
-                {
-                    size: 'S',
-                    price: 95000,    // Giá cho size S
-                    weight: 450,     // Cân nặng cho size S (gram)
-                    stock: 15        // Kho hàng cho size S
-                },
-                {
-                    size: 'XL',
-                    price: 120000,   // Giá cho size XL
-                    weight: 700,     // Cân nặng cho size XL (gram)
-                    stock: 10        // Kho hàng cho size XL
-                }
-            ]
-        },
-    ]
-    const [productList, setProductList] = useState(products);
-    // useEffect(()=>{
-
-    // },[productList])
+    const handleChange = (value: number) => {
+        setRigularPrice(value);
+        dispatch(setRegularPrice(value))
+    }
+    const handleChangeQuantity = (value: number) => {
+        setQuantity(value);
+    }
+    const handleApplyAll = () => {
+        const variantNew = [...variants].map((variant) => ({
+            ...variant,
+            price: regularPrice!==0 ? regularPrice : variant.price,
+            quantity: quantity !== 0 ? quantity : variant.quantity,
+        }));
+        dispatch(setVariantDto(variantNew))
+    }
+    useEffect(()=>{
+        if(regularPrice!==0 || quantity!==0){
+            setIsApplyAll(false);
+        }else{
+            setIsApplyAll(true);
+        }
+    },[regularPrice,quantity])
     return (<div className="container-fluid">
         <div>
             <Row>
@@ -203,12 +130,9 @@ function SaleInfo() {
                             {showAttributeSaleInfo &&
                                 <>
                                     <AttributeSaleInfo
-                                        previewUrls={previewUrls}
-                                        handleFileChange={handleFileChange}
                                         handleCloseAtribute={handleCloseAtribute}
-                                        handleAttributechange={handleAttributechange}
                                         index={0}
-                                        addNewProduct={addNewProduct}
+
                                     />
                                     <div className={`${showAttributeSaleInfo1 === false ? 'p-3' : ''} w-100 bg-light mt-3 border-radius-small `}>
                                         {showAttributeSaleInfo1 === false &&
@@ -218,12 +142,9 @@ function SaleInfo() {
                                         {showAttributeSaleInfo1 &&
                                             <>
                                                 <AttributeSaleInfo
-                                                    previewUrls={previewUrls}
-                                                    handleFileChange={handleFileChange}
                                                     handleCloseAtribute={handleCloseAtribute1}
-                                                    handleAttributechange={handleAttributechange}
                                                     index={1}
-                                                    addNewProduct={addNewProduct}
+
                                                 />
                                             </>
                                         }
@@ -244,19 +165,33 @@ function SaleInfo() {
                         <Col md={10}>
                             {showAttributeSaleInfo &&
                                 <Row>
-                                    <Col md={3} className="d-flex">
+                                    <Col md={5} className="d-flex gap-4">
                                         <div className="select-search-sale-info" >
                                             <div className=" p-1 pe-2" style={{ borderRight: '2px solid rgb(241, 236, 236)' }}>
                                                 <span >₫</span>
                                             </div>
                                             <input
                                                 className="select-sale-info"
-                                                placeholder="Giá"
+                                                placeholder="Giá nhập"
                                                 type="text"
+                                                value={products.regularPrice || ''}
+                                                onChange={(e) => handleChange(Number(e.target.value))}
+                                            />
+                                        </div>
+                                        <div className="select-search-sale-info" >
+                                            <div className=" p-1 pe-2" style={{ borderRight: '2px solid rgb(241, 236, 236)' }}>
+                                                <span >₫</span>
+                                            </div>
+                                            <input
+                                                className="select-sale-info"
+                                                placeholder="Giá bán"
+                                                type="text"
+                                                value={products.regularPrice || ''}
+                                                onChange={(e) => handleChange(Number(e.target.value))}
                                             />
                                         </div>
                                     </Col>
-                                    <Col md={3} className="d-flex">
+                                    <Col md={2} className="d-flex">
                                         <div className="select-search-sale-info" >
                                             <input
                                                 className="select-sale-info"
@@ -268,21 +203,22 @@ function SaleInfo() {
                                             </div>
                                         </div>
                                     </Col>
-                                    <Col md={3} className="d-flex">
+                                    <Col md={2} className="d-flex">
                                         <div className="select-search-sale-info" >
                                             <input
                                                 className="select-sale-info"
                                                 placeholder="Kho hàng"
                                                 type="text"
+                                                onChange={(e) => handleChangeQuantity(Number(e.target.value))}
                                             />
                                         </div>
                                     </Col>
                                     <Col md={3} className="d-flex">
-                                        <button className="btn-save-all-category">Áp dụng tất cả phân loại</button>
+                                        <button disabled={isApplyAll} onClick={() => handleApplyAll()} className="btn-save-all-category">Áp dụng tất cả phân loại</button>
                                     </Col>
                                 </Row>
                             }
-                            {showAttributeSaleInfo && <TableProduct productList={productList} addNewProduct={addNewProduct} attribute={attributeList} />}
+                            {showAttributeSaleInfo && <ProductTable />}
 
                         </Col>
                     </Row>

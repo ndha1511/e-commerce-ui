@@ -93,4 +93,8 @@
         background-color: #f2320c;
         color:white;
     }
+    &:disabled{
+        background-color: #ee7158;
+        cursor: not-allowed;
+    }
 }

@@ -1,6 +1,6 @@
 export interface VariantDto{
-    attributeValue1: string;
-    attributeValue2: string;
+    attributeValue1: number;
+    attributeValue2?: number;
     price: number;
     quantity: number;
 }
