@@ -9,6 +9,7 @@ interface Menu {
     path?: string;
     icon?: ReactNode;
     children?: Menu[];
+    fontSize?: number;
 }
 
 const menu: Menu[] = [
@@ -23,18 +24,32 @@ const menu: Menu[] = [
         children: [
             {
                 name: '● Danh sách sản phẩm',
-                path: '/admin/products'
+                path: '/admin/products',
+                fontSize:12
             },
             {
                 name: '● Thêm sản phẩm',
-                path: '/admin/products/add'
+                path: '/admin/products/add',
+                fontSize:12
             },
         ]
     },
     {
         name: 'QL danh mục',
         path: '/admin',
-        icon: <i className="bi bi-house-door-fill"></i>
+        icon: <i className="bi bi-house-door-fill"></i>,
+        children: [
+            {
+                name: '● Danh sách sản phẩm',
+                path: '/admin/products',
+                fontSize:12
+            },
+            {
+                name: '● Thêm sản phẩm',
+                path: '/admin/products/add',
+                fontSize:12
+            },
+        ]
     },
     {
         name: 'QL thương hiệu',
@@ -58,7 +73,7 @@ const menu: Menu[] = [
     },
 ]
 
-const MenuItem = ({ name, path, icon, children }: Menu) => {
+const MenuItem = ({ name, path, icon, children,fontSize }: Menu) => {
     const [open, setOpen] = React.useState(false);
 
     const handleClickMenu = () => {
@@ -66,7 +81,7 @@ const MenuItem = ({ name, path, icon, children }: Menu) => {
     }
 
     return (
-        <div className='w-100 pt-1 pb-1' onClick={handleClickMenu}>
+        <div className='w-100 pt-1 pb-1 none-select' onClick={handleClickMenu}>
             <div className='w-100 ps-3 d-inline-flex align-items-center gap-2 menu-navbar'>
                 <Row className='w-100 m-2 custom-row-menu'>
                     <Col className='d-flex justify-content-center' md={2}>
@@ -74,8 +89,7 @@ const MenuItem = ({ name, path, icon, children }: Menu) => {
                     </Col>
                     <Col md={10}>
                         <div className='d-flex justify-content-between w-100 pe-1'>
-                            {/* Font size cho mục chính */}
-                            <span className={children ? 'menu-name-dashboard' : 'menu-name-child'}>
+                            <span style={{fontSize:fontSize || 14}}>
                                 {name}
                             </span>
                             <span>
@@ -90,8 +104,7 @@ const MenuItem = ({ name, path, icon, children }: Menu) => {
                 <Collapse in={open}>
                     <div className='menu-child'>
                         {children.map((item, index) => (
-                            // Bọc từng mục con trong một div và đặt font size
-                            <div key={index} style={{ fontSize: '10px' }}>
+                            <div key={index} >
                                 <MenuItem {...item} />
                             </div>
                         ))}

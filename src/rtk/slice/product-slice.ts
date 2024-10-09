@@ -4,7 +4,6 @@ import { CreateProductDto } from "../../dtos/request/product/create-product.requ
 const initialState: CreateProductDto = {
     productName: '',
     regularPrice: 0,
-    shopId: '',
     categories: [],
     brandId: '',
     city: '',
@@ -27,9 +26,6 @@ export const createProductSlice = createSlice({
         },
         setRegularPrice: (state, action) => {
             state.regularPrice = action.payload;
-        },
-        setShopId: (state, action) => {
-            state.shopId = action.payload;
         },
         setCategories: (state, action) => {
             state.categories = action.payload;
@@ -85,8 +81,8 @@ export const createProductSlice = createSlice({
         },
     }
 })
-export const { setProductName, setRegularPrice,setDescription,
-    setShopId, setCategories, setBrandId, setCity,addCategories,
+export const { setProductName, setRegularPrice, setDescription,
+    setCategories, setBrandId, setCity, addCategories,
     setThumbnailIndex, addImage, setVideo, setAttributeValue,
     addAttributeDto, addVariantDto, addTag, setVariantDto,
     removeImage, removeAttributeDto, removeVariantDto, removeTag } = createProductSlice.actions

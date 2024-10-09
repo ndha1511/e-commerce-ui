@@ -82,26 +82,26 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
         const variant = variants.find(attr => attr.id === id)?.variant;
         const attributeValue1 = [...(productAttributeDto[0]?.attributeValues || [])]
         const isVariantExist = attributeValue1.some(value => value.value === variant);
-        if (!isVariantExist) {
-            setErrorMessages(prev => ({
-                ...prev,
-                [id]: null // Xóa lỗi nếu không trùng
-            }));
-        } else {
-            const checke = variants.findIndex(vari => vari.variant === variant);
-            console.log(checke)
-            console.log(id)
-            if (checke === id) {
-                return;
-            } else {
-                console.log("sai roi")
-                // Nếu biến thể bị trùng, cập nhật trạng thái lỗi cho ô đó
-                setErrorMessages(prev => ({
-                    ...prev,
-                    [id]: 'This variant already exists.' // Đặt thông báo lỗi cho biến thể trùng
-                }));
-            }
-        }
+        // if (!isVariantExist) {
+        //     setErrorMessages(prev => ({
+        //         ...prev,
+        //         [id]: null // Xóa lỗi nếu không trùng
+        //     }));
+        // } else {
+        //     const checke = variants.findIndex(vari => vari.variant === variant);
+        //     console.log(checke)
+        //     console.log(id)
+        //     if (checke === id) {
+        //         return;
+        //     } else {
+        //         console.log("sai roi")
+        //         // Nếu biến thể bị trùng, cập nhật trạng thái lỗi cho ô đó
+        //         setErrorMessages(prev => ({
+        //             ...prev,
+        //             [id]: 'This variant already exists.' // Đặt thông báo lỗi cho biến thể trùng
+        //         }));
+        //     }
+        // }
         const updatedVariants = variants.map(attr =>
             attr.id === id ? { ...attr, variant: e.target.value } : attr
         );
@@ -280,6 +280,7 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
     }, [productAttributeDto])
     const handleFileChange = (even: React.ChangeEvent<HTMLInputElement>, id: number) => {
         const newFiles = even.target.files;
+        console.log(newFiles)
         if (newFiles) {
             // dispatch(addImage(newFiles[0]))
             const attributeValue1 = [...(productAttributeDto[0].attributeValues) || []]

@@ -1,6 +1,11 @@
-import React, { useEffect } from "react";
-import { Button, Modal } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Modal, OverlayTrigger, Tooltip, TooltipProps } from "react-bootstrap";
 import { useCreateCategoryMutation } from "../../../services/category.service";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage, faPlus } from "@fortawesome/free-solid-svg-icons";
+import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from "react-redux";
+import { setNotify } from "../../../rtk/slice/notify-slice";
 
 interface Props {
   show: boolean;
@@ -13,8 +18,9 @@ const CreateCategoryModal = ({ show, handleClose, refetch, parentId }: Props) =>
   const [file, setFile] = React.useState<File>();
   const [url, setUrl] = React.useState('');
   const [categoryName, setCategoryName] = React.useState('');
+  const [isValid, setIsValid] = useState(true);
   const [trigger] = useCreateCategoryMutation();
-
+  const dispatch = useDispatch();
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -31,28 +37,35 @@ const CreateCategoryModal = ({ show, handleClose, refetch, parentId }: Props) =>
 
   const handleAdd = async () => {
     if (categoryName === '') {
-      alert('Vui lòng nhập tên danh mục');
+      setIsValid(false);
       return;
     }
     const formData = new FormData();
     if (file) {
       formData.append('image', file);
     }
-    if(parentId) {
+    if (parentId) {
       formData.append('parentId', parentId);
     }
     try {
       formData.append('categoryName', categoryName);
       await trigger(formData).unwrap();
+      dispatch(setNotify({
+        type: 'success', message: 'Thêm danh mục thành công'
+      }))
       if (refetch) refetch();
       handleClose();
-      alert('Thêm danh mục thành công');
-
     } catch (error) {
-      alert('Thêm không thành công');
+      dispatch(setNotify({
+        type: 'error', message: 'Thêm không thành công'
+      }))
     }
   }
-
+  const renderTooltip = (props: TooltipProps) => (
+    <Tooltip id="custom-tooltip" {...props} className="custom-tooltip">
+      * Không được bỏ trống
+    </Tooltip>
+  );
   return <Modal show={show} onHide={handleClose} centered>
     <Modal.Header closeButton>
       <h5>Thêm danh mục</h5>
@@ -61,35 +74,40 @@ const CreateCategoryModal = ({ show, handleClose, refetch, parentId }: Props) =>
       <div className="w-100 d-flex gap-2 align-items-center">
         <>
           {url === '' ? <><input onChange={handleFileUpload} id="category-img" type="file" accept="image/*" style={{ display: 'none' }} />
-            <label htmlFor="category-img">
-              <div style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                padding: '0 5px 0 5px',
-                fontSize: '30px',
-                backgroundColor: '#f0f0f0',
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-                <i className="bi bi-image"></i>
+            <label htmlFor="category-img" className="d-flex align-items-center primary mt-1">
+              <div className="image-color p-2">
+                <div className="icon-image-insert">
+                  <FontAwesomeIcon icon={faImage} fontSize={30} />
+                  <FontAwesomeIcon className="icon-plus-image" icon={faPlus} />
+                </div>
               </div>
             </label></> : <img src={url} width={50} height={50} />}
         </>
         <div className="form-group">
-          <input className="form-control" placeholder="Tên danh mục" value={categoryName} onChange={e => setCategoryName(e.target.value)} />
+          <OverlayTrigger placement="bottom"
+            overlay={renderTooltip}
+            show={!isValid}>
+            <input className="form-control no-shadow"
+              placeholder="Tên danh mục"
+              value={categoryName} onChange={(e) => { setCategoryName(e.target.value); setIsValid(true) }} />
+
+          </OverlayTrigger>
         </div>
+
       </div>
     </Modal.Body>
     <Modal.Footer>
-      <Button variant="secondary" onClick={handleClose}>
-        Đóng
-      </Button>
-      <Button variant="primary" onClick={handleAdd}>
-        Thêm
-      </Button>
+      <div className="w-100 d-flex justify-content-end gap-3">
+        <Button variant="secondary" onClick={handleClose}>
+          Đóng
+        </Button>
+        <Button variant="primary" onClick={handleAdd}>
+          Thêm
+        </Button>
+        <div>
+        </div>
+      </div>
+
     </Modal.Footer>
   </Modal>
 }

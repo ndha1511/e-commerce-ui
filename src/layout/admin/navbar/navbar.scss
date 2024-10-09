@@ -94,8 +94,10 @@
     font-size: $font-normal;
     background-color: #ffffff;  
 }
-.collapse-category{
-    border: none;
+.custom-table-category-cs thead tr th {
+    vertical-align: middle;
+    height: 30px;
+    background-color: #a6c9cf;
 }
 .custom-background-category {
     position: relative;

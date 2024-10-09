@@ -5,7 +5,6 @@ import { VariantDto } from "./variant.reques";
 export interface CreateProductDto {
     productName: string;
     regularPrice: number;
-    shopId: string;
     categories: string[];
     brandId: string;
     city: string;

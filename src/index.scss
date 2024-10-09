@@ -20,7 +20,22 @@ pre {
 span{
   color: #333;
 }
-
+.none-select{
+  user-select: none;
+} 
+.custom-tooltip .tooltip-inner{
+  background-color: red !important; /* Màu nền đỏ */
+  color: white; /* Màu chữ trắng */
+  border-radius: 4px; /* Tùy chọn: bo góc */
+}
+/* Để thêm hiệu ứng bo góc cho mũi tên */
+.custom-tooltip .tooltip-arrow::before {
+  content: '';
+  position: absolute;
+  border-width: 5px; /* Độ dày của mũi tên */
+  border-style: solid;
+  border-color: transparent transparent red transparent; /* Màu mũi tên */
+}
 .no-shadow {
   box-shadow: none !important;
 }
