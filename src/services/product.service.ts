@@ -16,6 +16,13 @@ const productApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
+        getProductByUrl: build.query<BaseResponse<Product>, string>({
+            query: (path) => ({
+                url: '/products/' + path,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
         createProduct: build.mutation({
             query: (newProduct) => ({
                 url: '/products',
@@ -28,7 +35,8 @@ const productApi = createApi({
 
 export const { 
     useGetProductsQuery, 
-    useCreateProductMutation 
+    useCreateProductMutation,
+    useGetProductByUrlQuery
 } = productApi;
 
 export default productApi;

@@ -20,6 +20,7 @@ import ForgotPassword from "../pages/user/auth/reset-password/ForgotPassword";
 import ResetPassword from "../pages/user/auth/reset-password/ResetPassword";
 import AdminLayout from "../layout/admin/AdminLayout";
 import Category from "../pages/admin/category/Category";
+import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
 
 
 
@@ -98,7 +99,7 @@ export const router = createBrowserRouter([
     {
 
         path: "/admin",
-        element: <AdminLayout><Category/></AdminLayout>
+        element: <AdminLayout><CreatePromotion/></AdminLayout>
     },
     {
         path: "/seller/insert-product",

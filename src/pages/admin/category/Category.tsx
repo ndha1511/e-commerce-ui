@@ -57,7 +57,7 @@ const CategoryItem = ({category} : ItemProps) => {
                 <span className="text-medium cursor-pointer text-success" data-toggle="tooltip" title="thêm danh mục con" onClick={() => setShowModal(true)}><FontAwesomeIcon icon={faCirclePlus} /></span>
                 <span className="text-medium cursor-pointer primary" data-toggle="tooltip" title="xóa"><FontAwesomeIcon icon={faTrash} /></span>
             </div>
-           {category.children === 0 &&  <span onClick={openCollapse} className="text-primary text-large cursor-pointer">
+           {category.children !== 0 &&  <span onClick={openCollapse} className="text-primary text-large cursor-pointer">
                 {open ? <FontAwesomeIcon icon={faAngleUp} /> : <FontAwesomeIcon icon={faAngleDown} />}
             </span>}
         </div>
