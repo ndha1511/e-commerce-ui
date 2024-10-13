@@ -1,54 +1,131 @@
-import React, { useState } from 'react';
-import { Row, Col, Form, Button, Dropdown, Image, Badge } from 'react-bootstrap';
+import React, {useState } from 'react';
+import { Row, Col, Form, Button, Dropdown, Image } from 'react-bootstrap';
 import './cart-item.scss';
-import { BsChatDots } from 'react-icons/bs';
+import { ProductCartResponse } from '../../../dtos/response/cart/product-cart-response';
+import { convertPrice } from '../../../utils/convert-price';
+import { Link } from 'react-router-dom';
+import { useDeleteCartItemMutation, useUpdateCartMutation } from '../../../services/cart.service';
+import { UpdateCartRequest } from '../../../dtos/request/cart/update-cart-request';
+import { useCheckLoginQuery } from '../../../services/auth.service';
+import ToggleAttribute from './ToggleAttribute';
+import { useLazyGetVariantsQuery } from '../../../services/variant.service';
 
 interface CartItemProps {
-    item: {
-        name: string;
-        description: string;
-        image: string;
-        originalPrice: string;
-        discountedPrice: string;
-        quantity: number;
-        totalPrice: string;
-        variant: string;
-        color: string;
-        size: string;
-    };
+    item: ProductCartResponse;
+    refetch: () => void;
+    index: number;
+    addVariant: (variantId: string) => void;
+    removeVariant: (variantId: string) => void;
+    selectVariant: string[]
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item }) => {
+const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, removeVariant, selectVariant }) => {
+    const {data: user} = useCheckLoginQuery();
     const [showOptions, setShowOptions] = useState(false);
-    const [selectedColor, setSelectedColor] = useState('Đen');
-    const [selectedSize, setSelectedSize] = useState('44');
+    const quantityInStock = item.variantResponse.quantity;
+    const [getVariant] = useLazyGetVariantsQuery();
+    const [trigger] = useUpdateCartMutation();
+    const [deleteItem] = useDeleteCartItemMutation();
+    const checked = selectVariant.findIndex(v => v === item.variantResponse.id) !== -1;
 
-    const toggleOptions = () => setShowOptions(!showOptions);
+
+    const toggleOptions = () => {
+        setShowOptions(!showOptions)
+    };
+
+    const increment = async () => {
+        if (item.quantity < quantityInStock) {
+            await updateCart({
+                userId: user?.data?.id || '',
+                index: index,
+                productUpdate: {
+                    variantId: item.variantResponse.id,
+                    quantity: item.quantity + 1
+                }
+            });
+        }
+    }
+
+    const decrement = async () => {
+        if (item.quantity > 1) {
+            await updateCart({
+                userId: user?.data?.id || '',
+                index: index,
+                productUpdate: {
+                    variantId: item.variantResponse.id,
+                    quantity: item.quantity - 1
+                }
+            });
+        }
+    }
+
+    const updateAttribute = async (attr1: string, attr2?: string) => {
+        try {
+            const rs = await getVariant({
+                productId: item.variantResponse.product.id,
+                attr1: attr1, 
+                attr2: attr2
+            }).unwrap();
+            const variant = rs.data;
+            await updateCart({
+                userId: user?.data?.id || '',
+                index: index,
+                productUpdate: {
+                    variantId: variant.id,
+                    quantity: 1
+                }
+            });
+           
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const updateCart = async (newItem: UpdateCartRequest) => {
+        try {
+            await trigger(newItem).unwrap();
+            refetch();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleCheck = () => {
+        if(checked) {
+            removeVariant(item.variantResponse.id)
+        } else {
+            addVariant(item.variantResponse.id)
+        }
+    }
+
+    const handleDelete = async () => {
+        try {
+            await deleteItem({
+                userId: user?.data?.id || '',
+                itemId: item.variantResponse.id
+            });
+            refetch();
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <div>
-            <div className="cart-product-row border p-3 bg-white mt-2">
-                <Row className="align-items-center">
-                    <Col md={12} className='d-flex  align-items-center'>
-                        <Form.Check type="checkbox" className='checkbox-cart me-4' />
-                        <div>
-                            <Badge bg="danger" className="me-2">Mall</Badge>
-                            <span className="fw-bold me-2">Giày ZAVAS</span>
-                            <BsChatDots color="#f05d23" />
-                        </div>
-                    </Col>
-                </Row>
-            </div>
             <div className="cart-item border-bottom p-3 pl-3 pt-5 pr-3 pb-5 bg-white">
                 <Row className="align-items-center">
                     <Col xs={12} md={4} className="d-flex align-items-center mb-3 mb-md-0">
-                        <Form.Check type="checkbox" className="checkbox-cart me-3" />
+                        <Form.Check type="checkbox" className="checkbox-cart me-3" checked={checked} 
+                            onChange={handleCheck}
+                        />
                         <div className="d-flex align-items-center">
-                            <Image src={item.image} fluid className="cart-item-image me-3" />
+                            <Image src={item.variantResponse.image || item.variantResponse.product.thumbnail} fluid className="cart-item-image me-3" />
                             <div className="w-100">
-                                <p>
-                                    {item.description.split(" ").slice(0, 10).join(" ") + (item.description.split(" ").length > 10 ? "..." : "")}
-                                </p>
+                                <Link to={'/product/' + item.variantResponse.product.urlPath}>
+                                    <p>
+                                        {item.variantResponse.product.productName.split(" ").slice(0, 10).join(" ") + (item.variantResponse.product.productName.split(" ").length > 10 ? "..." : "")}
+                                    </p>
+                                </Link>
                                 <div className="variant-selector" style={{ position: 'relative', cursor: 'pointer' }}>
                                     <div className="selected-variant text-muted" onClick={toggleOptions}>
                                         <span>Phân Loại Hàng:</span>
@@ -57,81 +134,38 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                                             style={{ transition: 'transform 0.3s ease-in-out' }}
                                         ></i>
                                         <br />
-                                        <span>{selectedColor}, {selectedSize}</span>
+                                        <span>{item.variantResponse.attributeValue1} {item.variantResponse.attributeValue2}</span>
 
                                     </div>
 
-                                    {showOptions && (
-                                        <div className="variant-options">
-                                            <div className="options-container p-3 border bg-white">
-                                                <Row className="mb-3">
-                                                    <Col xs={4}><strong>Màu Sắc:</strong></Col>
-                                                    <Col xs={8} className="d-flex justify-content-between">
-                                                        <Button
-                                                            variant={selectedColor === 'Đen' ? 'danger' : 'outline-secondary'}
-                                                            className={`variant-button ${selectedColor === 'Đen' ? 'selected' : ''}`}
-                                                            onClick={() => setSelectedColor('Đen')}
-                                                        >
-                                                            Đen
-                                                        </Button>
-                                                        <Button
-                                                            variant={selectedColor === 'Xám' ? 'danger' : 'outline-secondary'}
-                                                            className={`variant-button ${selectedColor === 'Xám' ? 'selected' : ''}`}
-                                                            onClick={() => setSelectedColor('Xám')}
-                                                        >
-                                                            Xám
-                                                        </Button>
-                                                    </Col>
-                                                </Row>
-
-                                                <Row className="mb-3">
-                                                    <Col xs={4}><strong>Kích Thước:</strong></Col>
-                                                    <Col xs={8} className="d-flex justify-content-between flex-wrap">
-                                                        {['40', '41', '42', '43', '44'].map(size => (
-                                                            <Button
-                                                                key={size}
-                                                                variant={selectedSize === size ? 'danger' : 'outline-secondary'}
-                                                                className={`variant-button ${selectedSize === size ? 'selected' : ''}`}
-                                                                onClick={() => setSelectedSize(size)}
-                                                            >
-                                                                {size}
-                                                            </Button>
-                                                        ))}
-                                                    </Col>
-                                                </Row>
-
-                                                <div className="d-flex justify-content-between mt-4">
-                                                    <Button variant="light" onClick={() => setShowOptions(false)}>
-                                                        TRỞ LẠI
-                                                    </Button>
-                                                    <Button variant="danger" onClick={() => setShowOptions(false)}>
-                                                        XÁC NHẬN
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
+                                    {showOptions && <ToggleAttribute updateAttribute={updateAttribute} close={toggleOptions} productId={item.variantResponse.product.id} 
+                                    attributeValue1={item.variantResponse.attributeValue1} attributeValue2={item.variantResponse.attributeValue2}/>}
                                 </div>
                             </div>
                         </div>
                     </Col>
 
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
-                        <p className="text-muted mb-1"><s>{item.originalPrice} đ</s></p>
-                        <p className="primary fw-bold mb-1">{item.discountedPrice} đ</p>
+                       {item.promotion ? <>
+                        <p className="text-muted mb-1"><s>{convertPrice(item.variantResponse.price)}</s></p>
+                        <p className="primary fw-bold mb-1">{convertPrice(item.variantResponse.price)}</p>
+                       </> : <p className="primary fw-bold mb-1">{convertPrice(item.variantResponse.price)}</p> }
                     </Col>
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
-                        <div className="d-flex justify-content-center align-items-center">
-                            <Button variant="light" size="sm">-</Button>
+                        <div className="d-flex justify-content-center align-items-center mb-2">
+                            <Button variant="light" size="sm" onClick={decrement}>-</Button>
                             <span className="px-3">{item.quantity}</span>
-                            <Button variant="light" size="sm">+</Button>
+                            <Button variant="light" size="sm" onClick={increment}>+</Button>
+                        </div>
+                        <div className="d-flex justify-content-center align-items-center">
+                            Kho hàng: {quantityInStock > 0 ? quantityInStock : 'Hết hàng'}
                         </div>
                     </Col>
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
-                        <p className="primary fw-bold mb-1">{item.totalPrice} đ</p>
+                        <p className="primary fw-bold mb-1">{convertPrice(item.variantResponse.price * item.quantity)}</p>
                     </Col>
                     <Col xs={6} md={2} className="text-end d-flex justify-content-center align-items-center flex-column">
-                        <Button variant="link" className="primary p-0">Xóa</Button>
+                        <Button variant="link" className="primary p-0" onClick={handleDelete}>Xóa</Button>
                         <Dropdown align="end">
                             <Dropdown.Toggle variant="link" className="text-muted p-0">
                                 Tìm sản phẩm tương tự
@@ -141,20 +175,6 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                                 <Dropdown.Item href="#">Sản phẩm tương tự 2</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                    </Col>
-                </Row>
-            </div>
-            <div className="mb-3">
-                <Row className="align-items-center">
-                    <Col>
-                        <div className="border p-3 bg-white">
-                            <p className="text-muted mb-2">
-                                Voucher giảm đến 10% <a href="#">Xem thêm voucher</a>
-                            </p>
-                            <p className="text-muted mb-0">
-                                Giảm ₫300.000 phí vận chuyển đơn tối thiểu ₫0; Giảm ₫500.000 phí vận chuyển đơn tối thiểu ₫500.000 <a href="#">Tìm hiểu thêm</a>
-                            </p>
-                        </div>
                     </Col>
                 </Row>
             </div>

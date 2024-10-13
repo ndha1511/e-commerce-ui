@@ -3,6 +3,7 @@ import { axiosBaseQuery } from "./base-query";
 import { BaseResponse } from "../dtos/response/base-response";
 import { PageResponse } from "../dtos/response/page-response";
 import { Product } from "../models/product";
+import { Attribute } from "../models/attriubte";
 
 
 const productApi = createApi({
@@ -30,13 +31,20 @@ const productApi = createApi({
                 data: newProduct,
             }),
         }),
+        getAttributeByProductId: build.query<BaseResponse<Attribute[]>, string>({
+            query: (productId) => ({
+                url: '/products/attributes/' + productId,
+                method: 'get',
+            })
+        })
     }),
 });
 
 export const { 
     useGetProductsQuery, 
     useCreateProductMutation,
-    useGetProductByUrlQuery
+    useGetProductByUrlQuery,
+    useGetAttributeByProductIdQuery
 } = productApi;
 
 export default productApi;

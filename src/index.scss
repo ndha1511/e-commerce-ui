@@ -251,3 +251,7 @@ pre {
   transform: translate(-50%, -50%);
 }
 
+.image-gallery-content .image-gallery-slide .image-gallery-image {
+  max-height: calc(100vh - 120px);
+}
+

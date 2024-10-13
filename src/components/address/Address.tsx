@@ -1,7 +1,8 @@
-import { Row, Col, Badge } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { BsGeoAltFill } from 'react-icons/bs';
+import { UserAddress } from '../../models/user-address';
 
-const Address = () => {
+const Address = ({info} : {info: UserAddress}) => {
     return (
         <div className="p-3 bg-white ">
             <Row className="align-items-center">
@@ -11,13 +12,10 @@ const Address = () => {
                         <h6 className="mb-0 text-danger">Địa Chỉ Nhận Hàng</h6>
                     </div>
                     <div>
-                        <strong>Trần Công Minh</strong> (+84) 961263780
+                        <strong>{info.receiverName}</strong> {info.phoneNumber}
                     </div>
                     <div className="mt-2">
-                        224/27/96/13, Đường Vườn Lài, Phường An Phú Đông, Quận 12, TP. Hồ Chí Minh
-                        {/* <Badge bg="light" text="danger" className="ms-2 border border-danger">
-                            Mặc Định
-                        </Badge> */}
+                        {`${info.addressDetail}, ${info.ward}, ${info.district}, ${info.province}`}
                     </div>
 
                 </Col>

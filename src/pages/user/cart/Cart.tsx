@@ -1,73 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import CartItem from './CartItem';
+import { useGetCartByUserIdQuery } from '../../../services/cart.service';
+import { useCheckLoginQuery } from '../../../services/auth.service';
+import { convertPrice } from '../../../utils/convert-price';
+import useRedirect from '../../../hooks/useRedirect';
 
 
 const Cart: React.FC = () => {
-    const items = [
-        {
-            name: "Giày ZAVAS",
-            description: "Giày thể thao nam ZAVAS phong cách sneaker êm, nhẹ, công nghệ tiên tiến",
-            image: "https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lfr0g93pyubb65",
-            originalPrice: "550.000",
-            discountedPrice: "419.000",
-            quantity: 1,
-            totalPrice: "419.000",
-            variant: "Đen, 44",
-            color: "Đen",
-            size: "44"
-        },
-        {
-            name: "Giày VNXK",
-            description: "Giày thể thao nữ VNXK phong cách hiện đại, nhẹ nhàng",
-            image: "https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lfr0g93pyubb65",
-            originalPrice: "450.000",
-            discountedPrice: "350.000",
-            quantity: 2,
-            totalPrice: "700.000",
-            variant: "Trắng, 37",
-            color: "Trắng",
-            size: "37"
-        },
-        {
-            name: "Giày VNXK",
-            description: "Giày thể thao nữ VNXK phong cách hiện đại, nhẹ nhàng",
-            image: "https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lfr0g93pyubb65",
-            originalPrice: "450.000",
-            discountedPrice: "350.000",
-            quantity: 2,
-            totalPrice: "700.000",
-            variant: "Trắng, 37",
-            color: "Trắng",
-            size: "37"
-        },
-        {
-            name: "Giày VNXK",
-            description: "Giày thể thao nữ VNXK phong cách hiện đại, nhẹ nhàng",
-            image: "https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lfr0g93pyubb65",
-            originalPrice: "450.000",
-            discountedPrice: "350.000",
-            quantity: 2,
-            totalPrice: "700.000",
-            variant: "Trắng, 37",
-            color: "Trắng",
-            size: "37"
-        },
-        {
-            name: "Giày VNXK",
-            description: "Giày thể thao nữ VNXK phong cách hiện đại, nhẹ nhàng",
-            image: "https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lfr0g93pyubb65",
-            originalPrice: "450.000",
-            discountedPrice: "350.000",
-            quantity: 2,
-            totalPrice: "700.000",
-            variant: "Trắng, 37",
-            color: "Trắng",
-            size: "37"
-        }
-    ];
+    const redirect = useRedirect();
+    const {data: user, isSuccess: loginSuccess} = useCheckLoginQuery();
+    const {data, refetch} = useGetCartByUserIdQuery(user?.data?.id || "", {
+        skip: !loginSuccess || !user?.data?.id,
+    });
     const [isFooterFixed, setIsFooterFixed] = useState(true);
     const [isHeaderFixed, setIsHeaderFixed] = useState(false);
+    const [selectVariant, setSelectVariant] = useState<string[]>([]);
+    const [checked, setChecked] = useState(false);
+    const [totalPrice, setTotalPrice] = useState(0);
+
+    const addSelectVariant = (variantId: string) => {
+        if (!selectVariant.includes(variantId)) {
+            setSelectVariant([...selectVariant, variantId]);
+        }
+    }
+
+    const removeSelectVariant = (variantId: string) => {
+        const index = selectVariant.indexOf(variantId);
+        if (index > -1) {
+            setSelectVariant([...selectVariant.slice(0, index),...selectVariant.slice(index + 1)]);
+        }
+    }
+
+    const linkToPayment = () => {
+        const variant = selectVariant.reduce((acc, variant) => {
+            return acc !== '' ? acc + ';' + variant : variant;
+        }, '');
+        redirect('/payment?select-variant=' + variant);
+    }
+
 
     const handleScroll = () => {
         const cartItemsHeight = document.getElementById('cart-items')?.offsetHeight || 0;
@@ -89,6 +60,25 @@ const Cart: React.FC = () => {
     };
 
     useEffect(() => {
+        if(checked) {
+            setSelectVariant(data?.data.map(v => v.variantResponse.id) || []);
+        } else {
+            setSelectVariant([]);
+        }
+    }, [checked]);
+
+    useEffect(() => {
+        let total = 0;
+        selectVariant.forEach(variantId => {
+            const variant = data?.data.find(v => v.variantResponse.id === variantId);
+            if(variant) {
+                total += variant.variantResponse.price * variant.quantity;
+            }
+        });
+        setTotalPrice(total);
+    }, [selectVariant, data]);
+
+    useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -98,7 +88,9 @@ const Cart: React.FC = () => {
                 <Row className="align-items-center">
                     <Col md={4} >
                         <div className='d-flex  align-items-center'>
-                            <Form.Check type="checkbox" className='checkbox-cart me-4' />
+                            <Form.Check type="checkbox" className='checkbox-cart me-4' 
+                            checked={checked}
+                            onChange={() => setChecked(prev => !prev)}/>
                             <span style={{ fontSize: 16 }} >Sản Phẩm</span>
                         </div>
                     </Col>
@@ -119,40 +111,40 @@ const Cart: React.FC = () => {
             </div>
             
             <div id="cart-items" className="">
-                {items.map((item, index) => (
-                    <CartItem key={index} item={item} />
+                {data?.data.map((item, index) => (
+                    <CartItem 
+                        refetch={refetch} 
+                        key={index} 
+                        item={item} 
+                        index={index}  
+                        addVariant={addSelectVariant}
+                        removeVariant={removeSelectVariant} 
+                        selectVariant={selectVariant}
+                    />
                 ))}
             </div>
             <div className={`p-3 pt-2 border-top bg-white ${isFooterFixed ? 'fixed-footer container' : ''}`}>
-                <Row className="d-flex align-items-center p-3 border-bottom">
-                    <Col md={12} className="d-flex align-items-center">
-                        <div className='d-flex justify-content-end align-items-center w-100'>
-                            <div style={{ marginRight: 80 }}>
-                                <i className="bi bi-ticket-fill primary me-2"></i>
-                                <span className='text-medium'>Sàn Voucher</span>
-                            </div>
-                            <Button variant="link" className="text-primary p-0">Chọn hoặc nhập mã</Button>
-                        </div>
-                    </Col>
-                </Row>
                 <Row className="align-items-center p-3">
                     <Col xs={6} md={6} className="d-flex align-items-center">
-                        <Form.Check type="checkbox" className="checkbox-cart me-4" />
-                        <span className='text-medium'>Chọn Tất Cả (32)</span>
+                        <Form.Check type="checkbox" className="checkbox-cart me-4" 
+                        checked={checked}
+                        onChange={() => setChecked(prev => !prev)}
+                        />
+                        <span className='text-medium'>Chọn Tất Cả ({data?.data.length})</span>
                         <Button variant="link" className="ms-3 primary p-0">Xóa</Button>
                     </Col>
                     <Col xs={12} md={6} className="text-end mt-3 mt-md-0">
                         <div className='d-flex justify-content-end align-items-center w-100'>
-                            <div className="text-medium me-4">
-                                Tổng thanh toán (4 sản phẩm):
-                                <span className="primary fw-bold ms-2">₫1.143.000</span>
-                                <i className="bi bi-caret-up-fill ms-1"></i><br />
-                                <div className="text-muted small">
-                                    Tiết kiệm <span className="primary ms-1">₫141,444k</span>
-                                </div>
-                            </div>
-                            {/* <Button variant="danger" className="btn-buy">Mua Hàng</Button> */}
-                            <button  className="btn-buy button-flex button-hover background-primary text-large " style={{border:'none' }}>Đặt hàng</button>
+                            {selectVariant.length > 0 && <div className="text-medium me-4">
+                                Tổng thanh toán ({selectVariant.length} sản phẩm):
+                                <span className="primary fw-bold ms-2">{convertPrice(totalPrice)}</span>
+                            </div>}
+                            <button 
+                                disabled={selectVariant.length <= 0} 
+                                className="btn-buy button-flex button-hover background-primary text-large " 
+                                style={{border:'none' }}
+                                onClick={linkToPayment}
+                                >Thanh toán</button>
 
                         </div>
                     </Col>

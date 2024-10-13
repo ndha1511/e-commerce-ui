@@ -19,7 +19,6 @@ import VerifyEmail from "../pages/user/auth/register/VerifyEmail";
 import ForgotPassword from "../pages/user/auth/reset-password/ForgotPassword";
 import ResetPassword from "../pages/user/auth/reset-password/ResetPassword";
 import AdminLayout from "../layout/admin/AdminLayout";
-import Category from "../pages/admin/category/Category";
 import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
 
 

@@ -5,6 +5,7 @@ import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; // Import icon m
 import { Link } from 'react-router-dom';
 import { useLoginMutation } from '../../../../services/auth.service';
 import ModalLoading from '../../../../components/loading/ModalLoading';
+import useGetParam from '../../../../hooks/useGetParam';
 
 
 
@@ -14,6 +15,7 @@ function Login() {
   const [password, setpassword] = useState("");
   const [error, setError] = useState("");
   const [loginRequest, { isLoading }] = useLoginMutation();
+  const redirectUrl = useGetParam('redirect-url');
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -24,7 +26,7 @@ function Login() {
         setError("");
         try {
           await loginRequest({ username, password }).unwrap();
-          window.location.href = '/';
+          redirectUrl ? window.location.href = `/${redirectUrl}` : window.location.href = `/`;
         } catch (error) {
           setError("Tên đăng nhập hoặc mật khẩu không chính xác");
         }
@@ -81,7 +83,7 @@ function Login() {
           </button>
         </div>
         <p className="text-center mt-3">
-          Bạn mới biết đến nền tảng? <Link to="/auth/register" className="text-danger">Đăng ký</Link>
+          Bạn mới biết đến nền tảng? <Link to={`/auth/register${redirectUrl ? '?redirect-url=' + encodeURIComponent(redirectUrl) : ''}`} className="text-danger">Đăng ký</Link>
         </p>
         <p className="text-center mt-3">
           <Link to="/" >Về trang chủ</Link>
