@@ -8,6 +8,7 @@ import { Notification } from '../slice/notify-slice'
 import variantApi from '../../services/variant.service'
 import cartApi from '../../services/cart.service'
 import addressApi from '../../services/address.service'
+import inventoryApi from '../../services/inventory.service'
 
 export const store = configureStore({
   reducer: {
@@ -18,7 +19,8 @@ export const store = configureStore({
     [categoryApi.reducerPath]: categoryApi.reducer,
     [variantApi.reducerPath]: variantApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
-    [addressApi.reducerPath]: addressApi.reducer
+    [addressApi.reducerPath]: addressApi.reducer,
+    [inventoryApi.reducerPath]: inventoryApi.reducer
 
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
@@ -28,6 +30,7 @@ export const store = configureStore({
     .concat(variantApi.middleware)
     .concat(cartApi.middleware)
     .concat(addressApi.middleware)
+    .concat(inventoryApi.middleware)
 })
 
 setupListeners(store.dispatch)

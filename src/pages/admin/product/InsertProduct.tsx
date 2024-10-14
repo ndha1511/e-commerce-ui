@@ -55,7 +55,7 @@ function InsertProduct() {
             for (let i = 0; i < url.length; i++) {
                 const response = await fetch(url[i]);
                 const blob = await response.blob();
-                const newFile = new File([blob], 'image.jfif', { type: blob.type });
+                const newFile = new File([blob], 'image.png', { type: blob.type });
                 fileArr.push(newFile);
                 // URL.revokeObjectURL(url[i]);
             }
@@ -81,8 +81,10 @@ function InsertProduct() {
                 formData.append('images', file[i]);
             }
         }
-        if (video) {
-            formData.append('video', video);
+        if (product.video) {
+            if(video){
+                formData.append('video', video);
+            }
         }
         
         try {
@@ -92,6 +94,7 @@ function InsertProduct() {
                 formData.append('categories', category);
             });
             formData.append('regularPrice', product.regularPrice.toString());
+            formData.append('weight', weight.toString());
             formData.append('description', product.description);
             const res =  await trigger(formData).unwrap();
             dispatch(setNotify({
@@ -102,7 +105,7 @@ function InsertProduct() {
             setWeight(null);
             setDescription('');
             dispatch(removeAll())
-            redirect('/admin/product/attribute?id=' + res.data.id + '&name=='+ res.data.productName)
+            redirect('/admin/products/attribute?id=' + res.data.id + '&name=='+ res.data.productName)
         } catch (error) {
             dispatch(setNotify({
                 type: 'error', message: 'Thao tác không thành công'
@@ -110,13 +113,14 @@ function InsertProduct() {
            
         }
     }
+
     const videoUrl = product.video;
     useEffect(() => {
         const fetchBlobAndCreateFile = async () => {
             try {
                 const response = await fetch(videoUrl || '');
                 const blob = await response.blob();
-                const newVideo = new File([blob], 'image.jfif', { type: blob.type });
+                const newVideo = new File([blob], 'video.mp4', { type: blob.type });
                 setVideo(newVideo);
             } catch (error) {
                 console.error('Error fetching blob:', error);

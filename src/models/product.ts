@@ -21,4 +21,5 @@ export interface Product extends BaseModel {
     likes: number;
     promotion?: Promotion;
     attributes?: Attribute[];
+    weight:number;
 }

@@ -9,4 +9,5 @@ export interface VariantResponse {
     price: number;
     sku?: string;
     quantity: number;
+    buyQuantity:number;
 }
