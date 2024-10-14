@@ -10,13 +10,12 @@ import { Category as CategoryModel } from "../../../models/category";
 import { useLazyGetCategoriesQuery } from "../../../services/category.service";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategories } from "../../../rtk/slice/product-slice";
-import { RootState } from "../../../rtk/store/store";
 
 type CategoryModalProps = {
     show: boolean;
     handleClose: () => void;
     categories?: Category[];
-    handleCategory: (category?: Category) => void;
+    handleCategory: (category?: string) => void;
 }
 
 function CategoryModal({ show, handleClose, categories, handleCategory }: CategoryModalProps) {
@@ -32,11 +31,15 @@ function CategoryModal({ show, handleClose, categories, handleCategory }: Catego
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedCategoryItems, setSelectedCategoryItems] = useState<string | null>(null);
     const [categoryItems, setCategoryItems] = useState<string | null>(null);
-    const [category, setCategory] = useState<Category>();
+    const [category3, setCategory3] = useState<string | null>(null);
+    const [category, setCategory] = useState<string | undefined>();
     const dispatch = useDispatch();
     const handleSelectCategoryParent = async (categoryName: string, id: string, children: number) => {
         if (children === 0) {
+            setCategory(categoryName)
             setIsConfirm(false);
+        } else if (children > 0) {
+            setIsConfirm(true);
         }
         setCategoryId(id);
         setCategoryId1('');
@@ -44,16 +47,19 @@ function CategoryModal({ show, handleClose, categories, handleCategory }: Catego
         setChildCategory1([])
         setSelectedCategory(categoryName);
         setSelectedCategoryItems(categoryName)
-
     };
     const handleSelectCategoryItem = (categoryName: string, id: string, children: number) => {
         if (children === 0) {
             setIsConfirm(false);
+            setCategory(categoryName)
+        } else if (children > 0) {
+            setIsConfirm(true);
         }
         setCategoryId1(id)
         setCategoryId2('');
         setSelectedCategoryItems(categoryName)
         setCategoryItems(categoryName)
+
     }
     useEffect(() => {
         const fetchCategory = async () => {
@@ -101,14 +107,15 @@ function CategoryModal({ show, handleClose, categories, handleCategory }: Catego
                                     <div key={category.id} style={{ width: '100%' }}>
                                         <div
                                             className={`btn-category-list p-1   pe-4 d-flex align-items-center justify-content-between w-100 ${selectedCategory === category.categoryName ? 'selected' : ''}`}
-                                            onClick={() => { handleSelectCategoryParent(category.categoryName, category.id, category.children); setCategory(category) }}
+                                            onClick={() => { handleSelectCategoryParent(category.categoryName, category.id, category.children); }}
                                             style={{ width: '100%' }}
                                         >
                                             <span className="ps-3">{category.categoryName}</span>
-                                            <FontAwesomeIcon
-                                                style={{ color: selectedCategory === category.categoryName ? 'red' : 'rgb(136, 136, 136)' }}
-                                                icon={faChevronRight}
-                                            />
+                                            {category.children > 0 &&
+                                                <FontAwesomeIcon
+                                                    style={{ color: selectedCategory === category.categoryName ? 'red' : 'rgb(136, 136, 136)' }}
+                                                    icon={faChevronRight}
+                                                />}
                                         </div>
                                     </div>
                                 ))}
@@ -117,39 +124,50 @@ function CategoryModal({ show, handleClose, categories, handleCategory }: Catego
                         <Col md={4} className=" bg-white col-modal-category">
                             {selectedCategoryItems &&
                                 <SimpleBar style={{ maxHeight: 300, marginTop: 10 }}>
-                                    {childCategory?.map((category) => (
-                                        <div key={category.id} style={{ width: '100%' }}>
-                                            <div
-                                                className={`btn-category-list p-1   pe-4 d-flex align-items-center justify-content-between w-100 ${selectedCategory === category.categoryName ? 'selected' : ''}`}
-                                                onClick={() => handleSelectCategoryItem(category.categoryName, category.id, category.children)}
-                                                style={{ width: '100%' }}
-                                            >
-                                                <span className="ps-3">{category.categoryName}</span>
-                                                <FontAwesomeIcon
-                                                    style={{ color: selectedCategory === category.categoryName ? 'red' : 'rgb(136, 136, 136)' }}
-                                                    icon={faChevronRight}
-                                                />
+                                    {childCategory?.map((category) => {
+                                        return (
+                                            <div key={category.id} style={{ width: '100%' }}>
+                                                <div
+                                                    className={`btn-category-list p-1   pe-4 d-flex align-items-center justify-content-between w-100 ${selectedCategoryItems === category.categoryName ? 'selected' : ''}`}
+                                                    onClick={() => handleSelectCategoryItem(category.categoryName, category.id, category.children)}
+                                                    style={{ width: '100%' }}
+                                                >
+                                                    <span className="ps-3">{category.categoryName}</span>
+                                                    {category.children > 0 &&
+                                                        <FontAwesomeIcon
+                                                            style={{ color: selectedCategoryItems === category.categoryName ? 'red' : 'rgb(136, 136, 136)' }}
+                                                            icon={faChevronRight}
+                                                        />}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </SimpleBar>}
                         </Col>
                         <Col md={4} className=" bg-white bd-tr-radius-sm">
                             {categoryItems &&
                                 <SimpleBar style={{ maxHeight: 300, marginTop: 10 }}>
-                                    {childCategory1?.map((category) => (
-                                        <div key={category.id} style={{ width: '100%' }}>
-                                            <div
-                                                className={`btn-category-list p-1   pe-4 d-flex align-items-center justify-content-between w-100 ${selectedCategory === category.categoryName ? 'selected' : ''}`}
-                                                onClick={() => { setCategoryId2(category.id) ; 
-                                                    category.children === 0 ? setIsConfirm(false) : setIsConfirm(true)
-                                                 }}
-                                                style={{ width: '100%' }}
-                                            >
-                                                <span className="ps-3">{category.categoryName}</span>
+                                    {childCategory1?.map((category) => {
+                                        return (
+                                            <div key={category.id} style={{ width: '100%' }}>
+                                                <div
+                                                    className={`btn-category-list p-1   pe-4 d-flex align-items-center justify-content-between w-100 ${category3 === category.categoryName ? 'selected' : ''}`}
+                                                    onClick={() => {
+                                                        setCategoryId2(category.id);
+                                                        category.children === 0 ? setIsConfirm(false) : setIsConfirm(true);
+                                                        setCategory3(category.categoryName)
+                                                        setCategory(category.categoryName)
+                                                    
+                                                    }}
+                                                    style={{ width: '100%' }}
+                                                >
+                                                    <span className="ps-3">{category.categoryName}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        )
+                                    }
+
+                                    )}
                                 </SimpleBar>}
                         </Col>
 

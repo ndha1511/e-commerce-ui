@@ -3,6 +3,7 @@ import './navbar.scss';
 import { Col, Collapse, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faChevronDown, faChevronUp, faReceipt, faShirt } from '@fortawesome/free-solid-svg-icons';
+import useRedirect from '../../../hooks/useRedirect';
 
 interface Menu {
     name: string;
@@ -25,12 +26,22 @@ const menu: Menu[] = [
             {
                 name: '● Danh sách sản phẩm',
                 path: '/admin/products',
-                fontSize:12
+                fontSize: 12
             },
             {
                 name: '● Thêm sản phẩm',
-                path: '/admin/products/add',
-                fontSize:12
+                path: '/admin/product/insert',
+                fontSize: 12
+            },
+            {
+                name: '● Kho sản phẩm',
+                path: '/admin/product/stock',
+                fontSize: 12
+            },
+            {
+                name: '● Nhập hàng',
+                path: '/admin/product/import',
+                fontSize: 12
             },
         ]
     },
@@ -42,12 +53,12 @@ const menu: Menu[] = [
             {
                 name: '● Danh sách sản phẩm',
                 path: '/admin/products',
-                fontSize:12
+                fontSize: 12
             },
             {
                 name: '● Thêm sản phẩm',
                 path: '/admin/products/add',
-                fontSize:12
+                fontSize: 12
             },
         ]
     },
@@ -73,11 +84,16 @@ const menu: Menu[] = [
     },
 ]
 
-const MenuItem = ({ name, path, icon, children,fontSize }: Menu) => {
+const MenuItem = ({ name, path, icon, children, fontSize }: Menu) => {
     const [open, setOpen] = React.useState(false);
-
+    const redirect = useRedirect();
     const handleClickMenu = () => {
-        setOpen(!open);
+        if (children) {
+            setOpen(!open);
+        } else {
+            redirect(path || '');
+        }
+
     }
 
     return (
@@ -89,7 +105,7 @@ const MenuItem = ({ name, path, icon, children,fontSize }: Menu) => {
                     </Col>
                     <Col md={10}>
                         <div className='d-flex justify-content-between w-100 pe-1'>
-                            <span style={{fontSize:fontSize || 14}}>
+                            <span style={{ fontSize: fontSize || 14 }}>
                                 {name}
                             </span>
                             <span>

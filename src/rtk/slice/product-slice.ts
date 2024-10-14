@@ -51,6 +51,9 @@ export const createProductSlice = createSlice({
         addAttributeDto: (state, action) => {
             state.attributesDto[action.payload.index] = (action.payload.data);
         },
+        setAttributeDto: (state, action) => {
+            state.attributesDto = action.payload;
+        },
         setAttributeValue: (state, action) => {
             const index = state.attributesDto.findIndex(item => item.attributeName === action.payload.attributeName);
             if (index !== -1) {
@@ -79,11 +82,15 @@ export const createProductSlice = createSlice({
         removeTag: (state, action) => {
             state.tag = state.tag?.filter((_, index) => index !== action.payload);
         },
+        removeAll: (state) => {
+            state = initialState
+            return state;
+        },
     }
 })
-export const { setProductName, setRegularPrice, setDescription,
+export const { setProductName, setRegularPrice, setDescription,setAttributeDto,
     setCategories, setBrandId, setCity, addCategories,
     setThumbnailIndex, addImage, setVideo, setAttributeValue,
     addAttributeDto, addVariantDto, addTag, setVariantDto,
-    removeImage, removeAttributeDto, removeVariantDto, removeTag } = createProductSlice.actions
+    removeImage, removeAttributeDto, removeVariantDto, removeTag,removeAll } = createProductSlice.actions
 export default createProductSlice.reducer;

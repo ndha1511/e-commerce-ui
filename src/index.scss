@@ -35,6 +35,21 @@ span{
   border-width: 5px; /* Độ dày của mũi tên */
   border-style: solid;
   border-color: transparent transparent red transparent; /* Màu mũi tên */
+  
+}
+.custom-tooltip1 .tooltip-arrow::before {
+  content: '';
+  position: absolute;
+  border-width: 5px; /* Độ dày của mũi tên */
+  border-style: solid;
+  top:50%;
+  right: 1px;
+  border-color: transparent red transparent transparent;
+  transform: translateY(-50%);
+}
+.tooltip-inner {
+  max-width: 1000px !important;
+  background-color: $primary-color !important;
 }
 .no-shadow {
   box-shadow: none !important;

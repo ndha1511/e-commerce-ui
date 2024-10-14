@@ -191,22 +191,27 @@
         cursor: not-allowed; // Thay đổi con trỏ khi nút bị khóa
     }
 }
+
 .custom-table-product>:not(caption)>*>* {
     padding: 0;
-    &:nth-child(1){
+
+    &:nth-child(1) {
         width: 5%;
     }
+
     &:nth-child(2) {
         width: 10%;
     }
 
-    &:nth-child(3){
+    &:nth-child(3) {
         width: 35%;
     }
+
     &:nth-child(4) {
         width: 15%;
     }
-    &:nth-child(5){
+
+    &:nth-child(5) {
         width: 5%;
     }
 }
@@ -217,15 +222,152 @@
     height: 50px;
     background-color: #a6c9cf;
 }
+
 .custom-table-product tbody tr td {
     vertical-align: middle;
     height: 50px;
     text-align: center;
     // background-color: #a6c9cf;
     font-size: $font-normal;
-    background-color: #ffffff;  
+    background-color: #ffffff;
 }
-.avatar-dropdown{
+
+.custom-table-product-stock>:not(caption)>*>* {
+    padding: 0;
+
+    &:nth-child(1) {
+        width: 5%;
+    }
+
+    &:nth-child(2) {
+        width: 10%;
+    }
+
+    &:nth-child(3) {
+        width: 35%;
+    }
+
+    &:nth-child(4) {
+        width: 15%;
+    }
+
+    &:nth-child(5) {
+        width: 15%;
+    }
+
+    &:nth-child(6) {
+        width: 15%;
+    }
+}
+
+.custom-table-product-stock thead tr th {
+    vertical-align: middle;
+    text-align: center;
+    height: 50px;
+    background-color: #a6c9cf;
+}
+
+.custom-table-product-stock tbody tr td {
+    vertical-align: middle;
+    height: 50px;
+    text-align: center;
+    // background-color: #a6c9cf;
+    font-size: $font-normal;
+    background-color: #ffffff;
+}
+.custom-table-product-stock-import>:not(caption)>*>* {
+    padding: 0;
+
+    &:nth-child(1) {
+        width: 8%;
+    }
+
+    &:nth-child(2) {
+        width: 15%;
+    }
+
+    &:nth-child(3) {
+        width: 35%;
+    }
+
+    &:nth-child(4) {
+        width: 10%;
+    }
+
+    &:nth-child(5) {
+        width: 10%;
+    }
+
+    &:nth-child(6) {
+        width: 15%;
+    }
+    &:nth-child(7) {
+        width: 10%;
+    }
+}
+
+.custom-table-product-stock-import thead tr th {
+    vertical-align: middle;
+    text-align: center;
+    height: 50px;
+    background-color: #a6c9cf;
+}
+
+.custom-table-product-stock-import tbody tr td {
+    vertical-align: middle;
+    height: 50px;
+    text-align: center;
+    // background-color: #a6c9cf;
+    font-size: $font-normal;
+    background-color: #ffffff;
+}
+.avatar-dropdown {
     text-decoration: none;
     color: black;
+}
+
+.search-list-product {
+    border: 1px solid rgb(180, 173, 173);
+    border-radius: $border-radius-small;
+    width: 33%;
+    padding: 3px 10px 3px 10px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white
+}
+
+.input-search-list-product {
+    border: none;
+    flex: 1;
+
+    &:focus {
+        outline: none;
+    }
+
+}
+
+.border-err {
+    border: 1px solid $primary-color !important;
+}
+
+.btn-stock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px 5px 10px;
+    border-radius: $border-radius-small;
+    color: #d45b1a;
+    border: 1px solid #d45b1a;
+    background-color: white;
+
+    &:hover {
+        background-color: #d45b1a;
+        color: white;
+    }
+
+    &:active {
+        opacity: 0.5;
+    }
 }

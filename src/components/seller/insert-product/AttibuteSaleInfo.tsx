@@ -2,29 +2,30 @@ import { faImage, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Col, OverlayTrigger, Row, Tooltip, TooltipProps } from "react-bootstrap";
 import './sale-info.scss';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ProductAttributeDto } from "../../../dtos/request/product/product-attribute.reques";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../rtk/store/store";
 import { addAttributeDto, addVariantDto, setAttributeValue, setVariantDto } from "../../../rtk/slice/product-slice";
 import { VariantDto } from "../../../dtos/request/product/variant.reques";
+import { AttributeResponse } from "../../../dtos/response/attribute-response";
 
 interface SaleInfoDetailsProps {
     handleCloseAtribute: () => void;
     index: number;
+    isSuccess: boolean;
 }
-const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute, index }) => {
+const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute, index, isSuccess }) => {
     const [errorMessages, setErrorMessages] = useState<{ [key: number]: string | null }>({}); // Trạng thái lưu lỗi cho từng ô
-
-    const [isValid, setIsValid] = useState(true);
     const [isFocused, setIsFocused] = useState(false);
     const [isHidden, setIsHidden] = useState(false);
     const [variantValue, setVariantValue] = useState<number>(0);
-    const [error, setError] = useState<string | null>(null);
     const [flag, setFlag] = useState<boolean>(false);
     const productAttributeDto: ProductAttributeDto[] = useSelector((state: RootState) => state.product.attributesDto);
     const attributeVariant: VariantDto[] = useSelector((state: RootState) => state.product.variantsDto);
     const [previewImage, setPreviewImage] = useState<{ id: number, url: string }[]>([]);
+
+    const inputRef = useRef<HTMLInputElement>(null);
     const dispatch = useDispatch();
     const handleOptionClick = (option: string) => {
         if (index === 0) {
@@ -74,10 +75,29 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
             setIsHidden(true);
         }
     };
+    useEffect(() => {
+        if (isSuccess) {
+            setIsFocused(false);
+            setIsHidden(true);
+        }
+    }, [isSuccess]);
+
     const [variants, setVariants] = useState([
         { id: 1, img: null as File | null, variant: '' },
     ]);
-
+    useEffect(() => {
+        if (productAttributeDto) {
+            const attributeVal = productAttributeDto[index]?.attributeValues?.map((value, index) => {
+                return {
+                    id: index + 1,
+                    img: null,
+                    variant: value.value
+                }
+            }) || [];
+            attributeVal.push({ id: attributeVal.length + 1, img: null, variant: '' })
+            setVariants(attributeVal);
+        }
+    }, [productAttributeDto])
     const handleVariantChange = (e: React.ChangeEvent<HTMLInputElement>, id: number) => {
         const variant = variants.find(attr => attr.id === id)?.variant;
         const attributeValue1 = [...(productAttributeDto[0]?.attributeValues || [])]
@@ -146,7 +166,7 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
                 }));
             } else {
                 const checke = variants.findIndex(vari => vari.variant === variant);
-         
+
                 if (checke === indexIp) {
                     return;
                 } else {
@@ -319,9 +339,11 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
             <Row>
                 <Col md={12}>
                     <div className="d-flex justify-content-between">
-                        {isHidden && <span style={{ fontWeight: 600 }}>{productAttributeDto[index]?.attributeName}</span>}
+                        {/* {isHidden && <span style={{ fontWeight: 600 }}>{productAttributeDto[index]?.attributeName}</span>} */}
+                        {isHidden && <span style={{ fontWeight: 600 }}>{productAttributeDto?.[index]?.attributeName}</span>}
                         <div className={`select-search-sale-info bg-white w-50 ${isHidden ? 'hidden-input' : ''}`}>
                             <input
+                                ref={inputRef}
                                 className={`select-sale-info`}
                                 placeholder="Vui lòng chọn"
                                 type="text"
@@ -395,7 +417,7 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
                                     overlay={(props) => renderTooltip(props, errorMessages[attr.id])}
                                     show={!!errorMessages[attr.id]}>
                                     <input
-                                        className={`select-sale-info ${!isValid ? 'is-invalid' : ''}`}
+                                        className="select-sale-info"
                                         placeholder="Vui lòng nhập"
                                         type="text"
                                         value={attr.variant}

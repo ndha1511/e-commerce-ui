@@ -42,9 +42,7 @@ const CategoryItem = ({ category }: ItemProps) => {
     const refetch = async () => {
         await getCategory(paramsChild).refetch();
     };
-
     return (
-
         <React.Fragment key={category.id}>
 
             <tr>

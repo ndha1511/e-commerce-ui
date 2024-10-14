@@ -19,9 +19,11 @@ import VerifyEmail from "../pages/user/auth/register/VerifyEmail";
 import ForgotPassword from "../pages/user/auth/reset-password/ForgotPassword";
 import ResetPassword from "../pages/user/auth/reset-password/ResetPassword";
 import AdminLayout from "../layout/admin/AdminLayout";
-import Category from "../pages/admin/category/Category";
 import Product from "../pages/admin/product/Product";
 import ProductAttribute from "../pages/admin/product/ProductAttribute";
+import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
+import ProductStock from "../pages/admin/product/ProductStock";
+import ProductImport from "../pages/admin/product/ProductImport";
 
 
 
@@ -100,19 +102,27 @@ export const router = createBrowserRouter([
     {
 
         path: "/admin",
-        element: <AdminLayout><Category/></AdminLayout>
+        element: <AdminLayout><CreatePromotion/></AdminLayout>
     },
     {
         path: "/admin/product/insert",
         element: <AdminLayout><InsertProduct/></AdminLayout>
     },
     {
-        path: "/admin/product",
+        path: "/admin/products",
         element: <AdminLayout><Product/></AdminLayout>
     },
     {
-        path: "/admin/product/attribute",
+        path: "/admin/products/attribute",
         element: <AdminLayout><ProductAttribute/></AdminLayout>
+    },
+    {
+        path: "/admin/product/stock",
+        element: <AdminLayout><ProductStock/></AdminLayout>
+    },
+    {
+        path: "/admin/product/import",
+        element: <AdminLayout><ProductImport/></AdminLayout>
     },
 
 ]);

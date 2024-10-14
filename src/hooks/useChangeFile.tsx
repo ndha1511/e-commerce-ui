@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function useChangeFile(maxImages: number, initFile: File[], initPreviewUrl: (string | ArrayBuffer | null)[]) {
     const [files, setFiles] = useState<File[]>(initFile);
     const [previewUrls, setPreviewUrls] = useState<(string | ArrayBuffer | null)[]>(initPreviewUrl);
     const shouldHideInput = files.length >= maxImages;
 
+    useEffect(()=>{
+        if(previewUrls.length === 0){
+            setFiles([]);
+        }
+    },[previewUrls])
     // Handle file input change event
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newFiles = event.target.files;

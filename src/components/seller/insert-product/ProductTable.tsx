@@ -66,10 +66,8 @@ const ProductTable = () => {
                     <tr className='text-center' >
                         <th>{productAttributeDto[0]?.attributeName ? productAttributeDto[0]?.attributeName : 'Phân loại 1'}</th>
                         <th>{productAttributeDto[1]?.attributeName ? productAttributeDto[1]?.attributeName : 'Phân loại 2'}</th>
-                        <th>Giá nhập</th>
                         <th>Giá bán</th>
-                        <th>Cân nặng</th>
-                        <th>Kho hàng</th>
+                        <th>Phân loại SKU</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -145,41 +143,7 @@ const ProductTable = () => {
 
                                     ))}
                                 </td>
-                                <td>
-                                    {items.map((item) => (
-                                        <div key={item.attributeValue2} className="attr">
-                                            <div className="select-search-table-info">
-                                                <div
-                                                    className="p-1 pe-2"
-                                                >
-                                                    <span>₫</span>
-                                                </div>
-                                                <input
-                                                    className="select-table-info"
-                                                    style={{ padding: 0, paddingLeft: 10 }}
-                                                    placeholder="Giá nhập"
-                                                    type="text"
-                                                    value={item.price}
-                                                    onChange={(e) => handleChange(attrVal1, item.attributeValue2, 'price', Number(e.target.value))}
-                                                />
-                                            </div>
-
-                                        </div>
-
-                                    ))}
-                                </td>
-                                <td>
-                                    <div className="attr">
-                                        <div className="select-search-table-info">
-                                            <input
-                                                className="select-table-info"
-                                                style={{ padding: 5, paddingLeft: 10 }}
-                                                placeholder="Kho hàng"
-                                                type="text"
-                                            />
-                                        </div>
-                                    </div>
-                                </td>
+                              
                                 <td>
                                     {items.map((item) => (
                                         <div key={item.attributeValue2} className="attr">

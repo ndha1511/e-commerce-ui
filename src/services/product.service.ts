@@ -3,6 +3,7 @@ import { axiosBaseQuery } from "./base-query";
 import { BaseResponse } from "../dtos/response/base-response";
 import { PageResponse } from "../dtos/response/page-response";
 import { Product } from "../models/product";
+import { AttributeResponse } from "../dtos/response/attribute-response";
 
 
 const productApi = createApi({
@@ -16,19 +17,50 @@ const productApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
-        createProduct: build.mutation({
+        getProductByUrl: build.query<BaseResponse<Product>, string>({
+            query: (path) => ({
+                url: '/products/' + path,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
+        getAttributeById: build.query<BaseResponse<AttributeResponse>, string>({
+            query: (id) => ({
+                url: '/products/attribute/' + id,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
+        createProduct: build.mutation<BaseResponse<Product>, FormData>({
             query: (newProduct) => ({
                 url: '/products',
                 method: 'post',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
                 data: newProduct,
             }),
         }),
+        createAttribute: build.mutation<BaseResponse<null>, FormData>({
+            query: (newAttribute) => ({
+                url: '/products/attributes',
+                method: 'post',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                data: newAttribute,
+            }),
+        }),
+        
     }),
 });
 
-export const { 
-    useGetProductsQuery, 
-    useCreateProductMutation 
+export const {
+    useGetProductsQuery,
+    useCreateProductMutation,
+    useGetProductByUrlQuery,
+    useCreateAttributeMutation,
+    useGetAttributeByIdQuery
 } = productApi;
 
 export default productApi;

@@ -1,19 +1,24 @@
 import { faImage, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
-import { Col, Row } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Col, OverlayTrigger, Row } from "react-bootstrap";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import useChangeFile from "../../../hooks/useChangeFile";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../rtk/store/store";
 import { addImage, setVideo } from "../../../rtk/slice/product-slice";
+import CustomTooltip from "../../tooltip/CustomTooltipProps";
+import { RootState } from "../../../rtk/store/store";
 
-function ImgAndVideo() {
+interface AddProductClick {
+  addProductClick: boolean;
+}
+function ImgAndVideo({ addProductClick }: AddProductClick) {
   const [previewVideoUrl, setPreviewVideoUrl] = useState<string>();
   const { files, previewUrls, handleFileChange, shouldHideInput, handleDeleteImage, setPreviewUrls } = useChangeFile(9, [], []);
+  const imgRedux = useSelector((state: RootState) => state.product.images)
+  const videoRedux = useSelector((state: RootState) => state.product.video)
   const [videoFile, setVideoFile] = useState<File>();
-  const imgRedux: string[] = useSelector((state:RootState)=> state.product.images);
-  const videoRedux: string | undefined = useSelector((state:RootState)=> state.product.video);
+  const hasEmptyImg = imgRedux.length === 0;
   const dispatch = useDispatch();
   const handleDeleteVideo = () => {
     setPreviewVideoUrl(''); // Xóa URL vào state
@@ -37,44 +42,34 @@ function ImgAndVideo() {
     setPreviewUrls(reorderedUrls);
   };
 
-const handleFileChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
+  const handleFileChangeRedux = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = e.target.files;
-    if(newFiles){
+    if (newFiles) {
       const urls = Array.from(newFiles, file => URL.createObjectURL(file));
       dispatch(addImage(urls));
     }
-}
-const handleVideoChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
-  const newVideo = e.target.files;
-  if(newVideo){
-    const url: string = URL.createObjectURL(newVideo[0]);
-    dispatch(setVideo(url))
   }
-}
+  const handleVideoChangeRedux = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVideo = e.target.files;
+    if (newVideo) {
+      const url: string = URL.createObjectURL(newVideo[0]);
+      dispatch(setVideo(url))
+    }
+  }
+  useEffect(() => {
+     if(!addProductClick ){
+      setPreviewUrls([]);
+     }
+  }, [addProductClick])
   return (
     <div>
-      <div className="d-flex gap-5 mt-4 p-3">
-        <Row className="w-100">
-          <Col md={2} className="text-end">
+      <div className="w-100 bg-white mt-4 ">
+        <Row className="mb-2">
+          <Col md={2} className="text-end mt-4">
             <span>
-              <span className="primary">*</span> Hình ảnh sản phẩm
+              <span className="primary">*</span> Hình ảnh sản phẩm :
             </span>
           </Col>
-          <Col md={10} className="d-flex gap-4">
-            <div className="d-flex align-items-center gap-2">
-              <input className="radio-insert-product-seller" type="radio" name="image11" id="" />
-              <span>Hình ảnh tỷ lệ 1:1</span>
-            </div>
-            <div className="d-flex align-items-center gap-2">
-              <input className="radio-insert-product-seller" type="radio" name="image11" id="" />
-              <span>Hình ảnh tỷ lệ 3:4</span>
-            </div>
-          </Col>
-        </Row>
-      </div>
-      <div className="w-100 bg-white">
-        <Row className="mb-2">
-          <Col md={2}></Col>
           <Col md={10}>
 
             <DragDropContext onDragEnd={onDragEnd}>
@@ -135,35 +130,41 @@ const handleVideoChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
                           type="file"
                           id="fileInput"
                           style={{ display: 'none' }}
-                          onChange={(e)=>{handleFileChange(e);handleFileChangeRedux(e)}}
+                          onChange={(e) => { handleFileChange(e); handleFileChangeRedux(e) }}
                           accept="image/*"
                         />
-                        <label htmlFor="fileInput" className="d-flex align-items-center primary p-3">
-                          <div className="image-insert-product-seller p-2">
-                            <div className="icon-image-insert">
-                              <FontAwesomeIcon icon={faImage} fontSize={25} />
-                              <FontAwesomeIcon
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  fontSize: 12,
-                                  position: 'absolute',
-                                  height: 15,
-                                  width: 15,
-                                  backgroundColor: 'white',
-                                  borderRadius: '50%',
-                                  right: -6,
-                                  bottom: 0,
-                                }}
-                                icon={faPlus}
-                              />
+                        <OverlayTrigger
+                          placement="right"
+                          overlay={hasEmptyImg && addProductClick ? CustomTooltip("Không được để trống!", 'img') : <></>}
+                          show={hasEmptyImg && addProductClick}
+                        >
+                          <label htmlFor="fileInput" className="d-flex align-items-center primary p-3">
+                            <div className="image-insert-product-seller p-2">
+                              <div className="icon-image-insert">
+                                <FontAwesomeIcon icon={faImage} fontSize={25} />
+                                <FontAwesomeIcon
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    fontSize: 12,
+                                    position: 'absolute',
+                                    height: 15,
+                                    width: 15,
+                                    backgroundColor: 'white',
+                                    borderRadius: '50%',
+                                    right: -6,
+                                    bottom: 0,
+                                  }}
+                                  icon={faPlus}
+                                />
+                              </div>
+                              <span className="w-100 text-center">
+                                Thêm hình ảnh ({files.length}/9)
+                              </span>
                             </div>
-                            <span className="w-100 text-center">
-                              Thêm hình ảnh ({files.length}/9)
-                            </span>
-                          </div>
-                        </label>
+                          </label>
+                        </OverlayTrigger>
                       </>
                     )}
                   </div>
@@ -175,7 +176,7 @@ const handleVideoChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
         <Row className="mb-4">
           <Col md={2} className="text-end mt-3">
             <span>
-              <span className="primary">* </span>Ảnh bìa
+              <span className="primary">* </span>Ảnh bìa :
             </span>
           </Col>
           <Col md={10} className="d-flex gap-3">
@@ -189,7 +190,7 @@ const handleVideoChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
                   />
                 </div>
               )}
-              {files.length < 1 && (
+              {files.length <=0 && (
                 <>
                   <label htmlFor="" className="d-flex align-items-center primary ps-3">
                     <div className="image-insert-product-seller p-2">
@@ -228,7 +229,7 @@ const handleVideoChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
         </Row>
         <Row className="mb-4">
           <Col md={2} className="text-end mt-3">
-            <span>Video sản phẩm</span>
+            <span>Video sản phẩm :</span>
           </Col>
           <Col md={10} className="d-flex gap-3">
             <div className="d-flex align-items-center">
@@ -267,33 +268,34 @@ const handleVideoChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
                     type="file"
                     id="fileInputVideo"
                     style={{ display: 'none' }} // Ẩn input file
-                    onChange={(e)=>{handleVideoChange(e); handleVideoChangeRedux(e)}}
+                    onChange={(e) => { handleVideoChange(e); handleVideoChangeRedux(e) }}
                     accept="video/*" // Chỉ chấp nhận file video
                   />
-                  <label htmlFor="fileInputVideo" className="d-flex align-items-center primary ps-3">
-                    <div className="image-insert-product-seller p-2">
-                      <div className="icon-image-insert">
-                        <i style={{ fontSize: 29 }} className="bi bi-play-btn"></i>
-                        <FontAwesomeIcon
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            fontSize: 12,
-                            position: 'absolute',
-                            height: 15,
-                            width: 15,
-                            backgroundColor: 'white',
-                            borderRadius: '50%',
-                            right: -6,
-                            bottom: 5,
-                          }}
-                          icon={faPlus}
-                        />
+
+                    <label htmlFor="fileInputVideo" className="d-flex align-items-center primary ps-3">
+                      <div className="image-insert-product-seller p-2">
+                        <div className="icon-image-insert">
+                          <i style={{ fontSize: 29 }} className="bi bi-play-btn"></i>
+                          <FontAwesomeIcon
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              fontSize: 12,
+                              position: 'absolute',
+                              height: 15,
+                              width: 15,
+                              backgroundColor: 'white',
+                              borderRadius: '50%',
+                              right: -6,
+                              bottom: 5,
+                            }}
+                            icon={faPlus}
+                          />
+                        </div>
+                        <span className="w-100 text-center">({previewVideoUrl ? '1' : '0'}/1)</span>
                       </div>
-                      <span className="w-100 text-center">({previewVideoUrl ? '1' : '0'}/1)</span>
-                    </div>
-                  </label>
+                    </label>
                 </>
               )}
             </div>
@@ -309,7 +311,7 @@ const handleVideoChangeRedux=(e:React.ChangeEvent<HTMLInputElement>)=>{
           </Col>
         </Row>
       </div>
-    </div>
+    </div >
   );
 }
 

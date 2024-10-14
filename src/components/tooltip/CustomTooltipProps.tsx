@@ -1,13 +1,8 @@
-import React from 'react';
-import { Tooltip, TooltipProps } from 'react-bootstrap';
 
-interface CustomTooltipProps extends TooltipProps {
-  text: string;
-}
-
-const CustomTooltip: React.FC<CustomTooltipProps> = ({ text, ...props }) => (
-  <Tooltip id="custom-tooltip" {...props} className="custom-tooltip">
-    {text}
+import { Tooltip } from 'react-bootstrap';
+const CustomTooltip = (message: string, isValid?:string) => (props: any) => (
+  <Tooltip id="button-tooltip" {...props}  className={`${isValid ? 'custom-tooltip1' : 'custom-tooltip'}`}>
+      {message} {/* Hiển thị thông điệp */}
   </Tooltip>
 );
 

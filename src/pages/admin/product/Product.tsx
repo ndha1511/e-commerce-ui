@@ -1,8 +1,9 @@
-import { Dropdown, Pagination, Table } from "react-bootstrap";
+import { Dropdown, Form, Pagination, Table } from "react-bootstrap";
 import { useGetProductsQuery } from "../../../services/product.service";
 import { convertPrice } from "../../../utils/convert-price";
 import React, { LegacyRef, ReactNode } from "react";
 import useRedirect from "../../../hooks/useRedirect";
+import './insert-product.scss'
 
 function Product() {
     const { data: pageResponse } = useGetProductsQuery();
@@ -10,8 +11,21 @@ function Product() {
     console.log(products)
     const redirect = useRedirect();
     return (
-        <div className="border p-3">
-
+        <div className=" bg-light p-3">
+            <div className="mb-3 d-flex justify-content-between">
+                <div className="search-list-product p-2 ">
+                    <input className="input-search-list-product" placeholder="Nhập từ khóa tìm kiếm" type="text" />
+                    <i className="bi bi-search"></i>
+                </div>
+                <div className="">
+                    <Form.Select className="select-items no-shadow " >
+                        <option>Lọc theo giá</option>
+                        <option value="1">100 - 500</option>
+                        <option value="2">500 - 1000</option>
+                        <option value="3">1000 - 1500</option>
+                    </Form.Select>
+                </div>
+            </div>
             <Table className='table-bordered table-responsive  custom-table-product '>
                 <thead>
                     <tr>
@@ -37,7 +51,7 @@ function Product() {
 
                                     <Dropdown.Menu>
                                         <Dropdown.Item href="#/action-1">Chỉnh sửa</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>redirect('attribute?id='+product.id+'&name='+ product.productName )}>Phân loại</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => redirect('attribute?id=' + product.id + '&name=' + product.productName)}>Phân loại</Dropdown.Item>
                                         <Dropdown.Item href="#/action-3">Xóa</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
