@@ -13,6 +13,10 @@
 .btn-buy {
   width: 200px;
   height: 45px;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .cart-item h6 {

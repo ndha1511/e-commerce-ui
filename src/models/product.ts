@@ -19,6 +19,6 @@ export interface Product extends BaseModel {
     images: string[];
     video: string;
     likes: number;
-    promotion: Promotion;
-    attributes: Attribute[];
+    promotion?: Promotion;
+    attributes?: Attribute[];
 }

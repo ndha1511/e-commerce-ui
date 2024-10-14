@@ -4,6 +4,8 @@ import { BaseResponse } from "../dtos/response/base-response";
 import { PageResponse } from "../dtos/response/page-response";
 import { Product } from "../models/product";
 import { AttributeResponse } from "../dtos/response/attribute-response";
+import { Attribute } from "../models/attriubte";
+
 
 
 const productApi = createApi({
@@ -51,7 +53,12 @@ const productApi = createApi({
                 data: newAttribute,
             }),
         }),
-        
+        getAttributeByProductId: build.query<BaseResponse<Attribute[]>, string>({
+            query: (productId) => ({
+                url: '/products/attributes/' + productId,
+                method: 'get',
+            })
+        })
     }),
 });
 
@@ -60,7 +67,8 @@ export const {
     useCreateProductMutation,
     useGetProductByUrlQuery,
     useCreateAttributeMutation,
-    useGetAttributeByIdQuery
+    useGetAttributeByIdQuery,
+    useGetAttributeByProductIdQuery
 } = productApi;
 
 export default productApi;

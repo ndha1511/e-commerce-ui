@@ -1,11 +1,9 @@
-
-
 const RenderVideo = (props: any) => {
     return (
         
           <video
-            width="100%"
-            height="400px"
+            className="image-gallery-content"
+            style={{ width: "100%", height: "80vh" }}
             src={props.embedUrl}
             autoPlay
             controls

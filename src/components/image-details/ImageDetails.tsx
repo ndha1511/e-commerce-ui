@@ -10,10 +10,11 @@ type Image = {
 
 export type Props = {
     images: Image[];
+    startIndex?: number;
 };
-const ImageDetails = ({ images }: Props) => (
+const ImageDetails = ({ images, startIndex }: Props) => (
     <div style={{ width: "100%", flex: 1 }}>
-        <ImageGallery startIndex={0} renderLeftNav={(onClick, disabled) => {
+        <ImageGallery startIndex={startIndex || 0} renderLeftNav={(onClick, disabled) => {
             return (
                 <button className="image-gallery-icon image-gallery-left-nav text-large"
                     onClick={onClick} disabled={disabled} ><FontAwesomeIcon icon={faChevronLeft} /></button>)
