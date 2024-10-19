@@ -15,6 +15,7 @@ export interface Product extends BaseModel {
     buyQuantity: number;
     rating: number;
     description: string;
+    weight: number;
     tags: Tag[];
     images: string[];
     video: string;

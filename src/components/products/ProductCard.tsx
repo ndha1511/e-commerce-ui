@@ -16,14 +16,14 @@ const ProductCard = ({ product }: { product: Product }) => {
             <div className='card-text'>
                 <span>{product.productName}</span>
             </div>
-            <div className='card-deal'>
+            {/* <div className='card-deal'>
                 <span className='text-small primary border-color-primary card-span'>
                     Deal sốc
                 </span>
                 <span className='text-small secondary border-color-secondary card-span'>
                     Siêu sale 8/8
                 </span>
-            </div>
+            </div> */}
             <div className='card-rating'>
                 {product.rating != 0 ? <> <div>
                     <span className='text-small'>4.9/5</span>
@@ -36,9 +36,8 @@ const ProductCard = ({ product }: { product: Product }) => {
             <div className='card-price'>
                 <div className='d-inline-flex gap-1 align-items-center'>
                     <span className='text-medium primary'>{convertPrice(product.regularPrice)}</span>
-                    <span className='text-small text-line-through'>500.000 đ</span>
+                    {/* <span className='text-small text-line-through'>500.000 đ</span> */}
                 </div>
-                <span className='text-blur text-small'>{product.city}</span>
             </div>
         </div>
     </Link>

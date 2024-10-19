@@ -9,6 +9,7 @@ export interface SortType {
     order: 'asc' | 'desc';
 }
 
+
 export const pageQueryHanlder = (page: number = 1, size: number = 40, 
     search?: SearchType[], sort?: SortType[]): string => {
     

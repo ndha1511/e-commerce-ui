@@ -19,6 +19,7 @@ import { useLazyGetVariantsQuery } from "../../../services/variant.service";
 import { VariantResponse } from "../../../dtos/response/variant/variant-response";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import { useAddToCartMutation } from "../../../services/cart.service";
+import { useGetAddressByUserIdQuery } from "../../../services/address.service";
 
 function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
@@ -33,8 +34,11 @@ function ProductDetail() {
     const [variant, setVariant] = useState<VariantResponse>();
     const [productPrice, setProductPrice] = useState(0);
     const [disabledBtn, setDisabledBtn] = useState(true);
-    const {data: user} = useCheckLoginQuery();
+    const {data: user, isSuccess: loginSuccess} = useCheckLoginQuery();
     const [addToCart] = useAddToCartMutation();
+    const {data: address, refetch: addressRefetch} = useGetAddressByUserIdQuery(user?.data?.id || "", {
+        skip: !loginSuccess || !user?.data?.id,
+    })
 
     const onSelect = (value: string, url: string, index: number) => {
         const currentUrl = images.indexOf(images.find((img) => img.original === url));
@@ -188,7 +192,7 @@ function ProductDetail() {
                                 </div>}
                                 <div className="d-flex align-items-center mb-2">
                                     <h4 className=" text-large mb-0">{convertPrice(productPrice)}</h4>
-                                    <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">-4%</small>
+                                    {/* <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">-4%</small> */}
                                 </div>
                                 <div className="mb-2">
                                     {product?.promotion && <div className="p-2 border border-radius-small">
@@ -297,9 +301,10 @@ function ProductDetail() {
                                 </>}
                             </Card>
                         </div>
-                        <div className="bg-white mt-3 border-radius-medium p-1">
-                            <Address />
-                        </div>
+                        
+                        {(address?.data && address?.data.length > 0) ?
+                        <div className="bg-white mt-3 border-radius-medium p-1"> <Address info={address.data[0]} />  </div> :<></> }
+                       
                     </Col>
                 </Row>
 

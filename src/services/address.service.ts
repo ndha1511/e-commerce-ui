@@ -6,9 +6,12 @@ import { UserAddressDto } from "../dtos/request/address/user-address-dto";
 import { Province } from "../dtos/response/address/province";
 import { District } from "../dtos/response/address/district";
 import { Ward } from "../dtos/response/address/ward";
+import { AddressDto } from "../dtos/request/address/address-dto";
+import { Address } from "../models/address";
 
 
 const addressApi = createApi({
+    reducerPath: 'addressApi',
     baseQuery: axiosBaseQuery(),
     endpoints: (build) => ({
         getAddressByUserId: build.query<BaseResponse<UserAddress[]>, string>({
@@ -45,6 +48,20 @@ const addressApi = createApi({
                 method: 'get',
             }),
             keepUnusedDataFor: 180,
+        }),
+        addAddress: build.mutation<BaseResponse<Address>, AddressDto>({
+            query: (address) => ({
+                url: `/addresses`,
+                method: 'post',
+                data: address
+            })
+        }),
+        getAddress: build.query<BaseResponse<Address>, void>({
+            query: () => ({
+                url: '/addresses',
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
         })
 
     })
@@ -55,7 +72,9 @@ export const {
     useAddUserAddressMutation,
     useGetProvincesQuery,
     useGetDistrictsQuery,
-    useGetWardsQuery
+    useGetWardsQuery,
+    useAddAddressMutation,
+    useGetAddressQuery
 } = addressApi;
 
 export default addressApi;
