@@ -8,6 +8,7 @@ import variantApi from '../../services/variant.service'
 import cartApi from '../../services/cart.service'
 import addressApi from '../../services/address.service'
 import paymentApi from '../../services/payment.service'
+import orderApi from '../../services/order.service'
 
 export const store = configureStore({
   reducer: {
@@ -18,7 +19,8 @@ export const store = configureStore({
     [variantApi.reducerPath]: variantApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [addressApi.reducerPath]: addressApi.reducer,
-    [paymentApi.reducerPath]: paymentApi.reducer
+    [paymentApi.reducerPath]: paymentApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer
 
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
@@ -29,6 +31,7 @@ export const store = configureStore({
     .concat(cartApi.middleware)
     .concat(addressApi.middleware)
     .concat(paymentApi.middleware)
+    .concat(orderApi.middleware)
 })
 
 setupListeners(store.dispatch)
