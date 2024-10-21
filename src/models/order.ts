@@ -5,10 +5,10 @@ import { UserAddress } from "./user-address";
 
 export enum OrderStatus {
     PENDING = "PENDING",
-    PENDING_CONFIRMATION = "PENDING_CONFIRMATION",
     SHIPPING = "SHIPPING",
     SHIPPED_CONFIRMATION = "SHIPPED_CONFIRMATION", 
     RECEIVED = "RECEIVED",
+    CANCELLED = "CANCELLED",
 }
 
 export enum PaymentStatus {

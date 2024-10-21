@@ -4,15 +4,18 @@ import productApi from '../../services/product.service'
 import authApi from '../../services/auth.service'
 import categoryApi from '../../services/category.service'
 import { createProductSlice } from '../slice/product-slice'
+import { Notification } from '../slice/notify-slice'
 import variantApi from '../../services/variant.service'
 import cartApi from '../../services/cart.service'
 import addressApi from '../../services/address.service'
 import paymentApi from '../../services/payment.service'
 import orderApi from '../../services/order.service'
+import inventoryApi from '../../services/inventory.service'
 
 export const store = configureStore({
   reducer: {
     product: createProductSlice.reducer,
+    notification: Notification.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
@@ -20,7 +23,8 @@ export const store = configureStore({
     [cartApi.reducerPath]: cartApi.reducer,
     [addressApi.reducerPath]: addressApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
-    [orderApi.reducerPath]: orderApi.reducer
+    [orderApi.reducerPath]: orderApi.reducer,
+    [inventoryApi.reducerPath]: inventoryApi.reducer
 
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
@@ -32,6 +36,7 @@ export const store = configureStore({
     .concat(addressApi.middleware)
     .concat(paymentApi.middleware)
     .concat(orderApi.middleware)
+    .concat(inventoryApi.middleware)
 })
 
 setupListeners(store.dispatch)

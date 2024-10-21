@@ -15,7 +15,10 @@
 
 .btn-check-sc {
     position: relative;
-
+    // border: 1px solid red;
+     display: inline-block;
+     min-width: 70px;
+     margin: 8px;
     .check-sc {
         position: absolute;
         bottom: 0;
@@ -39,10 +42,3 @@
         }
     }
 }
-// .fixed {
-//     position: fixed;
-//     top: 0; 
-//     width: 25%; /* Hoặc đặt giá trị cố định, ví dụ: 250px */
-//     left: calc(75%); /* Điều chỉnh giá trị này để giữ nguyên vị trí */
-//     z-index: 1000;
-// }

@@ -20,7 +20,13 @@ const orderApi = createApi({
                 url: `/orders/${userId}?${param}`,
                 method: 'get',
             }),
-            keepUnusedDataFor: 180,
+            keepUnusedDataFor: 0,
+        }),
+        confirmReceived: build.mutation<BaseResponse<null>, string>({
+            query: (orderId) => ({
+                url: `/orders/confirm-received/${orderId}`,
+                method: 'put',
+            })
         })
     }),
 });
@@ -28,5 +34,6 @@ const orderApi = createApi({
 export const {
     useGetOrdersQuery,
     useGetOrdersByUserIdQuery,
+    useConfirmReceivedMutation
 } = orderApi;
 export default orderApi;

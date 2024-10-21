@@ -14,12 +14,20 @@ const variantApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
+        getVariantsByProductId: build.query<BaseResponse<VariantResponse[]>, string>({
+            query: (productId) => ({
+                url: '/variants/' + productId,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
     }),
    
 })
 
 export const {
-    useLazyGetVariantsQuery
+    useLazyGetVariantsQuery,
+    useGetVariantsByProductIdQuery
 } = variantApi;
 
 export default variantApi;

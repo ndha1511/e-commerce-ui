@@ -4,7 +4,6 @@ import { CreateProductDto } from "../../dtos/request/product/create-product.requ
 const initialState: CreateProductDto = {
     productName: '',
     regularPrice: 0,
-    shopId: '',
     categories: [],
     brandId: '',
     city: '',
@@ -22,14 +21,17 @@ export const createProductSlice = createSlice({
         setProductName: (state, action) => {
             state.productName = action.payload;
         },
+        setDescription: (state, action) => {
+            state.description = action.payload;
+        },
         setRegularPrice: (state, action) => {
             state.regularPrice = action.payload;
         },
-        setShopId: (state, action) => {
-            state.shopId = action.payload;
-        },
         setCategories: (state, action) => {
             state.categories = action.payload;
+        },
+        addCategories: (state, action) => {
+            state.categories.push(action.payload);
         },
         setBrandId: (state, action) => {
             state.brandId = action.payload;
@@ -47,16 +49,22 @@ export const createProductSlice = createSlice({
             state.video = action.payload;
         },
         addAttributeDto: (state, action) => {
-            state.attributesDto[action.payload.index]=(action.payload.data);
+            state.attributesDto[action.payload.index] = (action.payload.data);
         },
-        setAttributeValue:(state,action) =>{
+        setAttributeDto: (state, action) => {
+            state.attributesDto = action.payload;
+        },
+        setAttributeValue: (state, action) => {
             const index = state.attributesDto.findIndex(item => item.attributeName === action.payload.attributeName);
-            if(index!== -1){
+            if (index !== -1) {
                 state.attributesDto[index] = action.payload;
             }
         },
         addVariantDto: (state, action) => {
-            state.variantsDto.push(action.payload);
+            state.variantsDto = [...state.variantsDto, action.payload];
+        },
+        setVariantDto: (state, action) => {
+            state.variantsDto = action.payload;
         },
         addTag: (state, action) => {
             state.tag?.push(action.payload);
@@ -74,11 +82,15 @@ export const createProductSlice = createSlice({
         removeTag: (state, action) => {
             state.tag = state.tag?.filter((_, index) => index !== action.payload);
         },
+        removeAll: (state) => {
+            state = initialState
+            return state;
+        },
     }
 })
-export const { setProductName, setRegularPrice,
-    setShopId, setCategories, setBrandId, setCity,
+export const { setProductName, setRegularPrice, setDescription,setAttributeDto,
+    setCategories, setBrandId, setCity, addCategories,
     setThumbnailIndex, addImage, setVideo, setAttributeValue,
-    addAttributeDto, addVariantDto, addTag,
-    removeImage, removeAttributeDto, removeVariantDto, removeTag } = createProductSlice.actions
+    addAttributeDto, addVariantDto, addTag, setVariantDto,
+    removeImage, removeAttributeDto, removeVariantDto, removeTag,removeAll } = createProductSlice.actions
 export default createProductSlice.reducer;

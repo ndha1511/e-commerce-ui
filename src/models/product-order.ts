@@ -6,4 +6,6 @@ export interface ProductOrder {
     quantity: number;
     amount: number;
     image: string;
+    allowComment: boolean;
+    commented: boolean;
 }

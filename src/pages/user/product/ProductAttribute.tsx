@@ -17,28 +17,26 @@ const ProductAttribute = ({attribute, onSelect, index}: {
     return (
         <div>
             <strong>{attribute.attributeName}</strong>
-            <Row className="p-2">
+            <div className="">
                 {attribute.attributeValues.map((value, index) => (
-                    <Col key={index} xs={3} className="p-1">
-                        <div className="btn-check-sc">
+                        <div key={index} className="btn-check-sc">
                             <button
                                 className={`w-100 btn-sc border-radius-small bg-white p-1 d-flex align-items-center justify-content-center ${selected === value.value ? 'selected' : ''}`}
                                 onClick={() => handleClick(value.value, value.image || "")}
                             >
-                                <div className="bg-light w-100">
+                                <div className="bg-light ">
                                     {value.image && <span className="pe-1">
                                         <img src={value.image} style={{ width: 40, height: 40, marginBottom: 0 }} />
                                     </span>}
-                                    <span>{value.value}</span>
+                                    <span>{value.value} </span>
                                 </div>
                             </button>
                             <div className={`check-sc ${selected === value.value ? 'show-icon' : ''}`}>
                                 <FontAwesomeIcon color="white" icon={faCheck} className="pe-2 ps-1 icon-check-size" />
                             </div>
                         </div>
-                    </Col>
                 ))}
-            </Row>
+            </div>
         </div>
     )
 }

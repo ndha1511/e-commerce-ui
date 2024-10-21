@@ -20,7 +20,37 @@ pre {
 span{
   color: #333;
 }
-
+.none-select{
+  user-select: none;
+} 
+.custom-tooltip .tooltip-inner{
+  background-color: red !important; /* Màu nền đỏ */
+  color: white; /* Màu chữ trắng */
+  border-radius: 4px; /* Tùy chọn: bo góc */
+}
+/* Để thêm hiệu ứng bo góc cho mũi tên */
+.custom-tooltip .tooltip-arrow::before {
+  content: '';
+  position: absolute;
+  border-width: 5px; /* Độ dày của mũi tên */
+  border-style: solid;
+  border-color: transparent transparent red transparent; /* Màu mũi tên */
+  
+}
+.custom-tooltip1 .tooltip-arrow::before {
+  content: '';
+  position: absolute;
+  border-width: 5px; /* Độ dày của mũi tên */
+  border-style: solid;
+  top:50%;
+  right: 1px;
+  border-color: transparent red transparent transparent;
+  transform: translateY(-50%);
+}
+.tooltip-inner {
+  max-width: 1000px !important;
+  background-color: $primary-color !important;
+}
 .no-shadow {
   box-shadow: none !important;
 }
@@ -60,7 +90,9 @@ span{
 .text-blur {
   color: rgba(0, 0, 0, 0.5)
 }
-
+.text-orange{
+  color: #f3a877;
+}
 .text-small {
   font-size: $font-small;
 }
@@ -255,3 +287,12 @@ pre {
   max-height: calc(100vh - 120px);
 }
 
+.no-spinner {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.no-spinner::-webkit-inner-spin-button, 
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Chrome, Safari, Edge */
+  margin: 0; 
+}

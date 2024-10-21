@@ -12,14 +12,18 @@ import Password from "../pages/user/account/password/Password";
 import Purchase from "../pages/user/account/purchase/Purchase";
 import Notification from "../pages/user/account/notification/Notification";
 import Voucher from "../pages/user/account/voucher/Voucher";
-import InsertProduct from "../pages/seller/product/InsertProduct";
+import InsertProduct from "../pages/admin/product/InsertProduct";
 import AuthLayout from "../layout/user/auth/AuthLayout";
 import Register from "../pages/user/auth/register/Register";
 import VerifyEmail from "../pages/user/auth/register/VerifyEmail";
 import ForgotPassword from "../pages/user/auth/reset-password/ForgotPassword";
 import ResetPassword from "../pages/user/auth/reset-password/ResetPassword";
 import AdminLayout from "../layout/admin/AdminLayout";
+import Product from "../pages/admin/product/Product";
+import ProductAttribute from "../pages/admin/product/ProductAttribute";
 import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
+import ProductStock from "../pages/admin/product/ProductStock";
+import ProductImport from "../pages/admin/product/ProductImport";
 
 
 
@@ -101,8 +105,24 @@ export const router = createBrowserRouter([
         element: <AdminLayout><CreatePromotion/></AdminLayout>
     },
     {
-        path: "/seller/insert-product",
-        element: <InsertProduct/>
+        path: "/admin/product/insert",
+        element: <AdminLayout><InsertProduct/></AdminLayout>
+    },
+    {
+        path: "/admin/products",
+        element: <AdminLayout><Product/></AdminLayout>
+    },
+    {
+        path: "/admin/products/attribute",
+        element: <AdminLayout><ProductAttribute/></AdminLayout>
+    },
+    {
+        path: "/admin/product/stock",
+        element: <AdminLayout><ProductStock/></AdminLayout>
+    },
+    {
+        path: "/admin/product/import",
+        element: <AdminLayout><ProductImport/></AdminLayout>
     },
 
 ]);

@@ -13,13 +13,14 @@ import { useGetProductByUrlQuery } from "../../../services/product.service";
 import ModalLoading from "../../../components/loading/ModalLoading";
 import { convertPrice } from "../../../utils/convert-price";
 import RenderVideo from "../../../components/image-details/RenderVideo";
-import RenderImage from "../../../components/image-details/RenderImage";
 import ProductAttribute from "./ProductAttribute";
 import { useLazyGetVariantsQuery } from "../../../services/variant.service";
 import { VariantResponse } from "../../../dtos/response/variant/variant-response";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import { useAddToCartMutation } from "../../../services/cart.service";
 import { useGetAddressByUserIdQuery } from "../../../services/address.service";
+import RenderImage from "../../../components/image-details/RenderImage";
+
 
 function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
@@ -100,6 +101,7 @@ function ProductDetail() {
                 original: image,
                 thumbnail: image,
                 renderItem: RenderImage
+
             }));
             if (newImages) {
                 imgs.push(...newImages);
@@ -305,6 +307,7 @@ function ProductDetail() {
                         {(address?.data && address?.data.length > 0) ?
                         <div className="bg-white mt-3 border-radius-medium p-1"> <Address info={address.data[0]} />  </div> :<></> }
                        
+
                     </Col>
                 </Row>
 
