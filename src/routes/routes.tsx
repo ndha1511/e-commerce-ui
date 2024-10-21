@@ -24,6 +24,7 @@ import ProductAttribute from "../pages/admin/product/ProductAttribute";
 import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
 import ProductStock from "../pages/admin/product/ProductStock";
 import ProductImport from "../pages/admin/product/ProductImport";
+import Category from "../pages/admin/category/Category";
 
 
 
@@ -123,6 +124,10 @@ export const router = createBrowserRouter([
     {
         path: "/admin/product/import",
         element: <AdminLayout><ProductImport/></AdminLayout>
+    },
+    {
+        path: "/admin/categories",
+        element: <AdminLayout><Category/></AdminLayout>
     },
 
 ]);

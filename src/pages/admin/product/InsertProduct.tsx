@@ -140,7 +140,6 @@ function InsertProduct() {
         <div className="w-100 container-fluid">
             <Row>
                 <Col md={12} className="border bg-light p-3">
-                    <BtnGroup />
                     <div className="bg-white p-4 border-radius-medium" style={{ width: '95%' }}>
                         <h4>Thông tin cơ bản</h4>
                         <ImgAndVideo addProductClick={addProductClick} />
