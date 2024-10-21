@@ -14,9 +14,9 @@ const ToggleAttribute = ({ productId, attributeValue1, attributeValue2, updateAt
     const { data } = useGetAttributeByProductIdQuery(productId);
     const [stateAttrVal1, setStateAttrVal1] = useState(attributeValue1);
     const [stateAttrVal2, setStateAttrVal2] = useState(attributeValue2 || '');
-    
+
     const changeOption = (newValue: string, index: number) => {
-        if(index === 0) {
+        if (index === 0) {
             setStateAttrVal1(newValue);
         } else {
             setStateAttrVal2(newValue);
@@ -24,8 +24,8 @@ const ToggleAttribute = ({ productId, attributeValue1, attributeValue2, updateAt
     }
 
     const handleUpdate = () => {
-        if((stateAttrVal1 !== attributeValue1) || (stateAttrVal2 !== attributeValue2)) {
-            if(!attributeValue2) {
+        if ((stateAttrVal1 !== attributeValue1) || (stateAttrVal2 !== attributeValue2)) {
+            if (!attributeValue2) {
                 updateAttribute(stateAttrVal1);
             } else {
                 updateAttribute(stateAttrVal1, stateAttrVal2);
@@ -34,7 +34,7 @@ const ToggleAttribute = ({ productId, attributeValue1, attributeValue2, updateAt
         close();
     }
 
-    
+
 
     return (
         <div className="variant-options">
@@ -54,7 +54,7 @@ const ToggleAttribute = ({ productId, attributeValue1, attributeValue2, updateAt
                                     <Button
                                         key={index1}
                                         variant={selectColor === val.value ? 'danger' : 'outline-secondary'}
-                                        className={`variant-button ${selectColor === val.value ? 'selected' : ''}`}
+                                        className={`text-normal variant-button ${selectColor === val.value ? 'selected' : ''}`}
                                         onClick={() => changeOption(val.value, index)}
                                     >
                                         {val.value}
@@ -63,16 +63,16 @@ const ToggleAttribute = ({ productId, attributeValue1, attributeValue2, updateAt
                             </Col>
                         </Row>
 
-                        <div className="d-flex justify-content-between mt-4">
-                            <Button variant="light" onClick={close}>
-                                TRỞ LẠI
-                            </Button>
-                            <Button variant="danger" onClick={handleUpdate}>
-                                XÁC NHẬN
-                            </Button>
-                        </div>
                     </div>
                 })}
+                <div className="d-flex justify-content-between mt-4">
+                    <Button variant="light" onClick={close}>
+                        TRỞ LẠI
+                    </Button>
+                    <Button variant="danger" onClick={handleUpdate}>
+                        XÁC NHẬN
+                    </Button>
+                </div>
             </div>
         </div>
     )

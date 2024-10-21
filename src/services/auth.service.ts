@@ -44,7 +44,7 @@ const authApi = createApi({
             query: () => ({
                 url: '/auth/check-login',
                 method: 'get',
-                keepUnusedDataFor: 3600,
+                keepUnusedDataFor: 3600 * 24,
             })
         }),
         resetPassword: build.query<BaseResponse<null>, string>({ 

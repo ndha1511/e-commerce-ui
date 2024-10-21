@@ -1,10 +1,11 @@
 type Props = {
     star: number,
     variant?: 'primary' | 'secondary' | 'warning',
-    size?: 'text-small' | 'text-medium' | 'text-large'
+    size?: 'text-small' | 'text-medium' | 'text-large',
+    setStar?: (star: number) => void;
 }
 
-const Rating = ({star, variant, size} : Props) => {
+const Rating = ({star, variant, size, setStar} : Props) => {
    
     const stars = [
         <i className="bi bi-star-fill"></i>,
@@ -30,8 +31,10 @@ const Rating = ({star, variant, size} : Props) => {
     }
 
     return (
-        <div className={`${variant} ${size} d-inline-flex gap-1`}>
-            {getStars().map((star, index) => <div key={index}>{star}</div>)}
+        <div className={`${variant} ${size} d-inline-flex gap-1 btn-pointer`}>
+            {getStars().map((star, index) => <div key={index} onClick={() => {
+                if (setStar) setStar(index + 1);
+            }}>{star}</div>)}
         </div>
     );
 

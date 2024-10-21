@@ -36,7 +36,7 @@ const Cart: React.FC = () => {
         const variant = selectVariant.reduce((acc, variant) => {
             return acc !== '' ? acc + ';' + variant : variant;
         }, '');
-        redirect('/payment?select-variant=' + variant);
+        redirect('/payment?select-variant=' + variant + '&from=cart' );
     }
 
 

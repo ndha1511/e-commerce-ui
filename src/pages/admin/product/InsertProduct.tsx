@@ -1,7 +1,6 @@
 import { Col, OverlayTrigger, Row } from "react-bootstrap";
 import './insert-product.scss'
 import { useEffect, useState } from "react";
-import BtnGroup from "../../../components/seller/insert-product/BtnGroup";
 import ImgAndVideo from "../../../components/seller/insert-product/ImgAndVideo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
