@@ -65,7 +65,7 @@ const menu: Menu[] = [
     },
     {
         name: 'QL đơn hàng',
-        path: '/admin',
+        path: '/admin/purchase',
         icon: <i className="bi bi-clipboard-check"></i>
     },
     {

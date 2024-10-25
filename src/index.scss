@@ -297,6 +297,9 @@ pre {
   margin: 0; 
 }
 // ================================================================= page =================================================================
+.pagination{
+  margin-bottom: 0;
+}
 .pagination .active > .page-link {
   box-shadow: none !important;
   background-color:  rgb(241, 124, 61); // Màu nền
@@ -318,6 +321,6 @@ pre {
     box-shadow: none !important;
   }
 }
-.page-item.active {
-  box-shadow: none !important;
+.page-item {
+  margin-bottom: 0;
 }

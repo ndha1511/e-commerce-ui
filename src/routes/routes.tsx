@@ -25,6 +25,7 @@ import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
 import ProductStock from "../pages/admin/product/ProductStock";
 import ProductImport from "../pages/admin/product/ProductImport";
 import Category from "../pages/admin/category/Category";
+import PurchaseAdmin from "../pages/admin/purchase/PurchaseAdmin";
 
 
 
@@ -128,6 +129,10 @@ export const router = createBrowserRouter([
     {
         path: "/admin/categories",
         element: <AdminLayout><Category/></AdminLayout>
+    },
+    {
+        path: "/admin/purchase",
+        element: <AdminLayout><PurchaseAdmin/></AdminLayout>
     },
 
 ]);

@@ -1,4 +1,4 @@
-import { Dropdown, Form, Pagination, Table } from "react-bootstrap";
+import { Dropdown, Pagination, Table } from "react-bootstrap";
 import { useGetProductsQuery } from "../../../services/product.service";
 import { convertPrice } from "../../../utils/convert-price";
 import React, { LegacyRef, ReactNode, useState } from "react";
@@ -17,8 +17,6 @@ function Product() {
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        // Gọi lại API với trang mới nếu cần
-        // useGetProductsQuery({ page, limit: itemsPerPage });
     };
 
     // Lấy các sản phẩm cho trang hiện tại

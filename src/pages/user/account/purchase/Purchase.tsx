@@ -6,6 +6,7 @@ import { pageQueryHanlder } from "../../../../utils/query-handler";
 import Tab from "../../../../components/seller/insert-product/Tab";
 import ModalLoading from "../../../../components/loading/ModalLoading";
 import PurchaseItem from "./PurchaseItem";
+import { Table } from "react-bootstrap";
 
 const Purchase = () => {
     const { data: user } = useCheckLoginQuery();
@@ -76,13 +77,14 @@ const Purchase = () => {
         <Tab tabNames={tabs} activeTab={activeTab} handleButtonClick={handleTabClick} />
         <div className="w-100 d-flex justify-content-center align-items-center flex-1">
             {(purchase?.data?.items && purchase?.data?.items.length > 0) ?
-                <table className="table">
+                <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.PENDING ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
                     <thead>
                         <tr>
                             <th>Mã đơn hàng</th>
                             <th>Ngày đặt</th>
                             <th>Thanh toán</th>
                             <th>Tổng tiền</th>
+                            {orderStatus === OrderStatus.PENDING ?   <th>Thao tác</th> : <></>} 
                             <th></th>
                         </tr>
                     </thead>
@@ -91,7 +93,7 @@ const Purchase = () => {
                            <PurchaseItem refetch={refetch} item={item} key={idx}/>
                         ))}
                     </tbody>
-                </table> :
+                </Table> :
                 <span className="text-medium">Không có dữ liệu</span>
             }
         </div>

@@ -1,16 +1,18 @@
 import { Collapse, Table } from "react-bootstrap";
-import { Order, OrderStatus, PaymentStatus } from "../../../../models/order";
-import { convertPrice } from "../../../../utils/convert-price";
-import React from "react";
-import { ProductOrder } from "../../../../models/product-order";
-import { PaymentMethod } from "../../../../dtos/request/payment/order-request";
-import { useLazyGetPaymentQuery } from "../../../../services/payment.service";
-import { useConfirmReceivedMutation } from "../../../../services/order.service";
-import ModalLoading from "../../../../components/loading/ModalLoading";
-import FormComment from "./FormComment";
-import './purchase.scss'
 
-const ProductItem = ({ product, orderId }: { product: ProductOrder, orderId: string }) => {
+import '..//../user/account/purchase/purchase.scss'
+import { ProductOrder } from "../../../models/product-order";
+import React from "react";
+import { convertPrice } from "../../../utils/convert-price";
+import ModalLoading from "../../../components/loading/ModalLoading";
+import { Order, OrderStatus, PaymentStatus } from "../../../models/order";
+import { PaymentMethod } from "../../../dtos/request/payment/order-request";
+import { useLazyGetPaymentQuery } from "../../../services/payment.service";
+import { useConfirmActionMutation, useConfirmReceivedMutation } from "../../../services/order.service";
+import { useDispatch } from "react-redux";
+import { setNotify } from "../../../rtk/slice/notify-slice";
+
+const ProductItem = ({ product, orderId, item }: { product: ProductOrder, orderId: string, item: Order }) => {
     const [showFormComment, setShowFormComment] = React.useState(false);
     const handleClose = () => {
         setShowFormComment(false);
@@ -34,18 +36,27 @@ const ProductItem = ({ product, orderId }: { product: ProductOrder, orderId: str
             <td>{convertPrice(product.price)}</td>
             <td>{product.quantity}</td>
             <td>{convertPrice(product.amount)}</td>
-            {(product.allowComment && !product.commented) && <td><button className="inActiveProduct" onClick={() => setShowFormComment(true)}>Đánh giá sản phẩm</button></td>}
+            {item.orderStatus === OrderStatus.RECEIVED && (
+                (product.allowComment && !product.commented) && (
+                    <td>
+                        <button className="inActiveProduct" onClick={() => setShowFormComment(true)}>
+                            Xem đánh giá sản phẩm
+                        </button>
+                    </td>
+                )
+            )}
         </tr>
-        {showFormComment && <FormComment orderId={orderId} show={showFormComment} handleClose={handleClose} product={product} />}
     </>
 
 
 }
 
 const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) => {
+    const [trigger] = useConfirmActionMutation();
     const [getUrlPayment] = useLazyGetPaymentQuery();
     const [open, setOpen] = React.useState(false);
     const [confirmReceived, { isLoading: confirmLoading }] = useConfirmReceivedMutation();
+    const dispatch = useDispatch();
     const handlerPayment = async () => {
         try {
             const result = await getUrlPayment({
@@ -71,6 +82,23 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
             console.log(error);
         }
     }
+    const handleConfirm = async (action: 'shipping' | 'cancel' | 'shipped-confirmation' | 'received') => {
+        try {
+            await trigger({
+                orderId: item.id,
+                action: action
+            }).unwrap();
+            refetch();
+            dispatch(setNotify({
+                type: 'success', message: 'Thao tác thành công'
+            }))
+        } catch (error) {
+            console.log(error);
+            dispatch(setNotify({
+                type: 'error', message: 'Thao tác không thành công'
+            }))
+        }
+    }
     return <>
         <tr className="">
             <td className="p-3">{item.id}</td>
@@ -80,10 +108,11 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
                     item.paymentStatus === PaymentStatus.UNPAID ? <button onClick={handlerPayment}>Thanh toán</button> : "Đã thanh toán"}
             </td>
             <td>{convertPrice(item.finalAmount)}</td>
-            {item.orderStatus === OrderStatus.PENDING || item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION  ?
+            {item.orderStatus === OrderStatus.PENDING || item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION || item.orderStatus === OrderStatus.SHIPPING ?
                 <td>
-                    {(item.orderStatus === OrderStatus.PENDING) && <button className="inActiveProduct">Hủy đơn hàng</button>}
-                    {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button onClick={() => updatePurchase(OrderStatus.RECEIVED)}>Đã nhận được hàng</button>}
+                    {(item.orderStatus === OrderStatus.PENDING) && <button className="inActiveProduct" onClick={() => handleConfirm('shipping')}>Xác nhận </button>}
+                    {(item.orderStatus === OrderStatus.SHIPPING) && <button className="inActiveProduct" onClick={() => handleConfirm('shipped-confirmation')}>Xác nhận </button>}
+                    {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button className="inActiveProduct" onClick={() => updatePurchase(OrderStatus.RECEIVED)}>Xác nhận</button>}
                 </td> : <></>
             }
 
@@ -115,7 +144,7 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
                             </thead>
                             <tbody>
                                 {item.productOrders.map((p, idx) => (
-                                    <ProductItem orderId={item.id} product={p} key={idx} />
+                                    <ProductItem item={item} orderId={item.id} product={p} key={idx} />
                                 ))}
                                 <tr >
                                     <td colSpan={item.orderStatus !== OrderStatus.RECEIVED ? 5 : 6} style={{ border: 'none' }}></td>
