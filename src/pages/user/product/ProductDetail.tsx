@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import './product-detail.scss'
 import Address from "../../../components/address/Address";
-import Comment from "./Comment";
+import Comment from "./CommentComp";
 import { useParams } from "react-router-dom";
 import { useGetProductByUrlQuery } from "../../../services/product.service";
 import ModalLoading from "../../../components/loading/ModalLoading";
@@ -310,49 +310,25 @@ function ProductDetail() {
 
                     </Col>
                 </Row>
-
                 <Row>
-                    <Col md={9}>
-                        <Comment />
-                    </Col>
-                    <Col md={3}>
-
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={9}>
+                    {product?.tags && <Col md={9}>
                         <div className="mt-3 border-radius-medium ">
                             <div style={{ border: 'none' }} className="card border-radius-medium ">
                                 <div className="card-body border-radius-medium ">
                                     <h5 className="card-title">Thông tin chi tiết</h5>
                                     <table className="table text-muted ">
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">Thương hiệu</th>
-                                                <td>OEM</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Xuất xứ thương hiệu</th>
-                                                <td>Việt Nam</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Chất liệu</th>
-                                                <td>Cotton</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Xuất xứ (Made in)</th>
-                                                <td>Việt Nam</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Sản phẩm có được bảo hành không?</th>
-                                                <td>Không</td>
-                                            </tr>
+                                            {product?.tags?.map((tag, idx) => <tr>
+                                                 <th key={idx} scope="row">{tag.tagName}</th>
+                                                 <td>{tag.tagValue}</td>
+ 
+                                            </tr>)}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
-                    </Col>
+                    </Col>}
                 </Row>
                 <Row>
                     <Col md={9}>
@@ -361,29 +337,24 @@ function ProductDetail() {
                                 <div className="card-body border-radius-medium ">
                                     <h5 className="card-title">Mô tả sản phẩm</h5>
                                     <pre className="text-align-start">
-                                        {` 
-                                    1. Size: S, M, L, XL
-                                    2. Kiểu dáng: Thun đen
-                                    3. Phong cách: Nhập khẩu
-                                    4. Màu sắc: Đen
-                                    5. Công nghệ: Cotton
-                                    6. Chất liệu: 100% cotton
-                                    7. Kích thước: 80cm x 100cm x 25cm
-                                    8. Trọng lượng: 150g
-                                    9. Sản phẩm có thể khuyển mãi tại cửa hàng của chúng tôi
-                                    10. Sản phẩm có thể đặt hàng tại cửa hàng của chúng tôi để nhận hàng tại`}
+                                        {product?.description}
                                     </pre>
-                                    <img
-                                        style={{ display: 'flex', flex: 1 }}
-                                        src="https://salt.tikicdn.com/cache/280x280/ts/product/69/bf/e9/45164f5d8f4ef134197f2bb5aca85a5c.jpg.webp"
-                                        alt="Product"
-                                        className="img-fluid"
-                                    />
+    
                                 </div>
                             </div>
                         </div>
                     </Col>
                 </Row>
+
+                <Row>
+                    <Col md={9}>
+                        {product && <Comment productId={product.id} />}
+                    </Col>
+                    <Col md={3}>
+
+                    </Col>
+                </Row>
+                
 
             </>}
         </Container>

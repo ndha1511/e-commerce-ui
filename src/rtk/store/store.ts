@@ -11,6 +11,7 @@ import addressApi from '../../services/address.service'
 import paymentApi from '../../services/payment.service'
 import orderApi from '../../services/order.service'
 import inventoryApi from '../../services/inventory.service'
+import commentApi from '../../services/comment.service'
 
 export const store = configureStore({
   reducer: {
@@ -24,7 +25,8 @@ export const store = configureStore({
     [addressApi.reducerPath]: addressApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
-    [inventoryApi.reducerPath]: inventoryApi.reducer
+    [inventoryApi.reducerPath]: inventoryApi.reducer,
+    [commentApi.reducerPath]: commentApi.reducer,
 
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
@@ -37,6 +39,7 @@ export const store = configureStore({
     .concat(paymentApi.middleware)
     .concat(orderApi.middleware)
     .concat(inventoryApi.middleware)
+    .concat(commentApi.middleware)
 })
 
 setupListeners(store.dispatch)
