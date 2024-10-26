@@ -140,167 +140,169 @@ function ProductImport() {
             <div className=" d-flex justify-content-between">
                 <h5>Thông tin sản phẩm</h5>
             </div>
-            <div className="mt-3 mb-3 d-flex justify-content-between gap-3">
-                <div className="search-list-product p-2 pe-3">
-                    <input className="input-search-list-product"
-                        value={searchKeyword} onChange={(e) => { handleSearchProduct(e) }}
-                        placeholder="Nhập từ khóa tìm kiếm" type="text" />
-                    <i className="bi bi-search"></i>
-                    {open && <div className=" bg-white search-result">
-                        <SimpleBar style={{ minHeight: 100 }}>
-                            {data?.data?.items?.length && data.data.items.length > 0 ? (
-                                data.data.items.map((item) => (
-                                    <div className=" search-result-cs" onClick={() => { handleSelect(item.id) }} key={item.id}>
-                                        <div className="d-flex align-items-center">
-                                            {item.thumbnail && <img src={item.thumbnail} alt={item.thumbnail} width={60} height={60} />}
-                                            <div className="d-flex flex-column justify-content-center  " style={{ fontSize: 12 }}>
-                                                <span className="truncate-text ps-2">{item.productName}</span>
-                                                <span className="truncate-text ps-2 text-muted" >skit-hela</span>
-                                                <span className="truncate-text ps-2">{item.weight} gr</span>
+            <div className="mt-3 bg-white border-radius-small p-3">
+                <div className=" mb-3 d-flex justify-content-between gap-3">
+                    <div className="search-list-product p-2 pe-3">
+                        <input className="input-search-list-product"
+                            value={searchKeyword} onChange={(e) => { handleSearchProduct(e) }}
+                            placeholder="Nhập từ khóa tìm kiếm" type="text" />
+                        <i className="bi bi-search"></i>
+                        {open && <div className=" bg-white search-result">
+                            <SimpleBar style={{ minHeight: 100 }}>
+                                {data?.data?.items?.length && data.data.items.length > 0 ? (
+                                    data.data.items.map((item) => (
+                                        <div className=" search-result-cs" onClick={() => { handleSelect(item.id) }} key={item.id}>
+                                            <div className="d-flex align-items-center">
+                                                {item.thumbnail && <img src={item.thumbnail} alt={item.thumbnail} width={60} height={60} />}
+                                                <div className="d-flex flex-column justify-content-center  " style={{ fontSize: 12 }}>
+                                                    <span className="truncate-text ps-2">{item.productName}</span>
+                                                    <span className="truncate-text ps-2 text-muted" >skit-hela</span>
+                                                    <span className="truncate-text ps-2">{item.weight} gr</span>
+                                                </div>
+                                            </div>
+                                            <span style={{ fontSize: 12 }}>
+                                                Tồn kho: <strong>{item.totalQuantity}</strong>
+                                            </span>
+
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center mt-4 d-flex align-items-center justify-content-center gap-2">
+                                        <i style={{ fontSize: 25 }} className="bi bi-search"></i>
+                                        Không tìm thấy kết quả phù hợp</div>
+                                )}
+                            </SimpleBar>
+                        </div>}
+                    </div>
+                    {variants?.data && variants.data.length > 0 && (
+                        <>
+                            <div className="select-search-sale-info w-25">
+                                <input
+                                    className="select-sale-info no-spinner"
+                                    placeholder="Số lượng"
+                                    type="number"
+                                    value={inputQuantity || convertPrice(0)}
+                                    onChange={handleQuantityAllChange}
+                                />
+                            </div>
+                            <div className="select-search-sale-info w-25">
+                                <div className="p-1 pe-2" style={{ borderRight: '2px solid rgb(241, 236, 236)' }}>
+                                    <span>₫</span>
+                                </div>
+                                <input
+                                    className="select-sale-info no-spinner"
+                                    placeholder="Giá nhập"
+                                    type="number"
+                                    value={inputPrice || convertPrice(0)}
+                                    onChange={handlePriceAllChange}
+                                />
+                            </div>
+                            <div className="d-flex w-25">
+                                <button
+                                    disabled={isApplyAll}
+                                    onClick={handleApplyAll}
+                                    className="btn-save-all-category"
+                                >
+                                    Áp dụng tất cả
+                                </button>
+                            </div>
+                        </>
+                    )}
+
+                </div>
+                <Table className='table-bordered table-responsive  custom-table-product-stock-import '>
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>TÊN SẢN PHẨM</th>
+                            <th>MÀU SẮC</th>
+                            <th>DUNG LƯỢNG</th>
+                            <th>SỐ LƯỢNG</th>
+                            <th>GIÁ NHẬP</th>
+                            <th>TỔNG</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    {variants && variants.data && variants?.data?.length > 0 ? (
+                        <tbody>
+                            {variants?.data.map((variant, index) => (
+                                <tr key={index}>
+                                    <td>{variant.sku}</td>
+                                    <td>
+                                        {variant.product.productName.length > 70
+                                            ? variant.product.productName.slice(0, 70) + "..."
+                                            : variant.product.productName}
+                                    </td>
+                                    <td className="pt-1 pb-1">
+                                        <div className="d-flex justify-content-center gap-2 align-items-center">
+                                            {variant.image && <img src={variant.image} alt="anh" width={50} height={50} />}
+                                            <div className={`${variant.image ? 'text-start' : 'text-center'}`} style={{ minWidth: 50 }}>
+                                                {variant.attributeValue1}
                                             </div>
                                         </div>
-                                        <span style={{ fontSize: 12 }}>
-                                            Tồn kho: <strong>{item.totalQuantity}</strong>
-                                        </span>
-
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="text-center mt-4 d-flex align-items-center justify-content-center gap-2">
-                                    <i style={{ fontSize: 25 }} className="bi bi-search"></i>
-                                    Không tìm thấy kết quả phù hợp</div>
-                            )}
-                        </SimpleBar>
-                    </div>}
-                </div>
-                {variants?.data && variants.data.length > 0 && (
-                    <>
-                        <div className="select-search-sale-info w-25">
-                            <input
-                                className="select-sale-info no-spinner"
-                                placeholder="Số lượng"
-                                type="number"
-                                value={inputQuantity || convertPrice(0)}
-                                onChange={handleQuantityAllChange}
-                            />
-                        </div>
-                        <div className="select-search-sale-info w-25">
-                            <div className="p-1 pe-2" style={{ borderRight: '2px solid rgb(241, 236, 236)' }}>
-                                <span>₫</span>
-                            </div>
-                            <input
-                                className="select-sale-info no-spinner"
-                                placeholder="Giá nhập"
-                                type="number"
-                                value={inputPrice || convertPrice(0)}
-                                onChange={handlePriceAllChange}
-                            />
-                        </div>
-                        <div className="d-flex w-25">
-                            <button
-                                disabled={isApplyAll}
-                                onClick={handleApplyAll}
-                                className="btn-save-all-category"
-                            >
-                                Áp dụng tất cả
-                            </button>
-                        </div>
-                    </>
-                )}
-
-            </div>
-            <Table className='table-bordered table-responsive  custom-table-product-stock-import '>
-                <thead>
-                    <tr>
-                        <th>SKU</th>
-                        <th>TÊN SẢN PHẨM</th>
-                        <th>MÀU SẮC</th>
-                        <th>DUNG LƯỢNG</th>
-                        <th>SỐ LƯỢNG</th>
-                        <th>GIÁ NHẬP</th>
-                        <th>TỔNG</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                {variants && variants.data && variants?.data?.length > 0 ? (
-                    <tbody>
-                        {variants?.data.map((variant, index) => (
-                            <tr key={index}>
-                                <td>{variant.sku}</td>
-                                <td>
-                                    {variant.product.productName.length > 70
-                                        ? variant.product.productName.slice(0, 70) + "..."
-                                        : variant.product.productName}
-                                </td>
-                                <td className="pt-1 pb-1">
-                                    <div className="d-flex justify-content-center gap-2 align-items-center">
-                                        {variant.image && <img src={variant.image} alt="anh" width={50} height={50} />}
-                                        <div className={`${variant.image ? 'text-start' : 'text-center'}`} style={{ minWidth: 50 }}>
-                                            {variant.attributeValue1}
+                                    </td>
+                                    <td>{variant.attributeValue2}</td>
+                                    <td className="p-3">
+                                        <div className="p-1 border border-radius-small">
+                                            <input
+                                                className="no-spinner"
+                                                style={{ outline: "none", border: "none" }}
+                                                type="number"
+                                                value={quantities[variant.id] || convertPrice(0)}
+                                                onChange={(e) => handleQuantityChange(variant.id, Number(e.target.value))}
+                                            />
                                         </div>
-                                    </div>
-                                </td>
-                                <td>{variant.attributeValue2}</td>
-                                <td className="p-3">
-                                    <div className="p-1 border border-radius-small">
-                                        <input
-                                            className="no-spinner"
-                                            style={{ outline: "none", border: "none" }}
-                                            type="number"
-                                            value={quantities[variant.id] || convertPrice(0)}
-                                            onChange={(e) => handleQuantityChange(variant.id, Number(e.target.value))}
-                                        />
-                                    </div>
-                                </td>
-                                <td className="p-3">
-                                    <div className="p-1 border border-radius-small">
-                                        <input
-                                            className="no-spinner"
-                                            style={{ outline: "none", border: "none" }}
-                                            type="number"
-                                            value={prices[variant.id] || convertPrice(0)}
-                                            onChange={(e) => handlePriceChange(variant.id, Number(e.target.value))}
-                                        />
-                                    </div>
-                                </td>
-                                <td>{(quantities[variant.id] || 0) * (prices[variant.id] || 0)}</td>
-                                <td>
-                                    <i className="bi bi-trash3" onClick={() => { handleDelete(variant.id) }} style={{ cursor: 'pointer' }}></i>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                ) : (<></>)}
+                                    </td>
+                                    <td className="p-3">
+                                        <div className="p-1 border border-radius-small">
+                                            <input
+                                                className="no-spinner"
+                                                style={{ outline: "none", border: "none" }}
+                                                type="number"
+                                                value={prices[variant.id] || convertPrice(0)}
+                                                onChange={(e) => handlePriceChange(variant.id, Number(e.target.value))}
+                                            />
+                                        </div>
+                                    </td>
+                                    <td>{(quantities[variant.id] || 0) * (prices[variant.id] || 0)}</td>
+                                    <td>
+                                        <i className="bi bi-trash3" onClick={() => { handleDelete(variant.id) }} style={{ cursor: 'pointer' }}></i>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    ) : (<></>)}
 
 
 
-            </Table>
-            {variants?.data.length && variants?.data.length > 0 &&
-                <div className="  d-flex justify-content-end pe-4">
-                    <Row className=" w-25" >
-                        <Col md={6}>
-                            <div className="d-flex flex-column">
-                                <p>Số lượng</p>
-                                <p>Tạm tính</p>
-                                <p>Tax</p>
-                                <h5>Tổng cộng</h5>
-                            </div>
-                        </Col>
-                        <Col md={6}>
-                            <div className="d-flex flex-column text-end">
-                                <p>{Object.values(quantities).reduce((acc, quantity) => acc + quantity, 0)} sản phẩm</p>
-                                <p>{convertPrice(totalAmount)}</p>
-                                <p>{convertPrice(totalAmount * 0.1)}</p>
-                                <p>{convertPrice(totalAmount - totalAmount * 0.1)}</p>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>}
-            {variants?.data && variants.data.length > 0 &&
-                <div className="p-2  d-flex justify-content-start">
-                    <button onClick={() => handleAddInventory()} className="btn-save-all-category p-2" style={{ width: '12%' }} >Hoàn tất</button>
-                </div>}
+                </Table>
+                {variants?.data.length && variants?.data.length > 0 &&
+                    <div className="  d-flex justify-content-end pe-4">
+                        <Row className=" w-25" >
+                            <Col md={6}>
+                                <div className="d-flex flex-column">
+                                    <p>Số lượng</p>
+                                    <p>Tạm tính</p>
+                                    <p>Tax</p>
+                                    <h5>Tổng cộng</h5>
+                                </div>
+                            </Col>
+                            <Col md={6}>
+                                <div className="d-flex flex-column text-end">
+                                    <p>{Object.values(quantities).reduce((acc, quantity) => acc + quantity, 0)} sản phẩm</p>
+                                    <p>{convertPrice(totalAmount)}</p>
+                                    <p>{convertPrice(totalAmount * 0.1)}</p>
+                                    <p>{convertPrice(totalAmount - totalAmount * 0.1)}</p>
+                                </div>
+                            </Col>
+                        </Row>
+                    </div>}
+                {variants?.data && variants.data.length > 0 &&
+                    <div className="p-2  d-flex justify-content-start">
+                        <button onClick={() => handleAddInventory()} className="btn-save-all-category p-2" style={{ width: '12%' }} >Hoàn tất</button>
+                    </div>}
+            </div>
             {isLoading || addInventory && <ModalLoading loading={isLoading || addInventory} />}
         </div>
     );

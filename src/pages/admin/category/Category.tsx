@@ -119,20 +119,20 @@ const Category = () => {
     };
 
     return (
-        <div className="d-flex flex-column border">
+        <div className="d-flex flex-column  bg-light">
             <div className="p-3 border">
                 <SimpleBar style={{ height: 600 }}>
                     <div className="d-flex align-items-center justify-content-between loading-container">
-                        <h5>Danh mục</h5>
-                        <button onClick={() => setShow(true)} className="button-hover button-flex background-primary">
-                            <i className="bi bi-plus-lg"></i> Thêm danh mục
-                        </button>
+                        <h5>Danh sách danh mục</h5>
                     </div>
-                    <div className="d-flex mt-2 mb-3">
+                    <div className="d-flex mt-2 mb-3  justify-content-between">
                         <div className="search-category-admin">
                             <input className="input-search-category-admin" placeholder="Nhập từ khóa tìm kiếm" type="text" />
                             <i className="bi bi-search"></i>
                         </div>
+                        <button onClick={() => setShow(true)} className="button-hover button-flex background-primary">
+                            <i className="bi bi-plus-lg"></i> Thêm danh mục
+                        </button>
                     </div>
                     <div className="d-flex flex-column gap-3  flex-1">
                         <Table className='table-bordered table-responsive custom-table-category'>

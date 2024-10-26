@@ -10,7 +10,7 @@ const orderApi = createApi({
     endpoints: (build) => ({
         getOrders: build.query<BaseResponse<PageResponse<Order>>, string>({
             query: (params) => ({
-                url: '/categories?' + params,
+                url: '/orders?' + params,
                 method: 'get',
             }),
             keepUnusedDataFor: 180,
@@ -27,13 +27,20 @@ const orderApi = createApi({
                 url: `/orders/confirm-received/${orderId}`,
                 method: 'put',
             })
-        })
+        }),
+        confirmAction: build.mutation<BaseResponse<null>, { orderId: string, action: 'shipping' | 'cancel' | 'shipped-confirmation'|'received' }>({
+            query: ({orderId,action}) => ({
+                url: `/orders/confirm-${action}/${orderId}`,
+                method: 'put',
+            })
+        }),
     }),
 });
 
 export const {
     useGetOrdersQuery,
     useGetOrdersByUserIdQuery,
-    useConfirmReceivedMutation
+    useConfirmReceivedMutation,
+    useConfirmActionMutation
 } = orderApi;
 export default orderApi;

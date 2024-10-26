@@ -296,3 +296,31 @@ pre {
   -webkit-appearance: none; /* Chrome, Safari, Edge */
   margin: 0; 
 }
+// ================================================================= page =================================================================
+.pagination{
+  margin-bottom: 0;
+}
+.pagination .active > .page-link {
+  box-shadow: none !important;
+  background-color:  rgb(241, 124, 61); // Màu nền
+  color: white; // Màu chữ
+  border-color:  rgb(241, 122, 58); // Màu viền
+
+  &:hover {
+      background-color:  rgb(238, 111, 43); // Màu nền khi hover
+      color: white; // Màu chữ khi hover
+  }
+}
+.page-link{
+  color: rgb(241, 121, 56);
+
+  &:hover{
+    color: rgb(241, 121, 56);
+  }
+  &:active{
+    box-shadow: none !important;
+  }
+}
+.page-item {
+  margin-bottom: 0;
+}

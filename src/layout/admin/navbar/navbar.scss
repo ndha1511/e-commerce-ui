@@ -2,7 +2,15 @@
 
 .menu-navbar {
     cursor: pointer;
-
+    span{
+        color: rgb(82, 81, 81);
+        transition: color 0.3s ease;
+        font-weight: 500;
+        i{
+            font-size: 14px;
+         
+        }
+    }
     &:hover {
         color: $primary-color;
 
@@ -12,7 +20,7 @@
     }
 
     span:hover {
-        color: $primary-color;
+        color: rgb(235, 105, 35);
 
         .menu-child {
             pointer-events: none;
@@ -23,12 +31,22 @@
         pointer-events: all;
     }
 }
-
+.menu-navbar-active{
+    cursor: pointer;
+    border-left: 4px solid rgb(235, 105, 35);
+    background-color: #f5f1ee;
+    span{
+        color:rgb(235, 105, 35);
+        
+    }
+}
 .custom-row-menu>* {
 
     margin: 0;
     /* Ví dụ: chỉnh lại margin */
     padding: 0px;
+    display: flex;
+    align-items: center;
   
 }
 .search-category-admin {
@@ -84,12 +102,14 @@
 
 .custom-table-category thead tr th {
     vertical-align: middle;
+    text-align: center;
     height: 50px;
     background-color: #a6c9cf;
 }
 .custom-table-category tbody tr td {
     vertical-align: middle;
     padding: 10px;
+    text-align: center;
     // background-color: #a6c9cf;
     font-size: $font-normal;
     background-color: #ffffff;  
@@ -118,4 +138,8 @@
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-bottom: 8px solid #d13c13; /* Màu của mũi tên giống với màu nền */
+}
+.title-navbar-top{
+    height: 64px;
+    background-color: rgb(241, 122, 58);
 }

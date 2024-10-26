@@ -1,7 +1,6 @@
 import { Col, OverlayTrigger, Row } from "react-bootstrap";
 import './insert-product.scss'
 import { useEffect, useState } from "react";
-import BtnGroup from "../../../components/seller/insert-product/Tab";
 import ImgAndVideo from "../../../components/seller/insert-product/ImgAndVideo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
@@ -140,7 +139,6 @@ function InsertProduct() {
         <div className="w-100 container-fluid">
             <Row>
                 <Col md={12} className="border bg-light p-3">
-                    {/* <BtnGroup /> */}
                     <div className="bg-white p-4 border-radius-medium" style={{ width: '95%' }}>
                         <h4>Thông tin cơ bản</h4>
                         <ImgAndVideo addProductClick={addProductClick} />

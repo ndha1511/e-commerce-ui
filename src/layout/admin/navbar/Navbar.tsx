@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import './navbar.scss';
 import { Col, Collapse, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faChevronDown, faChevronUp, faReceipt, faShirt } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useRedirect from '../../../hooks/useRedirect';
 
 interface Menu {
@@ -17,100 +17,116 @@ const menu: Menu[] = [
     {
         name: 'Dashboard',
         path: '/admin',
-        icon: <i className="bi bi-house-door-fill"></i>
+        icon: <i className="bi bi-house-door"></i>
     },
     {
         name: 'QL sản phẩm',
-        icon: <FontAwesomeIcon icon={faShirt} />,
+        icon: <i className="bi bi-box-seam"></i>,
         children: [
             {
                 name: '● Danh sách sản phẩm',
                 path: '/admin/products',
-                fontSize: 12
+                fontSize: 13
             },
             {
                 name: '● Thêm sản phẩm',
                 path: '/admin/product/insert',
-                fontSize: 12
+                fontSize: 13
             },
             {
                 name: '● Kho sản phẩm',
                 path: '/admin/product/stock',
-                fontSize: 12
+                fontSize: 13
             },
             {
                 name: '● Nhập hàng',
                 path: '/admin/product/import',
-                fontSize: 12
+                fontSize: 13
             },
         ]
     },
     {
         name: 'QL danh mục',
         path: '/admin',
-        icon: <i className="bi bi-house-door-fill"></i>,
+        icon: <i className="bi bi-grid"></i>,
         children: [
             {
-                name: '● Danh sách sản phẩm',
-                path: '/admin/products',
-                fontSize: 12
-            },
-            {
-                name: '● Thêm sản phẩm',
-                path: '/admin/products/add',
-                fontSize: 12
+                name: '● Danh sách danh mục',
+                path: '/admin/categories',
+                fontSize: 13
             },
         ]
     },
     {
         name: 'QL thương hiệu',
         path: '/admin',
-        icon: <i className="bi bi-house-door-fill"></i>
+        icon: <i className="bi bi-patch-check"></i>
+
     },
     {
         name: 'QL đơn hàng',
-        path: '/admin',
-        icon: <FontAwesomeIcon icon={faReceipt} />
+        path: '/admin/purchase',
+        icon: <i className="bi bi-clipboard-check"></i>
     },
     {
         name: 'QL khuyến mãi',
         path: '/admin',
-        icon: <i className="bi bi-house-door-fill"></i>
+        icon: <i className="bi bi-gift"></i>
+
+
     },
     {
         name: 'Thống kê',
         path: '/admin',
-        icon: <FontAwesomeIcon icon={faChartLine} />
+        icon: <i className="bi bi-graph-up"></i>
+
+
     },
 ]
 
-const MenuItem = ({ name, path, icon, children, fontSize }: Menu) => {
+
+const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selectedPath, setSelectedPath, selectedName, openMenu, setOpenMenu }: Menu & { isChild?: boolean; selectedPath?: string; setSelectedPath?: (path: string | undefined) => void, selectedName?: string; setSelectedName?: (path: string | undefined) => void, openMenu: string | undefined; setOpenMenu: (name: string | undefined, path?: string | undefined) => void }) => {
     const [open, setOpen] = React.useState(false);
     const redirect = useRedirect();
-    const handleClickMenu = () => {
-        if (children) {
-            setOpen(!open);
+
+    // Xác định nếu menu cha được chọn (kể cả khi có menu con)
+    const isActive = selectedName === name;
+    const handleClickMenu = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (!isChild) {
+            // Nếu là menu cha
+            setOpenMenu(name, path);
+            if (children) {
+                setOpen(!open); // Chỉ toggle mở menu nếu có menu con
+            } else {
+                redirect(path || '');
+            }
         } else {
+            event.stopPropagation();
+            setSelectedPath && setSelectedPath(path); // Cập nhật selectedPath khi là menu con
             redirect(path || '');
         }
-
     }
 
+    // Mở menu con nếu menu cha đang được chọn
+    React.useEffect(() => {
+        setOpen(openMenu === name);
+    }, [openMenu, name]);
+
     return (
-        <div className='w-100 pt-1 pb-1 none-select' onClick={handleClickMenu}>
-            <div className='w-100 ps-3 d-inline-flex align-items-center gap-2 menu-navbar'>
-                <Row className='w-100 m-2 custom-row-menu'>
+        <div className='w-100 pt-1 pb-1 none-select' onClick={(e) => handleClickMenu(e)}>
+            <div className={`w-100 ps-3 d-inline-flex align-items-center gap-2 ${isActive ? 'menu-navbar-active' : 'menu-navbar'}`}>
+                <Row className='w-100 custom-row-menu p-2 '>
                     <Col className='d-flex justify-content-center' md={2}>
                         <span>{icon}</span>
                     </Col>
                     <Col md={10}>
-                        <div className='d-flex justify-content-between w-100 pe-1'>
-                            <span style={{ fontSize: fontSize || 14 }}>
+                        <div className='d-flex justify-content-between align-items-center w-100 pe-1'>
+                            <span style={{ fontSize: fontSize || 14, color: isChild && selectedPath === path ? 'rgb(235, 105, 35)' : '' }}>
                                 {name}
                             </span>
                             <span>
-                                {children ? open ? <FontAwesomeIcon fontSize={12} icon={faChevronUp} /> :
-                                    <FontAwesomeIcon fontSize={12} icon={faChevronDown} /> : <></>}
+                                {children ? open ? <FontAwesomeIcon fontSize={10} icon={faChevronDown} /> :
+                                    <FontAwesomeIcon fontSize={10} icon={faChevronRight} /> : <></>}
                             </span>
                         </div>
                     </Col>
@@ -120,30 +136,59 @@ const MenuItem = ({ name, path, icon, children, fontSize }: Menu) => {
                 <Collapse in={open}>
                     <div className='menu-child'>
                         {children.map((item, index) => (
-                            <div key={index} >
-                                <MenuItem {...item} />
-                            </div>
+                            <MenuItem
+                                key={index}
+                                {...item}
+                                isChild={true}
+                                selectedPath={selectedPath}
+                                setSelectedPath={setSelectedPath}
+                                openMenu={openMenu}
+                                setOpenMenu={setOpenMenu} // Thêm setOpenMenu để quản lý trạng thái
+                            />
                         ))}
                     </div>
                 </Collapse>
             )}
+
         </div>
     );
 }
 
 const Navbar = () => {
+    const [selectedPath, setSelectedPath] = React.useState<string | undefined>(undefined);
+    const [selectedName, setSelectedName] = React.useState<string | undefined>(undefined);
+    const [openMenu, setOpenMenu] = React.useState<string | undefined>(undefined); // Trạng thái menu cha đang mở
+
+    const handleMenuClick = (name: string | undefined, path: string | undefined) => {
+        if (openMenu === name) {
+            // Nếu menu đang mở thì đóng lại
+            setOpenMenu(undefined);
+            setSelectedName(undefined);
+        } else {
+            // Mở menu mới và đóng menu trước đó
+            setOpenMenu(name);
+            setSelectedName(name);
+            setSelectedPath(path);
+        }
+    };
     return (
         <div className="w-100 d-flex justify-content-center flex-column gap-2">
-            <div className='d-flex justify-content-center m-3'>
-                <img
-                    src="https://hoiyeumeo.vn/wp-content/uploads/2024/03/moi-thang-ban-can-bao-nhieu-tien-de-nuoi-meo-2.png"
-                    alt=""
-                    style={{ width: 80, height: 80 }}
-                />
+            <div className='d-flex  align-items-center gap-4 p-2 title-navbar-top ' >
+                <i  style={{ fontSize: 30, color:'white' }} className="bi bi-list-ul"></i>
+                <span className='text-large text-white' style={{fontFamily:'Lobster'}}>SOSELL</span>
             </div>
-            <div className='w-100'>
+            <div className='w-100 mt-2'>
                 {menu.map((item, index) => (
-                    <MenuItem key={index} {...item} />
+                    <MenuItem
+                        key={index}
+                        {...item}
+                        selectedPath={selectedPath}
+                        setSelectedPath={setSelectedPath}
+                        selectedName={selectedName}
+                        setSelectedName={setSelectedName}
+                        openMenu={openMenu}
+                        setOpenMenu={handleMenuClick}
+                    />
                 ))}
             </div>
         </div>

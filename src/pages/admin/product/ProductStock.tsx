@@ -1,72 +1,83 @@
-import { Collapse, Form, Pagination, Table } from "react-bootstrap";
+import { Collapse, Pagination, Table } from "react-bootstrap";
 import './insert-product.scss'
 import { useGetAttributeByIdQuery, useGetProductsQuery } from "../../../services/product.service";
-import React from "react";
+import React, { useState } from "react";
 import { Product } from "../../../models/product";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import { useGetVariantsByProductIdQuery } from "../../../services/variant.service";
 import SimpleBar from "simplebar-react";
+import Select from 'react-select';
 function ProductStock() {
     const { data } = useGetProductsQuery();
     const products = data?.data.items;
+    const totalItems = data?.data.pageSize || 0; // Tổng số sản phẩm
+    const itemsPerPage = 10; // Số sản phẩm mỗi trang
+    const totalPages = Math.ceil(totalItems / itemsPerPage); // Tổng số trang
+    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        // Gọi lại API với trang mới nếu cần
+        // useGetProductsQuery({ page, limit: itemsPerPage });
+    };
+
+    // Lấy các sản phẩm cho trang hiện tại
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentProducts = products?.slice(startIndex, startIndex + itemsPerPage);
     return (
-        <div className=" bg-light p-3">
+        <div className=" bg-light p-3 pe-3">
             <div className=" d-flex justify-content-between">
-                <h5>Kho Sản Phẩm</h5>
+                <div className="d-flex gap-1"><h5>Kho Sản Phẩm </h5>
+                </div>
                 <button className="btn-stock">Lịch sử tồn kho</button>
             </div>
-            <div className="mt-3 mb-3 d-flex justify-content-between">
-                <div className="search-list-product p-2 ">
-                    <input className="input-search-list-product" placeholder="Nhập từ khóa tìm kiếm" type="text" />
-                    <i className="bi bi-search"></i>
+            <div className="bg-white p-2 border-radius-small mt-3">
+                <div className=" mt-1 mb-3 d-flex justify-content-between">
+                    <div className="search-list-product p-2 ">
+                        <input className="input-search-list-product" placeholder="Nhập từ khóa tìm kiếm" type="text" />
+                        <i className="bi bi-search"></i>
+                    </div>
+                    <div className="">
+                        <Select
+                            id=""
+                            placeholder="Lọc theo số lượng bán"
+                        />
+                    </div>
                 </div>
-                <div className="">
-                    <Form.Select className="select-items no-shadow " >
-                        <option>Lọc theo giá</option>
-                        <option value="1">100 - 500</option>
-                        <option value="2">500 - 1000</option>
-                        <option value="3">1000 - 1500</option>
-                    </Form.Select>
-                </div>
+                <SimpleBar style={{ height: 450 }}>
+                    <Table className='table-bordered table-responsive  custom-table-product-stock '>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>ẢNH ĐẠI DIỆN</th>
+                                <th>TÊN SẢN PHẨM</th>
+                                <th>SỐ LƯỢNG HÀNG TỒN</th>
+                                <th>ĐÃ BÁN</th>
+                                <th>TRẠNG THÁI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentProducts?.map((product) => (
+                                <ProductStockItems key={product.id} product={product} />
+                            ))}
+
+                        </tbody>
+                    </Table>
+                    <div className="d-flex justify-content-center align-items-center">
+                        <Pagination className="mt-3">
+                            <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
+                            <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                            {[...Array(totalPages)].map((_, index) => (
+                                <Pagination.Item key={index + 1} active={index + 1 === currentPage} onClick={() => handlePageChange(index + 1)}>
+                                    {index + 1}
+                                </Pagination.Item>
+                            ))}
+                            <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+                            <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+                        </Pagination>
+                    </div>
+                </SimpleBar>
             </div>
-            <SimpleBar style={{ height: 450 }}>
-                <Table className='table-bordered table-responsive  custom-table-product-stock '>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>ẢNH ĐẠI DIỆN</th>
-                            <th>TÊN SẢN PHẨM</th>
-                            <th>SỐ LƯỢNG HÀNG TỒN</th>
-                            <th>ĐÃ BÁN</th>
-                            <th>TRẠNG THÁI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products?.map((product) => (
-                            <ProductStockItems key={product.id} product={product} />
-                        ))}
-
-                    </tbody>
-                </Table>
-            </SimpleBar>
-            <Pagination>
-                <Pagination.First />
-                <Pagination.Prev />
-                <Pagination.Item>{1}</Pagination.Item>
-                <Pagination.Ellipsis />
-
-                <Pagination.Item>{10}</Pagination.Item>
-                <Pagination.Item>{11}</Pagination.Item>
-                <Pagination.Item active>{12}</Pagination.Item>
-                <Pagination.Item>{13}</Pagination.Item>
-                <Pagination.Item disabled>{14}</Pagination.Item>
-
-                <Pagination.Ellipsis />
-                <Pagination.Item>{20}</Pagination.Item>
-                <Pagination.Next />
-                <Pagination.Last />
-            </Pagination>
         </div>
     );
 }
@@ -141,7 +152,7 @@ function ProductStockItems({ product }: ProductStockItems) {
                                 <Table className="mb-0 table-bordered table-responsive  custom-table-product-stock-cs ">
                                     <thead className="sticky-header">
                                         <tr className='text-center'>
-                                        <th>Tên sản phẩm</th>
+                                            <th>Tên sản phẩm</th>
                                             <th>{attributes?.data.attributes?.[0].attributeName}</th>
                                             <th>{attributes?.data.attributes?.[1].attributeName}</th>
                                             <th>SỐ LƯỢNG HÀNG TỒN</th>
@@ -164,20 +175,20 @@ function ProductStockItems({ product }: ProductStockItems) {
                                                 return valA - valB; // Sắp xếp theo giá trị đã được xác định
                                             }).map((item) => (
                                                 <tr key={item.id}>
-                                                              <td>{item.product.productName}</td>
+                                                    <td>{item.product.productName}</td>
                                                     <td>
                                                         <div className=" text-start d-inline-block p-2  " >
                                                             <div className="d-flex align-items-center  justify-content-center gap-1">
                                                                 {item.image && <img src={item.image} alt={item.image} width={50} height={50} />}
-                                                                <div className={`${item.image   ? "color-stock " :''}`}><span className="truncate-text">{item.attributeValue1}</span></div>
+                                                                <div className={`${item.image ? "color-stock " : ''}`}><span className="truncate-text">{item.attributeValue1}</span></div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td>{item.attributeValue2}</td>
-                                          
+
                                                     <td>{item.quantity}</td>
                                                     <td>{item.buyQuantity}</td>
-                                                 
+
                                                 </tr>
                                             ))}
                                     </tbody>
