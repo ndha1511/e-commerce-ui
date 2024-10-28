@@ -3,6 +3,7 @@ import { axiosBaseQuery } from "./base-query";
 import { BaseResponse } from "../dtos/response/base-response";
 import { PageResponse } from "../dtos/response/page-response";
 import { Category } from "../models/category";
+import { CategoryResponse } from "../dtos/response/category/category-response";
 
 const categoryApi = createApi({
     reducerPath: 'categoryApi',
@@ -11,6 +12,13 @@ const categoryApi = createApi({
         getCategories: build.query<BaseResponse<PageResponse<Category>>, string>({
             query: (params) => ({
                 url: '/categories?' + params,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
+        getCategoryByUrl: build.query<BaseResponse<CategoryResponse>, string>({
+            query: (params) => ({
+                url: '/categories/' + params,
                 method: 'get',
             }),
             keepUnusedDataFor: 180,
@@ -30,6 +38,7 @@ const categoryApi = createApi({
 
 export const { 
     useGetCategoriesQuery,
+    useGetCategoryByUrlQuery,
     useLazyGetCategoriesQuery,
     useCreateCategoryMutation,
 } = categoryApi;

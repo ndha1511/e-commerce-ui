@@ -25,7 +25,9 @@ import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
 import ProductStock from "../pages/admin/product/ProductStock";
 import ProductImport from "../pages/admin/product/ProductImport";
 import Category from "../pages/admin/category/Category";
+import CategoryUser from "../pages/user/category/Category";
 import PurchaseAdmin from "../pages/admin/purchase/PurchaseAdmin";
+import App from "../pages/user/test/App ";
 
 
 
@@ -34,6 +36,10 @@ export const router = createBrowserRouter([
     {
         path: "/",
         element: <UserLayout><Home/></UserLayout>
+    },
+    {
+        path: "/test",
+        element: <UserLayout><App/></UserLayout>
     },
     {
         path: "/cart",
@@ -100,6 +106,10 @@ export const router = createBrowserRouter([
     {
         path: "/product/:key",
         element: <UserLayout><ProductDetail/></UserLayout>
+    },
+    {
+        path: "/:categoryPath",
+        element: <UserLayout><CategoryUser/></UserLayout>
     },
     {
 

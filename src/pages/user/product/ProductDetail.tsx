@@ -20,6 +20,8 @@ import { useCheckLoginQuery } from "../../../services/auth.service";
 import { useAddToCartMutation } from "../../../services/cart.service";
 import { useGetAddressByUserIdQuery } from "../../../services/address.service";
 import RenderImage from "../../../components/image-details/RenderImage";
+import { useDispatch } from "react-redux";
+import { setNotify } from "../../../rtk/slice/notify-slice";
 
 
 function ProductDetail() {
@@ -35,9 +37,10 @@ function ProductDetail() {
     const [variant, setVariant] = useState<VariantResponse>();
     const [productPrice, setProductPrice] = useState(0);
     const [disabledBtn, setDisabledBtn] = useState(true);
-    const {data: user, isSuccess: loginSuccess} = useCheckLoginQuery();
+    const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
     const [addToCart] = useAddToCartMutation();
-    const {data: address, refetch: addressRefetch} = useGetAddressByUserIdQuery(user?.data?.id || "", {
+    const dispatch = useDispatch();
+    const { data: address, refetch: addressRefetch } = useGetAddressByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     })
 
@@ -55,9 +58,9 @@ function ProductDetail() {
     }
 
     useEffect(() => {
-        if(variant) {
+        if (variant) {
             setProductPrice(variant.price);
-            if(variant.quantity > 0) {
+            if (variant.quantity > 0) {
                 setDisabledBtn(false);
             } else {
                 setDisabledBtn(true);
@@ -135,13 +138,13 @@ function ProductDetail() {
 
 
 
-    const increaseQuantity = () => {if(variant && variant.quantity > quantity) setQuantity(quantity + 1)};
+    const increaseQuantity = () => { if (variant && variant.quantity > quantity) setQuantity(quantity + 1) };
     const decreaseQuantity = () => {
         if (quantity > 1) setQuantity(quantity - 1);
     };
-    
+
     const handleAddToCart = async () => {
-        if(!user?.data) {
+        if (!user?.data) {
             window.location.href = '/auth/login?redirect-url=' + encodeURIComponent('product/' + key);
         } else {
             try {
@@ -152,7 +155,9 @@ function ProductDetail() {
                         quantity: quantity
                     }
                 }).unwrap();
-                alert('Thêm vào giỏ hàng thành công!');
+                dispatch(setNotify({
+                    type: 'success', message: 'Thao tác không thành công'
+                }))
             } catch (error) {
                 console.log(error);
             }
@@ -303,10 +308,10 @@ function ProductDetail() {
                                 </>}
                             </Card>
                         </div>
-                        
+
                         {(address?.data && address?.data.length > 0) ?
-                        <div className="bg-white mt-3 border-radius-medium p-1"> <Address info={address.data[0]} />  </div> :<></> }
-                       
+                            <div className="bg-white mt-3 border-radius-medium p-1"> <Address info={address.data[0]} />  </div> : <></>}
+
 
                     </Col>
                 </Row>

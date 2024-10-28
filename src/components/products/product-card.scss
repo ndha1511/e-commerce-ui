@@ -2,14 +2,29 @@
 
 .card-container {
     border-radius: $border-radius-medium;
-    border: 1px solid $secondary-color; 
+ 
+    background-color: white;
     flex-direction: column;
     display: flex;
     align-items: center;
     padding: 4px;
     gap: 6px;
     cursor: pointer;
+    transition: box-shadow 0.3s ease, transform 0.3s ease; 
+    /* Thêm hiệu ứng chuyển tiếp cho bóng đổ */
+
+    /* Hiệu ứng bóng đổ */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Bóng nhẹ */
+
+    /* Hiệu ứng khi hover */
+    &:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transform: scale(1.003);
+        /* Bóng mạnh hơn khi hover */
+    }
 }
+
 
 .card-container-size {
     width: 240px;
@@ -64,12 +79,12 @@
 }
 
 .card-text span {
-    overflow: hidden; 
-    text-overflow: ellipsis; 
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: normal;
     display: block;
     height: 3em;
-    overflow: hidden;    
+    overflow: hidden;
 }
 
 .discount-tag {

@@ -24,11 +24,11 @@ const CarouselHome = () => {
 
   return (
     <div className="home-carousel">
-      <Carousel>
+      <Carousel fade>
         {images.map((image, index) => (
           <Carousel.Item key={index}>
             <img
-              className="d-block w-100"
+              className="d-block w-100 border-radius-medium"
               style={{width: '100%', height: 285,objectFit:'cover'}}
               src={image.src}
               alt={image.alt}

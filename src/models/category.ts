@@ -6,4 +6,5 @@ export interface Category{
     children: number;
     level: number;
     inActive: boolean;
+    urlPath:string;
 }

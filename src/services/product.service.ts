@@ -33,6 +33,13 @@ const productApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
+        getProductByCategory: build.query<BaseResponse<PageResponse<Product>>, string>({
+            query: (params) => ({
+                url: '/products/category/' + params,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
         getAttributeById: build.query<BaseResponse<AttributeResponse>, string>({
             query: (id) => ({
                 url: '/products/attribute/' + id,
@@ -71,6 +78,7 @@ const productApi = createApi({
 
 export const {
     useGetProductsQuery,
+    useGetProductByCategoryQuery,
     useCreateProductMutation,
     useGetProductByUrlQuery,
     useCreateAttributeMutation,

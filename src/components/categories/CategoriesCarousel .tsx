@@ -1,65 +1,26 @@
 
 import { Carousel } from 'react-bootstrap';
 import './CategoriesCarousel .scss'; // Optional: Create a separate CSS file for additional styling.
+import { useGetCategoriesQuery } from '../../services/category.service';
+import { pageQueryHanlder } from '../../utils/query-handler';
+import useRedirect from '../../hooks/useRedirect';
 
 const CategoriesCarousel = () => {
-  const categories = [
-    { name: 'Thời Trang Nam', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Điện Thoại & Phụ Kiện', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thiết Bị Điện Tử', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Máy Tính & Laptop', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Máy Ảnh & Máy Quay Phim', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Đồng Hồ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Giày Dép Nam', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thiết Bị Điện Gia Dụng', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thể Thao & Du Lịch', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Ô Tô & Xe Máy & Xe Đạp', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thời Trang Nữ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Mẹ & Bé', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Nhà Cửa & Đời Sống', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Sắc Đẹp', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Sức Khỏe', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Giày Dép Nữ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Túi Ví Nữ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Phụ Kiện & Trang Sức Nữ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Bách Hóa Online', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Nhà Sách Online', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thời Trang Nam', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Điện Thoại & Phụ Kiện', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thiết Bị Điện Tử', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Máy Tính & Laptop', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Máy Ảnh & Máy Quay Phim', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Đồng Hồ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Giày Dép Nam', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thiết Bị Điện Gia Dụng', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thể Thao & Du Lịch', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Ô Tô & Xe Máy & Xe Đạp', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Thời Trang Nữ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Mẹ & Bé', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Nhà Cửa & Đời Sống', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Sắc Đẹp', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Sức Khỏe', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Giày Dép Nữ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Túi Ví Nữ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Phụ Kiện & Trang Sức Nữ', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Bách Hóa Online', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' },
-    { name: 'Nhà Sách Online', icon: 'https://down-vn.img.susercontent.com/file/86c294aae72ca1db5f541790f7796260_tn' }
-  ];
-
-
-  const itemsPerSlide = 20; // Number of items per slide
-  const totalSlides = Math.ceil(categories.length / itemsPerSlide);
-
+  const redirect = useRedirect();
+  const params: string = pageQueryHanlder(1, 1000, [{ filed: 'parentId', operator: '=', value: 'null' }]);
+  const {data:parentCategory} = useGetCategoriesQuery(params);
+const itemsPerSlide = 20; // Number of items per slide
+const totalSlides = Math.ceil((parentCategory?.data.items.length || 0) / itemsPerSlide);
   const renderCarouselItems = () => {
     const slides = [];
     for (let i = 0; i < totalSlides; i++) {
       slides.push(
         <Carousel.Item key={i}>
-          <div className="d-flex justify-content-center align-items-center flex-wrap items-categories">
-            {categories.slice(i * itemsPerSlide, (i + 1) * itemsPerSlide).map((category, idx) => (
-              <div className="category-item text-center  " key={idx}>
-                <img src={category.icon} alt={category.name} className="category-icon" />
-                <p>{category.name}</p>
+          <div className="d-flex  align-items-center flex-wrap items-categories">
+            {parentCategory?.data.items.slice(i * itemsPerSlide, (i + 1) * itemsPerSlide).map((category, idx) => (
+              <div className="category-item text-center  " onClick={()=> redirect('/'+ category.urlPath)} key={idx}>
+                <img src={category.image} alt={category.categoryName} className="category-icon" />
+                <p>{category.categoryName}</p>
               </div>
             ))}
           </div>

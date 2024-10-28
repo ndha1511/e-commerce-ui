@@ -13,14 +13,14 @@ const orderApi = createApi({
                 url: '/orders?' + params,
                 method: 'get',
             }),
-            keepUnusedDataFor: 180,
+            keepUnusedDataFor: 2,
         }),
         getOrdersByUserId: build.query<BaseResponse<PageResponse<Order>>, {userId: string, param: string}>({
             query: ({ userId, param }) => ({
                 url: `/orders/${userId}?${param}`,
                 method: 'get',
             }),
-            keepUnusedDataFor: 0,
+            keepUnusedDataFor: 2,
         }),
         confirmReceived: build.mutation<BaseResponse<null>, string>({
             query: (orderId) => ({
