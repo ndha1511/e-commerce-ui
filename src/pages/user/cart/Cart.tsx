@@ -110,7 +110,9 @@ const Cart: React.FC = () => {
                 </Row>
             </div>
             
-            <div id="cart-items" className="">
+            <div id="cart-items" className="" style={{
+                minHeight: '400px'
+            }}>
                 {data?.data.map((item, index) => (
                     <CartItem 
                         refetch={refetch} 

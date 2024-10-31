@@ -86,7 +86,7 @@ const CategoryItem = ({ category }: ItemProps) => {
                                     <tr className='text-center'>
                                         <th>Hình ảnh</th>
                                         <th>Danh mục</th>
-                                        <th>Cấp bậc</th>
+                                        <th>Danh mục con</th>
                                         <th>Trạng thái</th>
                                         <th>Các chức năng</th>
                                         <th></th>
@@ -140,7 +140,7 @@ const Category = () => {
                                 <tr className='text-center'>
                                     <th>Hình ảnh</th>
                                     <th>Danh mục</th>
-                                    <th>Cấp bậc</th>
+                                    <th>Danh mục con</th>
                                     <th>Trạng thái</th>
                                     <th>Các chức năng</th>
                                     <th></th>

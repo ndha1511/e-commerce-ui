@@ -6,6 +6,7 @@ import { faImage, faPlus } from "@fortawesome/free-solid-svg-icons";
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from "react-redux";
 import { setNotify } from "../../../rtk/slice/notify-slice";
+import ModalLoading from "../../../components/loading/ModalLoading";
 
 interface Props {
   show: boolean;
@@ -19,7 +20,7 @@ const CreateCategoryModal = ({ show, handleClose, refetch, parentId }: Props) =>
   const [url, setUrl] = React.useState('');
   const [categoryName, setCategoryName] = React.useState('');
   const [isValid, setIsValid] = useState(true);
-  const [trigger] = useCreateCategoryMutation();
+  const [trigger, { isLoading }] = useCreateCategoryMutation();
   const dispatch = useDispatch();
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -66,50 +67,53 @@ const CreateCategoryModal = ({ show, handleClose, refetch, parentId }: Props) =>
       * Không được bỏ trống
     </Tooltip>
   );
-  return <Modal show={show} onHide={handleClose} centered>
-    <Modal.Header closeButton>
-      <h5>Thêm danh mục</h5>
-    </Modal.Header>
-    <Modal.Body>
-      <div className="w-100 d-flex gap-2 align-items-center">
-        <>
-          {url === '' ? <><input onChange={handleFileUpload} id="category-img" type="file" accept="image/*" style={{ display: 'none' }} />
-            <label htmlFor="category-img" className="d-flex align-items-center primary mt-1">
-              <div className="image-color p-2">
-                <div className="icon-image-insert">
-                  <FontAwesomeIcon icon={faImage} fontSize={30} />
-                  <FontAwesomeIcon className="icon-plus-image" icon={faPlus} />
+  return <>
+    <Modal show={show} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <h5>Thêm danh mục</h5>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="w-100 d-flex gap-2 align-items-center">
+          <>
+            {url === '' ? <><input onChange={handleFileUpload} id="category-img" type="file" accept="image/*" style={{ display: 'none' }} />
+              <label htmlFor="category-img" className="d-flex align-items-center primary mt-1">
+                <div className="image-color p-2">
+                  <div className="icon-image-insert">
+                    <FontAwesomeIcon icon={faImage} fontSize={30} />
+                    <FontAwesomeIcon className="icon-plus-image" icon={faPlus} />
+                  </div>
                 </div>
-              </div>
-            </label></> : <img src={url} width={50} height={50} />}
-        </>
-        <div className="form-group">
-          <OverlayTrigger placement="bottom"
-            overlay={renderTooltip}
-            show={!isValid}>
-            <input className="form-control no-shadow"
-              placeholder="Tên danh mục"
-              value={categoryName} onChange={(e) => { setCategoryName(e.target.value); setIsValid(true) }} />
+              </label></> : <img src={url} width={50} height={50} />}
+          </>
+          <div className="form-group">
+            <OverlayTrigger placement="bottom"
+              overlay={renderTooltip}
+              show={!isValid}>
+              <input className="form-control no-shadow"
+                placeholder="Tên danh mục"
+                value={categoryName} onChange={(e) => { setCategoryName(e.target.value); setIsValid(true) }} />
 
-          </OverlayTrigger>
+            </OverlayTrigger>
+          </div>
+
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <div className="w-100 d-flex justify-content-end gap-3">
+          <Button variant="secondary" onClick={handleClose}>
+            Đóng
+          </Button>
+          <Button variant="primary" onClick={handleAdd}>
+            Thêm
+          </Button>
+          <div>
+          </div>
         </div>
 
-      </div>
-    </Modal.Body>
-    <Modal.Footer>
-      <div className="w-100 d-flex justify-content-end gap-3">
-        <Button variant="secondary" onClick={handleClose}>
-          Đóng
-        </Button>
-        <Button variant="primary" onClick={handleAdd}>
-          Thêm
-        </Button>
-        <div>
-        </div>
-      </div>
-
-    </Modal.Footer>
-  </Modal>
+      </Modal.Footer>
+    </Modal>
+    {isLoading && <ModalLoading loading={isLoading} />}
+  </>
 }
 
 export default CreateCategoryModal;

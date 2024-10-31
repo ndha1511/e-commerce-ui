@@ -30,7 +30,7 @@ const menu: Menu[] = [
             },
             {
                 name: '● Thêm sản phẩm',
-                path: '/admin/product/insert',
+                path: '/admin/product/create',
                 fontSize: 13
             },
             {
@@ -41,6 +41,11 @@ const menu: Menu[] = [
             {
                 name: '● Nhập hàng',
                 path: '/admin/product/import',
+                fontSize: 13
+            },
+            {
+                name: '● Thêm sản phẩm hàng loạt',
+                path: '/admin/product/batch',
                 fontSize: 13
             },
         ]

@@ -1,4 +1,3 @@
-import { Col, Row } from "react-bootstrap";
 import { Attribute } from "../../../models/attriubte";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
