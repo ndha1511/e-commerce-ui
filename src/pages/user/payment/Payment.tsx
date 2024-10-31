@@ -23,9 +23,10 @@ const Payment = () => {
     const {data: cart, refetch: cartRefetch} = useGetCartByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
-    const {data: address, refetch: addressRefetch} = useGetAddressByUserIdQuery(user?.data?.id || "", {
+    const {data: address, refetch: addressRefetch,isSuccess} = useGetAddressByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
+    console.log(address)
     const {data: shopAddress} = useGetAddressQuery();
     const itemViews = cart?.data.filter(item => variantIds.includes(item.variantResponse.id)) || [];
     const [modalAdd, setModalAdd] = useState(false);
@@ -37,7 +38,6 @@ const Payment = () => {
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.COD);
     const [createOrder, {isLoading}] = useCreateOrderMutation();
     const [getUrlPayment] = useLazyGetPaymentQuery();
-
     useEffect(() => {
         const getPrice = async () => {
             if(address?.data && shopAddress?.data && itemViews.length > 0) {
@@ -101,7 +101,14 @@ const Payment = () => {
         }
 
     }
-   
+    useEffect(() => {
+        if (isSuccess && address?.data) {
+            const index = address?.data.findIndex(addr => addr.addressDefault);
+            if (index !== -1) {
+               setSelectAddress(index);
+            }
+        }
+    }, [isSuccess, address]);
     return (
         <Container className="p-2 bg-light border rounded ">
             <Row className="">
@@ -200,7 +207,7 @@ const Payment = () => {
                     </div>
                 </Col>
             </Row>
-            {modalAdd && <ModalAddress show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch}/>}  
+            {modalAdd && <ModalAddress action='null' show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch}/>}  
             {isLoading && <ModalLoading loading={isLoading}/>}                  
         </Container>
     );

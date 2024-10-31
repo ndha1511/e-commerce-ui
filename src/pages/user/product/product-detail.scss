@@ -42,3 +42,28 @@
         }
     }
 }
+.blurred {
+    opacity: 0.7;
+    pointer-events: none; /* Vô hiệu hóa tương tác */
+}
+@keyframes shadow-pulse {
+    0% {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    }
+    100% {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+}
+.custom-background-pr-ep{
+    background-color: rgba(0, 0, 0, 0.6); /* Màu đỏ nhẹ */
+    animation: shadow-pulse 1.5s infinite;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Hiệu ứng bóng đổ */
+    border-radius: 4px; /* Tùy chọn: thêm góc bo cho div */
+    *{
+        color: white;
+    }
+}
+

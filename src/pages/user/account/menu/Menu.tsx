@@ -3,6 +3,7 @@ import './menu.scss';
 import { Link } from 'react-router-dom';
 import { isAbsoluteLocation } from '../../../../utils/location';
 
+
 type MenuItem = {
     icon?: ReactElement;
     text: string;

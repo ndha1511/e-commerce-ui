@@ -11,6 +11,7 @@ export interface User extends BaseModel {
     name?: string;
     phoneNumber?: string;
     gender?: Gender;
+    dateOfBirth: Date;
     avatar?: string;
     
 }

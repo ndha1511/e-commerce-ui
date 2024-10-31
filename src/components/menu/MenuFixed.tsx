@@ -3,6 +3,8 @@ import { isAbsoluteLocation, isLocation } from "../../utils/location";
 import "./menu-fixed.scss";
 import { isMobile } from "../../utils/responsive";
 import useRedirect from "../../hooks/useRedirect";
+import { useGetCartByUserIdQuery } from "../../services/cart.service";
+import { useCheckLoginQuery } from "../../services/auth.service";
 
 type Props = {
     fixedSearch: boolean;
@@ -12,7 +14,10 @@ const MenuFixed = ({ fixedSearch }: Props) => {
 
     const [showMenu, setShowMenu] = useState<boolean>(true);
     const redirect = useRedirect();
-
+    const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
+    const { data } = useGetCartByUserIdQuery(user?.data?.id || "", {
+        skip: !loginSuccess || !user?.data?.id,
+    });
     useEffect(() => {
         const container1: HTMLElement | null = document.querySelector('.menu-container');
         const container2: HTMLElement | null = document.querySelector('.menu-container-2');
@@ -62,10 +67,11 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                 <i className="bi bi-person-circle"></i>
                 <span className="text-small">Tài khoản</span>
             </div>}
-            {!isLocation('/cart') && <div className="menu-item" onClick={() => redirect('/cart')}>
+            {!isLocation('/cart') && <div className="menu-item" id="cart-motion-id" onClick={() => redirect('/cart')}>
                 <i className="bi bi-bag"></i>
                 <span className="text-small">Giỏ hàng</span>
-                <span className="badge-item background-primary text-small">2</span>
+                {data && data?.data.length > 0 &&
+                    <span className="badge-item background-primary text-small">{data?.data.length}</span>}
             </div>}
             <div className="menu-item">
                 <i className="bi bi-chat-dots"></i>

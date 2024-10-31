@@ -1,19 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
 import './profile.scss';
+import { useCheckLoginQuery } from '../../../../services/auth.service';
+import { useUpdateUserMutation } from '../../../../services/user.service';
+import ModalLoading from '../../../../components/loading/ModalLoading';
+import { useDispatch } from 'react-redux';
+import { setNotify } from '../../../../rtk/slice/notify-slice';
 
 const Profile: React.FC = () => {
-
     const [avt, setAvt] = useState<File>();
     const [url, setUrl] = useState<string>("");
-
+    const [isBtn, setIsBtn] = useState<boolean>(false);
+    const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
+    const [trigger, { isLoading }] = useUpdateUserMutation();
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
-        name: 'Hoàng Anh',
-        email: 'ndha1115@gmail.com',
-        phone: '0981972551',
-        gender: 'Nam',
-        dob: '2002-11-15'
+        name: '',
+        username: '',
+        email: '',
+        phoneNumber: '',
+        gender: 'MALE',
+        dateOfBirth: ''
     });
+    useEffect(() => {
+        if (loginSuccess && user) {
+            setFormData({
+                name: user?.data?.name || '',
+                username: user?.data?.username || '',
+                email: user?.data?.email || '',
+                phoneNumber: user?.data?.phoneNumber || '',
+                gender: user?.data?.gender || 'MALE',
+                dateOfBirth: user?.data?.dateOfBirth ? new Date(user?.data?.dateOfBirth).toISOString().split('T')[0] : ''
+            });
+        }
+    }, [loginSuccess, user]);
 
     const handleChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -21,35 +41,76 @@ const Profile: React.FC = () => {
             setUrl(URL.createObjectURL(files[0]));
             setAvt(files[0]);
         }
-    }
-
+    };
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
     };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Handle form submission logic here
-    };
-
     useEffect(() => {
         return () => {
             URL.revokeObjectURL(url);
-        }
+        };
     }, [url]);
 
+    // Cập nhật hàm handleSubmit
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const formDataToSubmit = new FormData();
+        formDataToSubmit.append('name', formData.name);
+        formDataToSubmit.append('username', formData.username);
+        formDataToSubmit.append('email', formData.email);
+        formDataToSubmit.append('phoneNumber', formData.phoneNumber);
+        formDataToSubmit.append('gender', formData.gender);
+        formDataToSubmit.append('dateOfBirth', formData.dateOfBirth);
+
+        if (avt) {
+            formDataToSubmit.append('avatar', avt); // Thêm file ảnh vào FormData
+        }
+        try {
+            await trigger({ email: formData.email, newUser: formDataToSubmit }).unwrap();
+            dispatch(setNotify({
+                type: 'success', message: 'Thao tác không thành công'
+            }))
+            setIsBtn(false);
+        } catch (error) {
+            console.error("Failed to update user:", error);
+            dispatch(setNotify({
+                type: 'error', message: 'Thao tác không thành công'
+            }))
+
+        }
+    };
     return (
-        <div className="profile-container">
-            <span className="text-large">Hồ Sơ Của Tôi</span>
-            <div className='d-flex w-100 profile-content flex-wrap'>
-                <Form onSubmit={handleSubmit} className='col-12 col-md-6'>
+        <div className="profile-container ">
+            <div className='d-flex justify-content-between'>
+                <span className="text-large">Hồ Sơ Của Tôi</span>
+                {!isBtn && <button onClick={() => { setIsBtn(true) }} className='button-flex button-hover background-primary text-medium'>
+                    Cập nhật
+                </button>}
+            </div>
+            <div className='d-flex w-100 profile-content flex-wrap '>
+                <Form className={`col-12 col-md-6 ${isBtn ? '' : 'pointer-events-none'}  `} >
+                    <Row className="mb-3 no-shadow">
+                        <Form.Group as={Col} controlId="formEmail">
+                            <Form.Label className='text-normal'>Email</Form.Label>
+                            <Form.Control
+                                className='no-shadow'
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="Nhập email"
+                                readOnly
+                            />
+                        </Form.Group>
+                    </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formName">
                             <Form.Label className='text-normal'>Tên</Form.Label>
                             <Form.Control
+                                className='no-shadow'
                                 type="text"
                                 name="name"
                                 value={formData.name}
@@ -59,26 +120,16 @@ const Profile: React.FC = () => {
                         </Form.Group>
                     </Row>
 
-                    <Row className="mb-3">
-                        <Form.Group as={Col} controlId="formEmail">
-                            <Form.Label className='text-normal'>Email</Form.Label>
-                            <Form.Control
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="Nhập email"
-                            />
-                        </Form.Group>
-                    </Row>
+
 
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formPhone">
                             <Form.Label className='text-normal'>Số điện thoại</Form.Label>
                             <Form.Control
+                                className='no-shadow'
                                 type="text"
-                                name="phone"
-                                value={formData.phone}
+                                name="phoneNumber"
+                                value={formData.phoneNumber}
                                 onChange={handleChange}
                                 placeholder="Nhập số điện thoại"
                             />
@@ -90,13 +141,14 @@ const Profile: React.FC = () => {
                             <Form.Label className='text-normal'>Giới tính</Form.Label>
                             <div>
                                 <Form.Check
+
                                     className='text-normal'
                                     inline
                                     type="radio"
                                     label="Nam"
                                     name="gender"
-                                    value="Nam"
-                                    checked={formData.gender === 'Nam'}
+                                    value="MALE"
+                                    checked={formData.gender === 'MALE'}
                                     onChange={handleChange}
                                 />
                                 <Form.Check
@@ -105,8 +157,8 @@ const Profile: React.FC = () => {
                                     type="radio"
                                     label="Nữ"
                                     name="gender"
-                                    value="Nữ"
-                                    checked={formData.gender === 'Nữ'}
+                                    value="FEMALE"
+                                    checked={formData.gender === 'FEMALE'}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -117,16 +169,20 @@ const Profile: React.FC = () => {
                         <Form.Group as={Col} controlId="formDob">
                             <Form.Label className='text-normal'>Ngày sinh</Form.Label>
                             <Form.Control
+                                className='no-shadow'
                                 type="date"
-                                name="dob"
-                                value={formData.dob}
+                                name="dateOfBirth"
+                                value={formData.dateOfBirth}
                                 onChange={handleChange}
                             />
                         </Form.Group>
                     </Row>
-                    <button className='button-flex button-hover background-primary text-medium'>
-                        Lưu
-                    </button>
+                    {isBtn &&
+                        <div className='d-flex gap-3'>
+                            <button onClick={(e) => { handleSubmit(e); }} className='button-flex button-hover background-primary text-medium'>
+                                Lưu
+                            </button>
+                        </div>}
                 </Form>
                 <div className='col-12 col-md-6 d-flex align-items-center justify-content-center flex-column gap-2'>
                     <div>
@@ -137,7 +193,7 @@ const Profile: React.FC = () => {
                             width={100}
                             height={100}
                         /> : <img
-                            src='https://via.placeholder.com/100'
+                            src={user?.data?.avatar ?? 'https://via.placeholder.com/100'}
                             alt='User Avatar'
                             className='rounded-circle border'
                             width={100}
@@ -153,6 +209,7 @@ const Profile: React.FC = () => {
                     <span style={{ textAlign: 'center' }} >Dung lượng tối đa 1MB <br></br> Định dạng jpg, png</span>
                 </div>
             </div>
+            {isLoading && <ModalLoading loading={isLoading} />}
         </div>
     );
 };

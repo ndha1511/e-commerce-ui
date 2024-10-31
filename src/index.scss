@@ -76,12 +76,12 @@ span{
   color: $warning-color;
 }
 
-.info {
-  color: $info-color;
-}
 
 .muted {
   color: $muted-color;
+}
+.text-light-cs {
+  color: rgb(129, 121, 121)
 }
 .success {
   color: $success-color;
@@ -164,7 +164,9 @@ span{
   border: 1px solid $primary-color;
   border-radius: $border-radius-small;
 }
-
+.bd-red{
+  border: 0.5px solid red;
+}
 .border-radius-small {
   border-radius: $border-radius-small;
 }
@@ -323,4 +325,8 @@ pre {
 }
 .page-item {
   margin-bottom: 0;
+}
+.pointer-events-none {
+  pointer-events: none;
+  user-select: none;
 }

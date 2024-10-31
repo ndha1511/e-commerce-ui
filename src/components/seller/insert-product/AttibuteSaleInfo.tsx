@@ -271,7 +271,7 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
         { id: 3, name: 'Giới tính' },
     ]
     const filteredAttributes = attributes.filter(attr =>
-        !productAttributeDto[0]?.attributeName.includes(attr.name)
+        !productAttributeDto?.[0]?.attributeName.includes(attr.name)
     );
     useEffect(() => {
 
@@ -294,7 +294,7 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
             setPreviewImage(images);
         }
 
-    }, [productAttributeDto[0]?.attributeValues])
+    }, [productAttributeDto?.[0]?.attributeValues])
     useEffect(() => {
         // console.log(productAttributeDto) 
     }, [productAttributeDto])
@@ -349,7 +349,7 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
                                 type="text"
                                 onFocus={() => setIsFocused(true)}
                                 onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                                value={productAttributeDto[index]?.attributeName || ""}
+                                value={productAttributeDto?.[index]?.attributeName || ""}
                                 onChange={handleOnchangeInput}
                                 onKeyDown={handleKeyDown} // Capture Enter key event
                             />
@@ -371,7 +371,7 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
             </Row>
             <hr />
             <Row>
-                <Col md={12} className={`d-grid ${productAttributeDto[index]?.attributeName ? 'gap-4' : ''}`} style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+                <Col md={12} className={`d-grid ${productAttributeDto?.[index]?.attributeName ? 'gap-4' : ''}`} style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
                     {variants.map((attr, index1) => (
                         <div key={attr.id} className="d-flex align-items-center justify-content-between w-100">
                             {index === 0 &&
@@ -391,7 +391,7 @@ const AttributeSaleInfo: React.FC<SaleInfoDetailsProps> = ({ handleCloseAtribute
 
 
                                     })}
-                                    {!productAttributeDto[0]?.attributeValues?.[index1]?.image && (
+                                    {!productAttributeDto?.[0]?.attributeValues?.[index1]?.image && (
                                         <>
                                             <input
                                                 type="file"

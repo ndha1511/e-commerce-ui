@@ -10,7 +10,11 @@ import ModalLoading from "../../../../components/loading/ModalLoading";
 import FormComment from "./FormComment";
 import './purchase.scss'
 
-const ProductItem = ({ product, orderId }: { product: ProductOrder, orderId: string }) => {
+const ProductItem = ({ product, orderId, attributes }: { 
+    product: ProductOrder, 
+    orderId: string,
+    attributes: string[]
+ }) => {
     const [showFormComment, setShowFormComment] = React.useState(false);
     const handleClose = () => {
         setShowFormComment(false);
@@ -36,7 +40,8 @@ const ProductItem = ({ product, orderId }: { product: ProductOrder, orderId: str
             <td>{convertPrice(product.amount)}</td>
             {(product.allowComment && !product.commented) && <td><button className="inActiveProduct" onClick={() => setShowFormComment(true)}>Đánh giá sản phẩm</button></td>}
         </tr>
-        {showFormComment && <FormComment orderId={orderId} show={showFormComment} handleClose={handleClose} product={product} />}
+
+        {showFormComment && <FormComment attributes={attributes} orderId={orderId} show={showFormComment} handleClose={handleClose}  product={product}/>}
     </>
 
 
@@ -115,7 +120,7 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
                             </thead>
                             <tbody>
                                 {item.productOrders.map((p, idx) => (
-                                    <ProductItem orderId={item.id} product={p} key={idx} />
+                                    <ProductItem attributes={p.attributes} orderId={item.id} product={p} key={idx} />
                                 ))}
                                 <tr >
                                     <td colSpan={item.orderStatus !== OrderStatus.RECEIVED ? 5 : 6} style={{ border: 'none' }}></td>
