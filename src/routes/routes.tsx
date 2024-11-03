@@ -29,6 +29,8 @@ import CategoryUser from "../pages/user/category/Category";
 import PurchaseAdmin from "../pages/admin/purchase/PurchaseAdmin";
 import App from "../pages/user/test/App ";
 import Brand from "../pages/admin/brand/Brand";
+import Batch from "../pages/admin/product/Batch";
+
 
 
 
@@ -118,7 +120,7 @@ export const router = createBrowserRouter([
         element: <AdminLayout><CreatePromotion/></AdminLayout>
     },
     {
-        path: "/admin/product/insert",
+        path: "/admin/product/create",
         element: <AdminLayout><InsertProduct/></AdminLayout>
     },
     {
@@ -136,6 +138,10 @@ export const router = createBrowserRouter([
     {
         path: "/admin/product/import",
         element: <AdminLayout><ProductImport/></AdminLayout>
+    },
+    {
+        path: "/admin/product/batch",
+        element: <AdminLayout><Batch/></AdminLayout>
     },
     {
         path: "/admin/categories",

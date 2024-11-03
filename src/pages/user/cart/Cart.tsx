@@ -117,46 +117,46 @@ const Cart: React.FC = () => {
                     <div className='bg-white d-flex justify-content-center ' style={{ height: 200 }}>
                         <CartEmpty />
                     </div>}
-                {data?.data.map((item, index) => (
-                    <CartItem
-                        refetch={refetch}
-                        key={index}
-                        item={item}
-                        index={index}
-                        addVariant={addSelectVariant}
-                        removeVariant={removeSelectVariant}
-                        selectVariant={selectVariant}
-                    />
-                ))}
-            </div>
-            <div className={`p-3 pt-2 border-top bg-white ${isFooterFixed ? 'fixed-footer container' : ''}`}>
-                <Row className="align-items-center p-3">
-                    <Col xs={6} md={6} className="d-flex align-items-center">
-                        <Form.Check type="checkbox" className="checkbox-cart me-4"
-                            checked={checked}
-                            onChange={() => setChecked(prev => !prev)}
+                    {data?.data.map((item, index) => (
+                        <CartItem
+                            refetch={refetch}
+                            key={index}
+                            item={item}
+                            index={index}
+                            addVariant={addSelectVariant}
+                            removeVariant={removeSelectVariant}
+                            selectVariant={selectVariant}
                         />
-                        <span className='text-medium'>Chọn Tất Cả ({data?.data.length})</span>
-                        <Button variant="link" className="ms-3 primary p-0">Xóa</Button>
-                    </Col>
-                    <Col xs={12} md={6} className="text-end mt-3 mt-md-0">
-                        <div className='d-flex justify-content-end align-items-center w-100'>
-                            {selectVariant.length > 0 && <div className="text-medium me-4">
-                                Tổng thanh toán ({selectVariant.length} sản phẩm):
-                                <span className="primary fw-bold ms-2">{convertPrice(totalPrice)}</span>
-                            </div>}
-                            <button
-                                disabled={selectVariant.length <= 0}
-                                className="btn-buy button-flex button-hover background-primary text-large "
-                                style={{ border: 'none' }}
-                                onClick={linkToPayment}
-                            >Thanh toán</button>
+                    ))}
+                </div>
+                <div className={`p-3 pt-2 border-top bg-white ${isFooterFixed ? 'fixed-footer container' : ''}`}>
+                    <Row className="align-items-center p-3">
+                        <Col xs={6} md={6} className="d-flex align-items-center">
+                            <Form.Check type="checkbox" className="checkbox-cart me-4"
+                                checked={checked}
+                                onChange={() => setChecked(prev => !prev)}
+                            />
+                            <span className='text-medium'>Chọn Tất Cả ({data?.data.length})</span>
+                            <Button variant="link" className="ms-3 primary p-0">Xóa</Button>
+                        </Col>
+                        <Col xs={12} md={6} className="text-end mt-3 mt-md-0">
+                            <div className='d-flex justify-content-end align-items-center w-100'>
+                                {selectVariant.length > 0 && <div className="text-medium me-4">
+                                    Tổng thanh toán ({selectVariant.length} sản phẩm):
+                                    <span className="primary fw-bold ms-2">{convertPrice(totalPrice)}</span>
+                                </div>}
+                                <button
+                                    disabled={selectVariant.length <= 0}
+                                    className="btn-buy button-flex button-hover background-primary text-large "
+                                    style={{ border: 'none' }}
+                                    onClick={linkToPayment}
+                                >Thanh toán</button>
 
-                        </div>
-                    </Col>
-                </Row>
-            </div>
-            {isLoading && <ModalLoading loading={isLoading} />}
+                            </div>
+                        </Col>
+                    </Row>
+                </div>
+                {isLoading && <ModalLoading loading={isLoading} />}
         </Container>
     );
 };

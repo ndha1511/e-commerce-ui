@@ -7,4 +7,5 @@ export interface Category{
     level: number;
     inActive: boolean;
     urlPath:string;
+
 }
