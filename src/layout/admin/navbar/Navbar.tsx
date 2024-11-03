@@ -59,7 +59,7 @@ const menu: Menu[] = [
     },
     {
         name: 'QL thương hiệu',
-        path: '/admin',
+        path: '/admin/brand',
         icon: <i className="bi bi-patch-check"></i>
 
     },

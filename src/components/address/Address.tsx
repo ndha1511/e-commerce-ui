@@ -1,10 +1,14 @@
 import { Row, Col } from 'react-bootstrap';
 import { BsGeoAltFill } from 'react-icons/bs';
 import { UserAddress } from '../../models/user-address';
-import useRedirect from '../../hooks/useRedirect';
+import ModalAddress from '../../pages/user/account/address/ModalAddress';
+import { useState } from 'react';
 
 const Address = ({info} : {info: UserAddress}) => {
-    const redirect = useRedirect();
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     return (
         <div className="p-3 bg-white ">
             <Row className="align-items-center">
@@ -21,8 +25,9 @@ const Address = ({info} : {info: UserAddress}) => {
                     </div>
 
                 </Col>
-                <Col md={2}> <button className='btn-address' onClick={()=>redirect('/user/account/address')}>Thay đổi</button></Col>
+                <Col md={2}> <button className='btn-address' onClick={()=>handleShow()}>Thay đổi</button></Col>
             </Row>
+            {show && <ModalAddress show={show} handleClose={handleClose} />}
         </div>
     );
 };

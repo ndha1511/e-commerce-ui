@@ -13,6 +13,7 @@ import orderApi from '../../services/order.service'
 import inventoryApi from '../../services/inventory.service'
 import commentApi from '../../services/comment.service'
 import userApi from '../../services/user.service'
+import brandAPi from '../../services/brand.service'
 
 export const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ export const store = configureStore({
     [inventoryApi.reducerPath]: inventoryApi.reducer,
     [commentApi.reducerPath]: commentApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [brandAPi.reducerPath]: brandAPi.reducer,
 
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
@@ -43,6 +45,7 @@ export const store = configureStore({
     .concat(inventoryApi.middleware)
     .concat(commentApi.middleware)
     .concat(userApi.middleware)
+    .concat(brandAPi.middleware)
 })
 
 setupListeners(store.dispatch)
