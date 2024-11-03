@@ -21,7 +21,7 @@ const ProductTable = () => {
     const variants: VariantDto[] = useSelector((state: RootState) => state.product.variantsDto);
     const dispatch = useDispatch();
     useEffect(() => {
-        const groupedVariants = variants.reduce((acc, curr) => {
+        const groupedVariants = variants?.reduce((acc, curr) => {
             const key = curr.attributeValue1?.toString(); // Đảm bảo key là chuỗi
             // nhóm theo attributeValue1
             if (!acc[key]) {
@@ -64,15 +64,15 @@ const ProductTable = () => {
             <Table className='table-bordered table-responsive  custom-table' >
                 <thead >
                     <tr className='text-center' >
-                        <th>{productAttributeDto[0]?.attributeName ? productAttributeDto[0]?.attributeName : 'Phân loại 1'}</th>
-                        <th>{productAttributeDto[1]?.attributeName ? productAttributeDto[1]?.attributeName : 'Phân loại 2'}</th>
+                        <th>{productAttributeDto?.[0]?.attributeName ? productAttributeDto[0]?.attributeName : 'Phân loại 1'}</th>
+                        <th>{productAttributeDto?.[1]?.attributeName ? productAttributeDto[1]?.attributeName : 'Phân loại 2'}</th>
                         <th>Giá bán</th>
                         <th>Phân loại SKU</th>
                     </tr>
                 </thead>
                 <tbody>
 
-                    {Object.entries(groupedData).map(([attrVal1, items]) => {
+                    {groupedData&& Object.entries(groupedData).map(([attrVal1, items]) => {
                         return (
                             <tr key={attrVal1} className='text-center'>
                                 <td >

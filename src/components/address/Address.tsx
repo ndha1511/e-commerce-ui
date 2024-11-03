@@ -1,8 +1,10 @@
 import { Row, Col } from 'react-bootstrap';
 import { BsGeoAltFill } from 'react-icons/bs';
 import { UserAddress } from '../../models/user-address';
+import useRedirect from '../../hooks/useRedirect';
 
 const Address = ({info} : {info: UserAddress}) => {
+    const redirect = useRedirect();
     return (
         <div className="p-3 bg-white ">
             <Row className="align-items-center">
@@ -19,7 +21,7 @@ const Address = ({info} : {info: UserAddress}) => {
                     </div>
 
                 </Col>
-                <Col md={2}> <span className='info'>Thay đổi</span></Col>
+                <Col md={2}> <button className='btn-address' onClick={()=>redirect('/user/account/address')}>Thay đổi</button></Col>
             </Row>
         </div>
     );

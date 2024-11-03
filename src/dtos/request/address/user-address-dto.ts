@@ -5,4 +5,5 @@ export interface UserAddressDto extends AddressDto {
     receiverName: string;
     phoneNumber: string;
     addressDefault: boolean;
+    id?: string;
 }

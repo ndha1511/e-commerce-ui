@@ -5,12 +5,14 @@ import { useGetCartByUserIdQuery } from '../../../services/cart.service';
 import { useCheckLoginQuery } from '../../../services/auth.service';
 import { convertPrice } from '../../../utils/convert-price';
 import useRedirect from '../../../hooks/useRedirect';
+import ModalLoading from '../../../components/loading/ModalLoading';
+import CartEmpty from './CartEmpty';
 
 
 const Cart: React.FC = () => {
     const redirect = useRedirect();
-    const {data: user, isSuccess: loginSuccess} = useCheckLoginQuery();
-    const {data, refetch} = useGetCartByUserIdQuery(user?.data?.id || "", {
+    const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
+    const { data, refetch, isLoading } = useGetCartByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
     const [isFooterFixed, setIsFooterFixed] = useState(true);
@@ -28,7 +30,7 @@ const Cart: React.FC = () => {
     const removeSelectVariant = (variantId: string) => {
         const index = selectVariant.indexOf(variantId);
         if (index > -1) {
-            setSelectVariant([...selectVariant.slice(0, index),...selectVariant.slice(index + 1)]);
+            setSelectVariant([...selectVariant.slice(0, index), ...selectVariant.slice(index + 1)]);
         }
     }
 
@@ -36,7 +38,7 @@ const Cart: React.FC = () => {
         const variant = selectVariant.reduce((acc, variant) => {
             return acc !== '' ? acc + ';' + variant : variant;
         }, '');
-        redirect('/payment?select-variant=' + variant + '&from=cart' );
+        redirect('/payment?select-variant=' + variant + '&from=cart');
     }
 
 
@@ -60,7 +62,7 @@ const Cart: React.FC = () => {
     };
 
     useEffect(() => {
-        if(checked) {
+        if (checked) {
             setSelectVariant(data?.data.map(v => v.variantResponse.id) || []);
         } else {
             setSelectVariant([]);
@@ -71,7 +73,7 @@ const Cart: React.FC = () => {
         let total = 0;
         selectVariant.forEach(variantId => {
             const variant = data?.data.find(v => v.variantResponse.id === variantId);
-            if(variant) {
+            if (variant) {
                 total += variant.variantResponse.price * variant.quantity;
             }
         });
@@ -88,9 +90,9 @@ const Cart: React.FC = () => {
                 <Row className="align-items-center">
                     <Col md={4} >
                         <div className='d-flex  align-items-center'>
-                            <Form.Check type="checkbox" className='checkbox-cart me-4' 
-                            checked={checked}
-                            onChange={() => setChecked(prev => !prev)}/>
+                            <Form.Check type="checkbox" className='checkbox-cart me-4'
+                                checked={checked}
+                                onChange={() => setChecked(prev => !prev)} />
                             <span style={{ fontSize: 16 }} >Sản Phẩm</span>
                         </div>
                     </Col>
@@ -109,18 +111,21 @@ const Cart: React.FC = () => {
                     </Col>
                 </Row>
             </div>
-            
-            <div id="cart-items" className="" style={{
-                minHeight: '400px'
-            }}>
+
+
+            <div id="cart-items" className="">
+                {data?.data.length === 0 &&
+                    <div className='bg-white d-flex justify-content-center ' style={{ height: 200 }}>
+                        <CartEmpty />
+                    </div>}
                 {data?.data.map((item, index) => (
-                    <CartItem 
-                        refetch={refetch} 
-                        key={index} 
-                        item={item} 
-                        index={index}  
+                    <CartItem
+                        refetch={refetch}
+                        key={index}
+                        item={item}
+                        index={index}
                         addVariant={addSelectVariant}
-                        removeVariant={removeSelectVariant} 
+                        removeVariant={removeSelectVariant}
                         selectVariant={selectVariant}
                     />
                 ))}
@@ -128,9 +133,9 @@ const Cart: React.FC = () => {
             <div className={`p-3 pt-2 border-top bg-white ${isFooterFixed ? 'fixed-footer container' : ''}`}>
                 <Row className="align-items-center p-3">
                     <Col xs={6} md={6} className="d-flex align-items-center">
-                        <Form.Check type="checkbox" className="checkbox-cart me-4" 
-                        checked={checked}
-                        onChange={() => setChecked(prev => !prev)}
+                        <Form.Check type="checkbox" className="checkbox-cart me-4"
+                            checked={checked}
+                            onChange={() => setChecked(prev => !prev)}
                         />
                         <span className='text-medium'>Chọn Tất Cả ({data?.data.length})</span>
                         <Button variant="link" className="ms-3 primary p-0">Xóa</Button>
@@ -141,17 +146,18 @@ const Cart: React.FC = () => {
                                 Tổng thanh toán ({selectVariant.length} sản phẩm):
                                 <span className="primary fw-bold ms-2">{convertPrice(totalPrice)}</span>
                             </div>}
-                            <button 
-                                disabled={selectVariant.length <= 0} 
-                                className="btn-buy button-flex button-hover background-primary text-large " 
-                                style={{border:'none' }}
+                            <button
+                                disabled={selectVariant.length <= 0}
+                                className="btn-buy button-flex button-hover background-primary text-large "
+                                style={{ border: 'none' }}
                                 onClick={linkToPayment}
-                                >Thanh toán</button>
+                            >Thanh toán</button>
 
                         </div>
                     </Col>
                 </Row>
             </div>
+            {isLoading && <ModalLoading loading={isLoading} />}
         </Container>
     );
 };

@@ -42,7 +42,6 @@ const ProductItem = ({ product, orderId, attributes }: {
         </tr>
 
         {showFormComment && <FormComment attributes={attributes} orderId={orderId} show={showFormComment} handleClose={handleClose}  product={product}/>}
-
     </>
 
 
@@ -103,7 +102,6 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
             </td>
 
         </tr>
-
         <tr>
             <td colSpan={7} >
                 <Collapse in={open}>

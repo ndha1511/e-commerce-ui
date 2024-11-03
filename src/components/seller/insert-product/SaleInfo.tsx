@@ -62,7 +62,7 @@ function SaleInfo() {
             const attributes = data?.data.attributes;
             dispatch(setAttributeDto(attributes))
 
-            const variantNew = variants.map((v) => {
+            const variantNew = variants?.map((v) => {
                 const variantDto: VariantDto = {
                     price: v.price,
                     attributeValue1: 0,
@@ -80,7 +80,7 @@ function SaleInfo() {
             })
             console.log(variantNew)
             console.log(variants)
-            for (let i = 0; i < attributes.length; i++) {
+            for (let i = 0; i < attributes?.length; i++) {
                 const attVal = attributes[i].attributeValues;
 
 
@@ -178,10 +178,10 @@ function SaleInfo() {
                                 <AttributeSaleInfo
                                     handleCloseAtribute={handleCloseAtribute}
                                     index={0}
-                                    isSuccess={data?.data.attributes[0] !== undefined}
+                                    isSuccess={data?.data.attributes?.[0] !== undefined}
                                 />
                                 <div className={`${showAttributeSaleInfo1 === false ? 'p-3' : ''} w-100 bg-light mt-3 border-radius-small `}>
-                                    {data?.data.attributes[1] ?
+                                    {data?.data.attributes?.[1] ?
                                         <></>
                                         :
                                         showAttributeSaleInfo1 === false &&
@@ -189,7 +189,7 @@ function SaleInfo() {
                                             onClick={() => { setShowAttributeSaleInfo1(true) }}>
                                             <FontAwesomeIcon icon={faPlus} /> Thêm phân loại 2</button>
                                     }
-                                    {(showAttributeSaleInfo1 || data?.data.attributes[1]) &&
+                                    {(showAttributeSaleInfo1 || data?.data.attributes?.[1]) &&
                                         <>
                                             <AttributeSaleInfo
                                                 handleCloseAtribute={handleCloseAtribute1}

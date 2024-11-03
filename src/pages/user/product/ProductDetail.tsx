@@ -14,18 +14,25 @@ import ModalLoading from "../../../components/loading/ModalLoading";
 import { convertPrice } from "../../../utils/convert-price";
 import RenderVideo from "../../../components/image-details/RenderVideo";
 import ProductAttribute from "./ProductAttribute";
-import { useLazyGetVariantsQuery } from "../../../services/variant.service";
+import {  useLazyGetVariantsQuery } from "../../../services/variant.service";
 import { VariantResponse } from "../../../dtos/response/variant/variant-response";
 import { useCheckLoginQuery } from "../../../services/auth.service";
-import { useAddToCartMutation } from "../../../services/cart.service";
+import { useAddToCartMutation, useGetCartByUserIdQuery } from "../../../services/cart.service";
 import { useGetAddressByUserIdQuery } from "../../../services/address.service";
 import RenderImage from "../../../components/image-details/RenderImage";
+import { useDispatch } from "react-redux";
+import { setNotify } from "../../../rtk/slice/notify-slice";
+import { motion } from "framer-motion";
+import ProductEmpty from "./ProductEmpty";
 
 
 function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
     const { key } = useParams();
+
     const { data: resProduct, isLoading, isError, isSuccess } = useGetProductByUrlQuery(key || "");
+
+    
     const product = resProduct?.data;
     const [images, setIamges] = useState<any[]>([]);
     const [startIndex, setStartIndex] = useState(0);
@@ -35,12 +42,31 @@ function ProductDetail() {
     const [variant, setVariant] = useState<VariantResponse>();
     const [productPrice, setProductPrice] = useState(0);
     const [disabledBtn, setDisabledBtn] = useState(true);
-    const {data: user, isSuccess: loginSuccess} = useCheckLoginQuery();
+    const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
+    const {refetch} = useGetCartByUserIdQuery(user?.data?.id || "", {
+        skip: !loginSuccess || !user?.data?.id,
+    });
     const [addToCart] = useAddToCartMutation();
-    const {data: address, refetch: addressRefetch} = useGetAddressByUserIdQuery(user?.data?.id || "", {
+    const dispatch = useDispatch();
+    const [x, setX] = useState(0);
+    const [y, setY] = useState(0);
+    const [rotate, setRotate] = useState(0);
+    const [isVisible, setIsVisible] = useState(false);
+    const [initialVisible, setInitialVisible] = useState(true);
+    const handleAdd = () => {
+        setIsVisible(true);
+        const cartElement = document.getElementById("cart-motion-id");
+        if (cartElement) {
+            const iconRect = cartElement.getBoundingClientRect();
+            setX(iconRect.left + window.scrollX - 1225); // Căn giữa biểu tượng
+            setY(iconRect.top + window.scrollY - 260); // Điều chỉnh vị trí cho phù hợp
+            setRotate(360);
+        }
+    };
+    const { data: address, refetch: addressRefetch } = useGetAddressByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     })
-
+console.log(variant)
     const onSelect = (value: string, url: string, index: number) => {
         const currentUrl = images.indexOf(images.find((img) => img.original === url));
         if (currentUrl !== -1) {
@@ -55,9 +81,9 @@ function ProductDetail() {
     }
 
     useEffect(() => {
-        if(variant) {
+        if (variant) {
             setProductPrice(variant.price);
-            if(variant.quantity > 0) {
+            if (variant.quantity > 0) {
                 setDisabledBtn(false);
             } else {
                 setDisabledBtn(true);
@@ -135,13 +161,13 @@ function ProductDetail() {
 
 
 
-    const increaseQuantity = () => {if(variant && variant.quantity > quantity) setQuantity(quantity + 1)};
+    const increaseQuantity = () => { if (variant && variant.quantity > quantity) setQuantity(quantity + 1) };
     const decreaseQuantity = () => {
         if (quantity > 1) setQuantity(quantity - 1);
     };
-    
+
     const handleAddToCart = async () => {
-        if(!user?.data) {
+        if (!user?.data) {
             window.location.href = '/auth/login?redirect-url=' + encodeURIComponent('product/' + key);
         } else {
             try {
@@ -152,7 +178,11 @@ function ProductDetail() {
                         quantity: quantity
                     }
                 }).unwrap();
-                alert('Thêm vào giỏ hàng thành công!');
+                handleAdd();
+                dispatch(setNotify({
+                    type: 'success', message: 'Thao tác không thành công'
+                }))
+                refetch();
             } catch (error) {
                 console.log(error);
             }
@@ -175,9 +205,14 @@ function ProductDetail() {
 
                     </Col>
                     <Col md={5} className=" ">
-                        <div>
-                            <div className="bg-white border-radius-medium p-3">
-                                <div className="d-flex align-items-center mb-2">
+                        <div className=" position-relative" >
+                            {product?.totalQuantity === 0 && (
+                                <div className="position-absolute top-50 start-50 translate-middle" style={{ zIndex: 50 }} >
+                                    <ProductEmpty />
+                                </div>
+                            )}
+                            <div className={`bg-white border-radius-medium p-3 ${product?.totalQuantity === 0 ? 'blurred' : ''}`}>
+                                <div className="d-flex align-items-center mb-2 ">
                                     {product?.brandId && <span className="text-muted">Thương hiệu: LADOS</span>}
                                 </div>
                                 <h5 className="mb-1">{product?.productName}</h5>
@@ -206,7 +241,7 @@ function ProductDetail() {
                                 </div>
                                 <div className="mt-4">
                                     {product?.attributes?.map((attribute, index) => (
-                                        <ProductAttribute index={index} attribute={attribute} key={attribute.id} onSelect={onSelect} />
+                                        <ProductAttribute productId={resProduct.data.id} index={index} attribute={attribute} key={attribute.id} onSelect={onSelect} />
                                     ))}
                                 </div>
                             </div>
@@ -219,7 +254,7 @@ function ProductDetail() {
                             <Card style={{ width: '100%', padding: '1rem', border: 'none' }}>
                                 <Row>
                                     <Col className="d-flex justify-content-between">
-                                        <div className="d-flex align-items-center w-100 pb-2 border-bottom">
+                                        <div className="d-flex align-items-center w-100 pb-2 border-bottom ">
                                             <div className="d-flex align-items-center w-100 ">
                                                 <img
                                                     src="https://vcdn.tikicdn.com/cache/w100/ts/seller/4b/54/1a/f385a79a716cb3505f152e7af8c769aa.png.webp"
@@ -239,30 +274,87 @@ function ProductDetail() {
                                         </div>
                                     </Col>
                                 </Row>
-                                {variant && <Row className="mt-3">
-                                    <Col>
-                                        <div className="d-flex  ">
-                                            <img
-                                                src={variant.image || product?.thumbnail}
-                                                alt="variant"
-                                                className="img-fluid img-ft"
-                                            />
-                                            <div className="ps-1">
-                                                <span>{variant.attributeValue1}</span> <br />
-                                                <span>{variant.attributeValue2}</span>
-                                            </div>
-                                        </div>
-                                    </Col>
-                                    <Col>
-                                        <div className="ps-1">
-                                            <span>Kho hàng: {variant.quantity}</span> <br />
+                                <div style={{ position: "relative", height: '80px' }}>
+                                    {initialVisible && (
+                                        <motion.div
+                                            className="box "
+                                            initial={{ opacity: 1 }}
+                                            style={{
+                                                opacity: "50%",
+                                                position: "absolute",
+                                                top: 0,
+                                                left: 0,
+                                            }}
+                                        >
+                                            {variant && <Row className="mt-3  ">
+                                                <Col>
+                                                    <div className="d-flex  ">
+                                                        <img
+                                                            src={variant.image || product?.thumbnail}
+                                                            alt="variant"
+                                                            className="img-fluid img-ft"
+                                                        />
+                                                        <div className="ps-1">
+                                                            <span>{variant.attributeValue1}</span> <br />
+                                                            <span>{variant.attributeValue2}</span>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                                <Col>
+                                                    <div className="ps-1">
+                                                        <span>Kho hàng: {variant.quantity}</span> <br />
 
-                                        </div>
-                                    </Col>
-                                </Row>}
+                                                    </div>
+                                                </Col>
+                                            </Row>}
+                                        </motion.div>
+                                    )}
+                                    {isVisible && (
+                                        <motion.div
+                                            className="box border"
+                                            animate={{
+                                                x: x, // Giảm giá trị x
+                                                y: y,
+                                                rotate,
+                                                scale: [1.5, 0.1],
+                                                opacity: [1, 0.5],
+                                            }}
+                                            transition={{ type: "spring", stiffness: 100, damping: 50, duration: 25 }}
+                                            style={{
+                                                opacity: "50%",
+                                                position: "absolute",
+                                                top: 0,
+                                                left: 0,
+                                            }}
+                                            onAnimationComplete={() => setIsVisible(false)}
+                                        >
+                                            {variant && <Row className="mt-3 border ">
+                                                <Col>
+                                                    <div className="d-flex  ">
+                                                        <img
+                                                            src={variant.image || product?.thumbnail}
+                                                            alt="variant"
+                                                            className="img-fluid img-ft"
+                                                        />
+                                                        <div className="ps-1">
+                                                            <span>{variant.attributeValue1}</span> <br />
+                                                            <span>{variant.attributeValue2}</span>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                                <Col>
+                                                    <div className="ps-1">
+                                                        <span>Kho hàng: {variant.quantity}</span> <br />
+
+                                                    </div>
+                                                </Col>
+                                            </Row>}
+                                        </motion.div>
+                                    )}
+                                </div>
                                 {variant ? variant.quantity > 0 ?
                                     <>
-                                        <Row className="mt-3">
+                                        <Row className="mt-3 ">
                                             <Col className="d-flex justify-content-between align-items-center">
                                                 <span>Số Lượng</span>
                                                 <div>
@@ -303,10 +395,10 @@ function ProductDetail() {
                                 </>}
                             </Card>
                         </div>
-                        
+
                         {(address?.data && address?.data.length > 0) ?
-                        <div className="bg-white mt-3 border-radius-medium p-1"> <Address info={address.data[0]} />  </div> :<></> }
-                       
+                            <div className="bg-white mt-3 border-radius-medium p-1"> <Address info={address.data[0]} />  </div> : <></>}
+
 
                     </Col>
                 </Row>
@@ -319,9 +411,9 @@ function ProductDetail() {
                                     <table className="table text-muted ">
                                         <tbody>
                                             {product?.tags?.map((tag, idx) => <tr>
-                                                 <th key={idx} scope="row">{tag.tagName}</th>
-                                                 <td>{tag.tagValue}</td>
- 
+                                                <th key={idx} scope="row">{tag.tagName}</th>
+                                                <td>{tag.tagValue}</td>
+
                                             </tr>)}
                                         </tbody>
                                     </table>
@@ -339,7 +431,7 @@ function ProductDetail() {
                                     <pre className="text-align-start">
                                         {product?.description}
                                     </pre>
-    
+
                                 </div>
                             </div>
                         </div>
@@ -354,7 +446,7 @@ function ProductDetail() {
 
                     </Col>
                 </Row>
-                
+
 
             </>}
         </Container>

@@ -28,6 +28,13 @@ const addressApi = createApi({
                 data: address
             })
         }),
+        updateUserAddress: build.mutation<BaseResponse<UserAddress>, { updateUserAddress: UserAddressDto, addressId: string }>({
+            query: ({ updateUserAddress, addressId }) => ({
+                url: '/addresses/update-user-address/' + addressId,
+                method: 'put',
+                data: { updateUserAddress, addressId }
+            })
+        }),
         getProvinces: build.query<BaseResponse<Province[]>, void>({
             query: () => ({
                 url: '/addresses/provinces',
@@ -62,6 +69,13 @@ const addressApi = createApi({
                 method: 'get',
             }),
             keepUnusedDataFor: 180,
+        }),
+        getUserAddress: build.query<BaseResponse<UserAddress[]>, string>({
+            query: (userId) => ({
+                url: '/addresses/'+userId,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
         })
 
     })
@@ -70,11 +84,13 @@ const addressApi = createApi({
 export const {
     useGetAddressByUserIdQuery,
     useAddUserAddressMutation,
+    useUpdateUserAddressMutation,
     useGetProvincesQuery,
     useGetDistrictsQuery,
     useGetWardsQuery,
     useAddAddressMutation,
-    useGetAddressQuery
+    useGetAddressQuery,
+    useGetUserAddressQuery
 } = addressApi;
 
 export default addressApi;

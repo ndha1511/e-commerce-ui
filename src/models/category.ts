@@ -5,5 +5,7 @@ export interface Category{
     parentId?: string;
     children: number;
     level: number;
-    inActive: boolean;  
+    inActive: boolean;
+    urlPath:string;
+
 }

@@ -91,6 +91,7 @@ function ProductStockItems({ product }: ProductStockItems) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { data } = useGetVariantsByProductIdQuery(product.id || '');
     const { data: attributes } = useGetAttributeByIdQuery(product.id || '');
+    console.log(attributes)
     const openCollapse = async () => {
         setOpen(!open);
 
@@ -153,8 +154,8 @@ function ProductStockItems({ product }: ProductStockItems) {
                                     <thead className="sticky-header">
                                         <tr className='text-center'>
                                             <th>Tên sản phẩm</th>
-                                            <th>{attributes?.data.attributes?.[0].attributeName}</th>
-                                            <th>{attributes?.data.attributes?.[1].attributeName}</th>
+                                            <th>{attributes?.data.attributes?.[0]?.attributeName}</th>
+                                            <th>{attributes?.data.attributes?.[1]?.attributeName}</th>
                                             <th>SỐ LƯỢNG HÀNG TỒN</th>
                                             <th>ĐÃ BÁN</th>
                                         </tr>

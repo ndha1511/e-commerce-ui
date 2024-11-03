@@ -21,13 +21,21 @@ const variantApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
+        getVariantsByProductIAndAttVl1: build.query<BaseResponse<VariantResponse[]>, { productId: string; attVl1: string }>({
+            query: ({ productId, attVl1 }) => ({
+                url: `/variants/${productId}/byAttVal?attVl1=${attVl1}`,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
     }),
    
 })
 
 export const {
     useLazyGetVariantsQuery,
-    useGetVariantsByProductIdQuery
+    useGetVariantsByProductIdQuery,
+    useGetVariantsByProductIAndAttVl1Query
 } = variantApi;
 
 export default variantApi;

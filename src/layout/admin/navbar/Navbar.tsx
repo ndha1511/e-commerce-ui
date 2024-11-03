@@ -74,18 +74,48 @@ const menu: Menu[] = [
         icon: <i className="bi bi-clipboard-check"></i>
     },
     {
+        name: 'QL nhân viên',
+        path: '/admin/employee',
+        icon: <i className="bi bi-person"></i>,
+        children: [
+            {
+                name: 'Danh sách nhân viên',
+                path: '/admin/employee/list',
+                fontSize: 13
+            },
+            {
+                name: 'Tạo tài khoản nhân viên',
+                path: '/admin/employee/create',
+                fontSize: 13
+            },
+
+        ]
+    },
+    {
+        name: 'Khách hàng',
+        path: '/admin/customer',
+        icon: <i className="bi bi-people"></i>
+    },
+    {
+        name: 'Tin nhắn',
+        path: '/admin/customer',
+        icon: <i className="bi bi-chat"></i>
+    },
+    {
+        name: 'Thông báo',
+        path: '/admin/customer',
+        icon: <i className="bi bi-bell"></i>
+    },
+    {
         name: 'QL khuyến mãi',
         path: '/admin',
         icon: <i className="bi bi-gift"></i>
-
 
     },
     {
         name: 'Thống kê',
         path: '/admin',
         icon: <i className="bi bi-graph-up"></i>
-
-
     },
 ]
 
