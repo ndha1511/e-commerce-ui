@@ -117,9 +117,9 @@ const CommentComp = ({ productId }: { productId: string }) => {
                             <Row className="align-items-center">
                                 <Col className="">
                                     <div className='d-flex gap-3'>
-                                        <Avatar name={value.user.name || ""} url={value.user.avatar} />
+                                        <Avatar name={value?.user?.name || ""} url={value?.user?.avatar} />
                                         <div>
-                                            <h6 className="mb-0">{value.user.username}</h6>
+                                            <h6 className="mb-0">{value?.user?.username}</h6>
                                             <div className="d-flex align-items-center">
                                                 <Rating variant='warning' star={value.rating} />
                                             </div>

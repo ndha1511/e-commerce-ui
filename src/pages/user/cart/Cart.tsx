@@ -117,6 +117,7 @@ const Cart: React.FC = () => {
                         <CartEmpty />
                     </div>}
 
+
                 {
                     data?.data.map((item, index) => (
                         <CartItem
@@ -132,6 +133,7 @@ const Cart: React.FC = () => {
                     ))
                 }
             </div >
+
             <div className={`p-3 pt-2 border-top bg-white ${isFooterFixed ? 'fixed-footer container' : ''}`}>
                 <Row className="align-items-center p-3">
                     <Col xs={6} md={6} className="d-flex align-items-center">

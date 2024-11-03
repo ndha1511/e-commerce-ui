@@ -31,10 +31,6 @@ import App from "../pages/user/test/App ";
 import Brand from "../pages/admin/brand/Brand";
 import Batch from "../pages/admin/product/Batch";
 
-
-
-
-
 export const router = createBrowserRouter([
     {
         path: "/",
