@@ -22,7 +22,7 @@ const UserLayout = ({ children }: Props) => {
 
         // Dọn dẹp timeout khi component bị hủy hoặc message thay đổi
         return () => clearTimeout(timer);
-    }, [notify]);
+    }, [notify, dispatch]);
     const handleScroll = () => {
         const position = window.scrollY;
         if (position <= 100)

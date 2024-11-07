@@ -14,7 +14,7 @@ axiosInstance.interceptors.response.use(
   },
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
-      const config: AxiosRequestConfig<any> | undefined = error.config;
+      const config: AxiosRequestConfig<unknown> | undefined = error.config;
       if (config) {
         console.log('start refresh token.............');
         try {

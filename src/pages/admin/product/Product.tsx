@@ -9,7 +9,10 @@ import Select from 'react-select';
 function Product() {
     const { data: pageResponse } = useGetProductsQuery();
     const redirect = useRedirect();
-    const [selectedProduct, setSelectedProduct] = useState<any>(null); // Trạng thái tên sản phẩm đã chọn
+    const [selectedProduct, setSelectedProduct] = useState<{value: string, label: string}>({
+        value: '',
+        label: '',
+    }); // Trạng thái tên sản phẩm đã chọn
     const products = pageResponse?.data.items;
     const totalItems = pageResponse?.data.pageSize || 0; // Tổng số sản phẩm
     const itemsPerPage = 10; // Số sản phẩm mỗi trang
@@ -46,7 +49,13 @@ function Product() {
                             <Select
                                 id=""
                                 options={options}
-                                onChange={setSelectedProduct}
+                                onChange={(e) => {
+                                    const label = e?.label || "";
+                                    const value = e?.value || "";
+                                    setSelectedProduct({
+                                        label, value
+                                    })
+                                }}
                                 placeholder="Lọc theo tên sản phẩm"
                             />
                         </div>

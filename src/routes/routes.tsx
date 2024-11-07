@@ -28,7 +28,8 @@ import Category from "../pages/admin/category/Category";
 import CategoryUser from "../pages/user/category/Category";
 import PurchaseAdmin from "../pages/admin/purchase/PurchaseAdmin";
 import Batch from "../pages/admin/product/Batch";
-import App from "../pages/user/test/App ";
+import App from "../App";
+
 
 
 
@@ -37,11 +38,7 @@ import App from "../pages/user/test/App ";
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <UserLayout><Home/></UserLayout>
-    },
-    {
-        path: "/test",
-        element: <UserLayout><App/></UserLayout>
+        element: <App><UserLayout><Home/></UserLayout></App>
     },
     {
         path: "/cart",

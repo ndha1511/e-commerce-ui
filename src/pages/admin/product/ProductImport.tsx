@@ -1,6 +1,6 @@
-import { Col, Form, Row, Table } from "react-bootstrap";
+import { Col, Row, Table } from "react-bootstrap";
 import { convertPrice } from "../../../utils/convert-price";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetProductsPageQuery } from "../../../services/product.service";
 import useDebounce from "../../../hooks/useDebounce";
@@ -28,7 +28,7 @@ function ProductImport() {
     const [trigger, { isLoading: addInventory }] = useCreateInventoryMutation();
     const [isApplyAll, setIsApplyAll] = useState<boolean>(true);
     const dispatch = useDispatch();
-    const handleSearchProduct = (e: any) => {
+    const handleSearchProduct = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.value !== '') {
             setOpen(true);
         } else {

@@ -44,8 +44,8 @@ const CommentComp = ({ productId }: { productId: string }) => {
         setSelectedFilter(filterLabel);
     };
 
-    let active = 2;
-    let items = [];
+    const active = 2;
+    const items = [];
     for (let number = 1; number <= 5; number++) {
         items.push(
             <Pagination.Item key={number} active={number === active}>

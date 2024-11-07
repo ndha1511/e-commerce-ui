@@ -96,6 +96,7 @@ const Payment = () => {
                     location.href = responsePayment.data;
                 }
             } catch (error) {
+                console.log(error);
                 
             }
         }

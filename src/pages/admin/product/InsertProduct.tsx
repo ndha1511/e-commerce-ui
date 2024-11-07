@@ -59,6 +59,7 @@ function InsertProduct() {
             }
             return fileArr;
         } catch (error) {
+            console.log(error);
             return [];
         }
     };
@@ -105,6 +106,7 @@ function InsertProduct() {
             dispatch(removeAll())
             redirect('/admin/products/attribute?id=' + res.data.id + '&name=='+ res.data.productName)
         } catch (error) {
+            console.log(error);
             dispatch(setNotify({
                 type: 'error', message: 'Thao tác không thành công'
             }))

@@ -23,6 +23,12 @@ const categoryApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
+        getListCategory: build.query<BaseResponse<Category[]>, string[]>({
+            query: (params) => ({
+                url: '/categories/list?categoryId=' + params.join(';'),
+                method: 'get',
+            })
+        }),
         createCategory: build.mutation<BaseResponse<Category>, FormData>({
             query: (category) => ({
                 url: '/categories',
@@ -41,6 +47,7 @@ export const {
     useGetCategoryByUrlQuery,
     useLazyGetCategoriesQuery,
     useCreateCategoryMutation,
+    useGetListCategoryQuery
 } = categoryApi;
 
 export default categoryApi;
