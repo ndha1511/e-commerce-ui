@@ -30,7 +30,7 @@ function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
     const { key } = useParams();
 
-    const { data: resProduct, isLoading, isError, isSuccess } = useGetProductByUrlQuery(key || "");
+    const { data: resProduct, isLoading,  isSuccess } = useGetProductByUrlQuery(key || "");
 
     
     const product = resProduct?.data;
@@ -53,6 +53,7 @@ function ProductDetail() {
     const [rotate, setRotate] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
     const [initialVisible, setInitialVisible] = useState(true);
+    console.log(setInitialVisible)
     const handleAdd = () => {
         setIsVisible(true);
         const cartElement = document.getElementById("cart-motion-id");
@@ -63,7 +64,7 @@ function ProductDetail() {
             setRotate(360);
         }
     };
-    const { data: address, refetch: addressRefetch } = useGetAddressByUserIdQuery(user?.data?.id || "", {
+    const { data: address } = useGetAddressByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     })
 console.log(variant)

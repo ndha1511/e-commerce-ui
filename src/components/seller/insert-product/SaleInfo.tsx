@@ -24,7 +24,7 @@ function SaleInfo() {
     const dispatch = useDispatch();
     const [showAttributeSaleInfo1, setShowAttributeSaleInfo1] = useState(false);
     const [regularPrice, setRigularPrice] = useState<number>(0);
-    const [quantity, setQuantity] = useState<number>(0);
+    const quantity = 0;
     const [isApplyAll, setIsApplyAll] = useState<boolean>(true);
     const [trigger] = useCreateAttributeMutation();
     const productName = useGetParam('name');
@@ -38,9 +38,7 @@ function SaleInfo() {
         setRigularPrice(value);
         dispatch(setRegularPrice(value))
     }
-    const handleChangeQuantity = (value: number) => {
-        setQuantity(value);
-    }
+   
     const handleApplyAll = () => {
         const variantNew = [...variants].map((variant) => ({
             ...variant,
@@ -146,6 +144,7 @@ function SaleInfo() {
                 type: 'success', message: 'Thao tác thành công'
             }))
         } catch (error) {
+            console.log(error);
             dispatch(setNotify({
                 type: 'error', message: 'Thao tác thất bại'
             }))

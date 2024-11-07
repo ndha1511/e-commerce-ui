@@ -11,6 +11,8 @@ import { RootState } from "../../../rtk/store/store";
 import { useCreateBrandMutation } from "../../../services/brand.service";
 import { setNotify } from "../../../rtk/slice/notify-slice";
 import { clearCategories, removeAll } from "../../../rtk/slice/product-slice";
+import { OverlayTrigger } from "react-bootstrap";
+import CustomTooltip from "../../../components/tooltip/CustomTooltipProps";
 
 function Brand() {
     const [avt, setAvt] = useState<File>();
@@ -22,8 +24,8 @@ function Brand() {
     const params: string = pageQueryHanlder(1, 40, [{ filed: 'parentId', operator: '=', value: 'null' }]);
     const { data } = useGetCategoriesQuery(params);
     const product = useSelector((state: RootState) => state.product);
-    console.log(product);
     const chilRef = useRef<DeleteCategoryItems>(null)
+    const [btnSubmit, setBtnSubmit] = useState<boolean>(false);
     const dispatch = useDispatch();
     const [createBrand] = useCreateBrandMutation();
 
@@ -64,6 +66,7 @@ function Brand() {
     };
 
     const handleAdd = async () => {
+        setBtnSubmit(true);
         const newFormData = new FormData();
         if (avt) {
             newFormData.append('image', avt);
@@ -87,6 +90,7 @@ function Brand() {
             if (chilRef.current) {
                 chilRef.current.handleClear();
             }
+            setBtnSubmit(false);
         } catch (error) {
             console.error("Failed to update user:", error);
             dispatch(setNotify({
@@ -98,9 +102,9 @@ function Brand() {
         setCategories((prev) => prev.filter(item => item.id !== id));
         if (chilRef.current) {
             chilRef.current.handleRemoveCategory(id);
-            chilRef.current.handleClear();
         }
     };
+    console.log(categories.length)
     return (
         <div>
             <div className="bg-light p-3 border-radius-small mb-3 mt-3">
@@ -126,72 +130,96 @@ function Brand() {
                                 onChange={handleChangeImage}
                                 accept="image/*"
                             />
-                            <label htmlFor='file=brand' className='primary' style={{ cursor: 'pointer' }}>
-                                <div className="image-insert-product-seller p-2">
-                                    <div className="icon-image-insert">
-                                        <FontAwesomeIcon icon={faImage} fontSize={25} />
-                                        <FontAwesomeIcon
-                                            style={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                fontSize: 12,
-                                                position: 'absolute',
-                                                height: 15,
-                                                width: 15,
-                                                backgroundColor: 'white',
-                                                borderRadius: '50%',
-                                                right: -6,
-                                                bottom: 0,
-                                            }}
-                                            icon={faPlus}
-                                        />
+                            <OverlayTrigger
+                                placement="right"
+                                overlay={url.trim() === '' && btnSubmit ? CustomTooltip("Không được để trống!", "img") : <></>}
+                                show={url.trim() === ''}
+                            >
+                                <label htmlFor='file=brand' className='primary' style={{ cursor: 'pointer' }}>
+                                    <div className="image-insert-product-seller p-2">
+                                        <div className="icon-image-insert">
+                                            <FontAwesomeIcon icon={faImage} fontSize={25} />
+                                            <FontAwesomeIcon
+                                                style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    fontSize: 12,
+                                                    position: 'absolute',
+                                                    height: 15,
+                                                    width: 15,
+                                                    backgroundColor: 'white',
+                                                    borderRadius: '50%',
+                                                    right: -6,
+                                                    bottom: 0,
+                                                }}
+                                                icon={faPlus}
+                                            />
+                                        </div>
+                                        <span className="w-100 text-center primary">
+                                            {url ? 'Thay đổi ' : 'Thêm hình ảnh'}
+                                        </span>
                                     </div>
-                                    <span className="w-100 text-center primary">
-                                        {url ? 'Thay đổi ' : 'Thêm hình ảnh'}
-                                    </span>
-                                </div>
-                            </label>
+                                </label>
+                            </OverlayTrigger>
                         </div>
                     </PromotionRow>
                     <PromotionRow label="Tên thương hiệu:">
-                        <input
-                            className="input-basic-information-seller"
-                            name="brandName"
-                            value={brandName}
-                            placeholder="adidas"
-                            onChange={handleChange}
-                            type="text"
-                        />
+                        <OverlayTrigger
+                            placement="bottom"
+                            overlay={brandName.trim() === '' && btnSubmit ? CustomTooltip("Không được để trống!") : <></>}
+                            show={brandName.trim() === ''}
+                        >
+                            <input
+                                className="input-basic-information-seller"
+                                name="brandName"
+                                value={brandName}
+                                placeholder="adidas"
+                                onChange={handleChange}
+                                type="text"
+                            />
+                        </OverlayTrigger>
                     </PromotionRow>
                     <PromotionRow label="Ngành hàng:">
+                    <OverlayTrigger
+                                placement="bottom"
+                                overlay={categories.length === 0 && btnSubmit ? CustomTooltip("Không được để trống!") : <></>}
+                                show={categories.length === 0}
+                            >
                         <div className="border p-3 border-radius-small d-flex justify-content-between align-items-center">
-                            <div className="d-flex flex-wrap justify-content-start col-11 "> 
-                                {categories.map((category, index) => (
-                                    <div key={index} className="border me-3 p-1 mb-2"> 
-                                        <span>{category.name}</span>
-                                        <button
-                                            onClick={() => handleRemoveCategory(category.id)}
-                                            style={{
-                                                marginLeft: '5px',
-                                                background: 'transparent',
-                                                border: 'none',
-                                                color: '#999',
-                                                cursor: 'pointer'
-                                            }}
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="col-1 d-flex justify-content-end "> 
-                                <div onClick={handleOpenCategoryModal} >
-                                    <FontAwesomeIcon style={{ right: 20 }} icon={faPen} />
+                           
+                                <div className="d-flex flex-wrap justify-content-start col-11 ">
+
+                                    {categories.map((category, index) => (
+                                        <>
+
+                                            <div key={index} className="border me-3 p-1 mb-2">
+                                                <span>{category.name}</span>
+                                                <button
+                                                    onClick={() => handleRemoveCategory(category.id)}
+                                                    style={{
+                                                        marginLeft: '5px',
+                                                        background: 'transparent',
+                                                        border: 'none',
+                                                        color: '#999',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+
+                                        </>
+                                    ))}
+                                </div>
+                      
+                            <div className="col-1 d-flex justify-content-end ">
+                                <div className="brand-shadow d-flex justify-content-center align-items-center" onClick={handleOpenCategoryModal} style={{cursor:'pointer',width:30,height:20}} >
+                                    <FontAwesomeIcon style={{ right: 20, fontSize:11 }} icon={faPen} />
                                 </div>
                             </div>
                         </div>
-
+                        </OverlayTrigger>
                     </PromotionRow>
                     <PromotionRow label="Mô tả chi tiết:">
                         <textarea rows={8} cols={50} value={descriptionBrand} onChange={handleChange} name="description" className="textarea-basic-information-seller" />
