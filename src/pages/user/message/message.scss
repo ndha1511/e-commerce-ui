@@ -133,7 +133,7 @@
     // border: 1px solid blue;
     padding: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 10px;
     padding-bottom: 15px;
     // overflow: auto;
@@ -143,7 +143,7 @@
 .message-text-sender {
     display: flex; // Use flex to control positioning
     flex-direction: column; // Arrange children vertically
- 
+
     span {
         color: white;
         background-color: rgba(1, 11, 5, 0.785);
@@ -158,10 +158,11 @@
         background-color: transparent;
     }
 }
+
 .message-text-receiver {
     display: flex; // Use flex to control positioning
     flex-direction: column; // Arrange children vertically
- 
+
     span {
         color: #333;
         background-color: rgba(255, 255, 255, 0.9);
@@ -183,7 +184,7 @@
     /* Căn tin nhắn bên phải */
     border-radius: 10px 0 10px 10px;
     max-width: 70%;
-   
+
 }
 
 /* Tin nhắn của người nhận */
@@ -222,7 +223,15 @@
 .message-time {
     font-size: 10px;
     color: rgb(156, 148, 148);
-
     display: flex;
+    gap:3px;
+    align-items: center;
+    margin-right: -5px;
 
+}
+
+.small-spinner {
+    width: 10px;
+    height: 10px;
+    font-size: 2px;
 }

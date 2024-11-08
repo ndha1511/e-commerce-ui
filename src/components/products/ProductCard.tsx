@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../../models/product';
-import { convertPrice } from '../../utils/convert-price';
+import { calcPercentDiscount, calcPromotion, convertPrice } from '../../utils/convert-price';
 import './product-card.scss';
 
 const ProductCard = ({ product }: { product: Product }) => {
@@ -10,33 +10,30 @@ const ProductCard = ({ product }: { product: Product }) => {
                 alt='image'
                 className='card-image '
             />
-            <span className='text-medium border-color-primary background-primary discount-tag'>-20%</span>
+            {product.promotion && <span className='text-medium border-color-primary background-primary discount-tag'>-{calcPercentDiscount(product.regularPrice, product.promotion)}%</span>}
         </div>
         <div className='card-content'>
             <div className='card-text'>
                 <span>{product.productName}</span>
             </div>
-            {/* <div className='card-deal'>
+            {product.promotion && <div className='card-deal'>
                 <span className='text-small primary border-color-primary card-span'>
-                    Deal sốc
+                    {product.promotion?.promotionName}
                 </span>
-                <span className='text-small secondary border-color-secondary card-span'>
-                    Siêu sale 8/8
-                </span>
-            </div> */}
+            </div>}
             <div className='card-rating'>
                 {product.rating != 0 ? <> <div>
-                    <span className='text-small'>4.9/5</span>
+                    <span >{product.rating}/5</span>
                     <i className="bi bi-star-fill warning text-small"></i>
                 </div>
                     <div>
-                        <span className='text-small'>Đã bán 42,5k</span>
+                        <span>Đã bán {product.buyQuantity}</span>
                     </div> </> : <div className='text-muted'>Chưa có đánh giá</div>}
             </div>
             <div className='card-price'>
                 <div className='d-inline-flex gap-1 align-items-center'>
-                    <span className='text-medium primary'>{convertPrice(product.regularPrice)}</span>
-                    {/* <span className='text-small text-line-through'>500.000 đ</span> */}
+                    <span className={!product.promotion ? "text-medium primary" : "text-line-through"}>{convertPrice(product.regularPrice)}</span>
+                    {product.promotion && <span className='text-medium primary'>{calcPromotion(product.regularPrice, product.promotion)}</span>}
                 </div>
             </div>
         </div>

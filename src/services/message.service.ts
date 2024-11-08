@@ -15,7 +15,7 @@ const messageApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
-        createMessage: build.mutation<BaseResponse<MessageDto>, FormData>({
+        createMessage: build.mutation<BaseResponse<Message>, FormData>({
             query: (newMessage) => ({
                 url: '/messages',
                 method: 'post',

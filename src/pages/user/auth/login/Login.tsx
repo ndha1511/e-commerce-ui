@@ -26,8 +26,14 @@ function Login() {
         setError("");
         try {
           await loginRequest({ username, password }).unwrap();
-          redirectUrl ? window.location.href = `/${redirectUrl}` : window.location.href = `/`;
+          if(redirectUrl) {
+            window.location.href = `/${redirectUrl}`
+          } else { 
+            window.location.href = `/`; 
+          }
+          
         } catch (error) {
+          console.log(error);
           setError("Tên đăng nhập hoặc mật khẩu không chính xác");
         }
       } else {

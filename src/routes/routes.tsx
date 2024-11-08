@@ -27,22 +27,18 @@ import ProductImport from "../pages/admin/product/ProductImport";
 import Category from "../pages/admin/category/Category";
 import CategoryUser from "../pages/user/category/Category";
 import PurchaseAdmin from "../pages/admin/purchase/PurchaseAdmin";
-import App from "../pages/user/test/App ";
 import Brand from "../pages/admin/brand/CreateBrand";
 import Batch from "../pages/admin/product/Batch";
 import BrandList from "../pages/admin/brand/BrandList";
 import CreateEmployee from "../pages/admin/employee/CreateEmployee";
 import EmployeeList from "../pages/admin/employee/EmployeeList";
 import MessageView from "../pages/user/message/MessageView";
+import App from "../App";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <UserLayout><Home/></UserLayout>
-    },
-    {
-        path: "/test",
-        element: <UserLayout><App/></UserLayout>
+        element: <App><UserLayout><Home/></UserLayout></App>
     },
     {
         path: "/cart",

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useValidText from "../../../hooks/useValidText";
-import { DiscountType, PromotionType } from "../../../models/promotion";
+import { DiscountType } from "../../../models/promotion";
 import { valueOf } from "../../../utils/enum-handler";
 import './create-promotion.scss'
 import { OverlayTrigger } from "react-bootstrap";
@@ -12,7 +12,6 @@ import PromotionRow from "../../../components/promotion/PromotionRow";
 const CreatePromotion = () => {
 
     const { value: promotionName, setValue: setPromotionName, err: errPromotionName } = useValidText();
-    const [promotionType, setPromotionType] = useState<PromotionType>(PromotionType.DIRECT_DISCOUNT);
     const [discountType, setDiscountType] = useState<DiscountType | undefined>(DiscountType.PERCENT);
     const [loopType, setLoopType] = useState(null);
     const [applyType, setApplyType] = useState(null);
@@ -64,24 +63,7 @@ const CreatePromotion = () => {
                         />
                     </OverlayTrigger>
                 </PromotionRow>
-                <PromotionRow label="Loại chương trình khuyến mãi" >
-                    <div className="d-flex gap-3">
-                        <div className="d-flex align-items-center gap-2">
-                            <input className="radio-insert-product-seller" type="radio" name="image11" id="condition-type-1"
-                                checked={promotionType === PromotionType.DIRECT_DISCOUNT}
-                                onChange={() => setPromotionType(PromotionType.DIRECT_DISCOUNT)}
-                            />
-                            <label htmlFor="condition-type-1">Giảm giá trực tiếp</label>
-                        </div>
-                        <div className="d-flex align-items-center gap-2">
-                            <input className="radio-insert-product-seller" type="radio" name="image11" id="promotion-type-2"
-                                checked={promotionType === PromotionType.CONDITION_DISCOUNT}
-                                onChange={() => setPromotionType(PromotionType.CONDITION_DISCOUNT)}
-                            />
-                            <label htmlFor="promotion-type-2">Giảm giá theo điều kiện</label>
-                        </div>
-                    </div>
-                </PromotionRow>
+                
                 <PromotionRow label="Chọn loại mã giảm giá">
                     <div className="w-25">
                         <Select

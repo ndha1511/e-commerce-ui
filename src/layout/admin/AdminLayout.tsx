@@ -17,7 +17,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
 
         // Dọn dẹp timeout khi component bị hủy hoặc message thay đổi
         return () => clearTimeout(timer);
-    }, [notify]);
+    }, [dispatch, notify]);
     return <div className="admin-layout">
         <div className="navbar-admin">
             <Navbar></Navbar>

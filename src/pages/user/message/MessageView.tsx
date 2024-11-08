@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef, ChangeEvent, useLayoutEffect, KeyboardEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent, KeyboardEvent } from "react";
 import './message.scss';
 import SimpleBar from "simplebar-react";
 import { pageQueryHanlder } from "../../../utils/query-handler";
@@ -7,15 +7,20 @@ import { useGetRoomQuery } from "../../../services/room.service";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import { useCreateMessageMutation, useGetMessageQuery } from "../../../services/message.service";
 import MessageContent from "./MessageContent";
-interface MessageProps {
+import { MessageStatus, MessageType } from "../../../models/message";
+import moment from 'moment';
+export interface MessageProps {
     id: number;
     text: string;
     sender: string;
+    messageType: MessageType;
+    messageStatus: MessageStatus;
     timestamp: string;
 }
 
 const MessageView: React.FC = () => {
     const [isVisible, setIsVisible] = useState<boolean>(false);
+    const [err, setErr] = useState<string>('');
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
     const userCurrent = user?.data?.email;
     const paramsRoom = pageQueryHanlder(1, 100);
@@ -24,15 +29,15 @@ const MessageView: React.FC = () => {
         param: paramsRoom,
     }, { skip: !loginSuccess || !user?.data?.id })
     const paramsMessage = pageQueryHanlder(1, 1000);
-    const { data: messagesData } = useGetMessageQuery({
+    const { data: messagesData, refetch } = useGetMessageQuery({
         roomId: room?.data?.items?.[0]?.conversationId || '',
         params: paramsMessage,
     }, { skip: !roomSuccess });
     const [createMessage] = useCreateMessageMutation();
-    const [messages, setMessages] = useState<MessageProps[]>([]);
-    const [newMessage, setNewMessage] = useState<string>("");
     const [file, setFile] = useState<File>();
     const [url, setUrl] = useState<string>("");
+    const [messages, setMessages] = useState<MessageProps[]>([]);
+    const [newMessage, setNewMessage] = useState<string>("");
     const [isAtBottom, setIsAtBottom] = useState<boolean>(true); // Kiểm tra nếu đang ở cuối danh sách tin nhắn
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -52,28 +57,43 @@ const MessageView: React.FC = () => {
 
     useEffect(() => {
         if (messagesData) {
-            const formattedMessages: MessageProps[] = messagesData.data.items.map((msg, index) => ({
-                id: index + 1, // Đặt `id` là số tăng dần
-                text: msg.content || msg.message, // Sử dụng `content` hoặc `message`
-                sender: msg.sender,
-                timestamp: new Date(msg.sendDate).toLocaleTimeString(), // Định dạng thời gian
-            }));
+            const formattedMessages: MessageProps[] = messagesData.data.items.map((msg, index) => {
+                const formattedDate = moment(msg.sendDate, 'YYYY-MM-DD HH:mm:ss').toISOString(); // Chuyển sang định dạng ISO
+                const timestamp = moment(formattedDate).format('hh:mm:ss'); // Lấy thời gian theo định dạng HH:mm:ss
+                return {
+                    id: index + 1, // Đặt `id` là số tăng dần
+                    text: msg.content , // Sử dụng `content` hoặc `message`
+                    sender: msg.sender,
+                    messageType: msg.messageType,
+                    messageStatus: msg.messageStatus,
+                    timestamp: timestamp
+                }
+            });
             setMessages(formattedMessages);
         }
     }, [messagesData]);
+
     const toggleVisibility = (): void => {
         scrollToBottom(false);
         setIsVisible(!isVisible);
     };
-    const handleSendMessage = async () => {
+
+    const handleSendMessage = async (file?: File) => {
+
         if (newMessage || file) {
+            let imageUrl = ""
+            if (file) {
+                imageUrl = URL.createObjectURL(file);
+            }
             const newMsg: MessageProps = {
                 id: messages.length + 1,
                 text: newMessage || url || '',
                 sender: userCurrent || '', // Hoặc bạn có thể thay đổi cho người nhận tùy theo logic
-                timestamp: new Date().toLocaleTimeString(),  // Lấy thời gian hiện tại và chuyển thành chuỗi
+                messageType: getFileType(file), // Kiểm tra xem tin nhắn là text hay ảnh để đánh dấu loại tin nhắn
+                messageStatus: MessageStatus.SENDING, // Đặt trạng thái đang gửi
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),  // Lấy thời gian hiện tại và chuyển thành chuỗi
             };
-            setMessages([...messages, newMsg]);
+            setMessages([newMsg, ...messages]);
             try {
                 const newFormData = new FormData();
                 if (newMessage) {
@@ -84,12 +104,35 @@ const MessageView: React.FC = () => {
                 }
                 newFormData.append('sender', userCurrent || '');
                 newFormData.append('receiver', 'ndha1115@gmail.com');
-                await createMessage(newFormData).unwrap();
+                const res = await createMessage(newFormData).unwrap();
+                if (res.data.content) {
+                    refetch();
+                }
+                
+                // if (file) {
+                //     setTimeout(() => {
+                //         refetch();
+                //     }, 1000); // 1000ms = 1 giây
+                //     setUrl('')
+                //     setFile(undefined);
+                // }else{
+                //     refetch();
+                // }
+                // refetch();
+                setErr('');
                 setNewMessage("");
 
             } catch (error) {
                 console.log(error);
-                alert('thanhf k coong')
+                if (file) {
+                    setErr(url);
+                    setUrl('');
+                    setFile(undefined);
+                    return;
+                } else {
+                    setErr(newMessage)
+                }
+                setNewMessage("");
             }
         }
     };
@@ -97,23 +140,30 @@ const MessageView: React.FC = () => {
         setNewMessage(e.target.value);
     };
 
-
     const handleChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length > 0) {
             const imageUrl = URL.createObjectURL(files[0]);
             setUrl(imageUrl);
             setFile(files[0]);
-            // Tạo tin nhắn mới với URL của ảnh và thêm vào mảng `messages`
-            const newMsg: MessageProps = {
-                id: messages.length + 1,
-                text: imageUrl, // Gán URL của ảnh vào `text`
-                sender: userCurrent || '',
-                timestamp: new Date().toLocaleTimeString(),
-            };
-            setMessages([...messages, newMsg]);
+
         }
     };
+    useEffect(() => {
+        handleSendMessage(file);
+    }, [url, file])
+    function getFileType(file?: File): MessageType {
+        // Kiểm tra nếu file là kiểu MIME (như khi upload qua input)
+        if (file && file.type) {
+            if (file.type.startsWith("image/")) {
+                return MessageType.IMAGE;
+            } else if (file.type.startsWith("video/")) {
+                return MessageType.VIDEO;
+            }
+
+        }
+        return MessageType.TEXT;
+    }
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
         if (e.key === "Enter") {
@@ -124,11 +174,14 @@ const MessageView: React.FC = () => {
 
     const scrollToBottom = (smooth: boolean = false): void => {
         if (messagesEndRef.current !== null) { // Kiểm tra null trước khi gọi
-            messagesEndRef.current.scrollIntoView({
-                behavior: smooth ? 'smooth' : 'auto',
-            });
+            setTimeout(() => {
+                messagesEndRef.current!.scrollIntoView({
+                    behavior: smooth ? 'smooth' : 'auto',
+                });
+            }, 100); // Thời gian chờ 100ms (bạn có thể điều chỉnh thời gian theo nhu cầu)
         }
     };
+
     useEffect(() => {
         scrollToBottom(true); // Sử dụng `smooth` khi có tin nhắn mới
     }, [messages]);
@@ -139,7 +192,6 @@ const MessageView: React.FC = () => {
     }, [isVisible]);
 
     useEffect(() => {
-        console.log('isAtBottom:', isAtBottom); // Thêm log kiểm tra giá trị của isAtBottom
     }, [isAtBottom]);
     return (
         <div className="d-flex flex-column gap-3 justify-content-end" style={{
@@ -170,22 +222,13 @@ const MessageView: React.FC = () => {
                                 {messages.map((message) => (
                                     <motion.div
                                         key={message.id}
-                                        className={`message-${message.sender === "minhboy172@gmail.com" ? "sender" : "receiver"}`}
+                                        className={`message-${message.sender === userCurrent ? "sender" : "receiver"}`}
                                         initial={{ y: -50, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ duration: 0.5 }}
                                         exit={{ y: 50, opacity: 0 }}
                                     >
-                                        {/* <div className="message-text ">{message.text}
-                                            {url && <img src={message.text} alt=""
-                                                width={40} height={40}
-                                            />}
-                                            <div className="message-time " style={{
-                                                justifyContent: message.sender === "sender" ? 'end': 'start'}}>{message.timestamp}
-                                                </div>
-                                        </div> */}
-                                        <MessageContent text={message.text} sender={message.sender} />
-
+                                        <MessageContent message={message} userCurrent={userCurrent} err={err} />
                                     </motion.div>
                                 ))}
                             </div>
@@ -198,7 +241,7 @@ const MessageView: React.FC = () => {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <i className="bi bi-camera"></i>
-                                <input accept='image/*' id='file-message' type='file' onChange={handleChangeImage} className='hidden-button-file'></input>
+                                <input id='file-message' type='file' onChange={handleChangeImage} className='hidden-button-file'></input>
                             </label>
                             <input
                                 type="text"
@@ -210,7 +253,7 @@ const MessageView: React.FC = () => {
                             <i
                                 className="bi bi-send"
                                 style={{ rotate: '45deg', cursor: 'pointer' }}
-                                onClick={handleSendMessage}
+                                onClick={() => handleSendMessage()}
                             ></i>
 
                         </div>

@@ -62,14 +62,14 @@ const FormComment = ({ show, handleClose, product, orderId, attributes }: Props)
        
 
         const formData: FormData = new FormData();
-        for (let f of file) {
+        for (const f of file) {
             formData.append('files', f);
         }
         formData.append('content', content);
         formData.append('productId', product.productId);
         formData.append('orderId', orderId);
         formData.append('rating', star.toString());
-        for (let attr of attributes) {
+        for (const attr of attributes) {
             formData.append('attributes', attr);
         }
         formData.append('userId', user?.data?.id || "");

@@ -1,5 +1,5 @@
 import './footer.scss'; // File SCSS tùy chỉnh của bạn
-import visa from '../../../assert/payment-methods/light/visa.jpg'
+
 const Footer = () => {
   return (
     <div className="footer bg-light pt-5 pb-3">

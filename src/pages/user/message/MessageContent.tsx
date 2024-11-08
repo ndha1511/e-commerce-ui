@@ -1,26 +1,57 @@
-// src/components/MessageText.tsx
-import React from "react";
+// src/components/MessageContent.tsx
+import React, { useEffect, useState } from "react";
 import './message.scss'
+import { MessageStatus, MessageType } from "../../../models/message";
+import { MessageProps } from "./MessageView";
+import ImageMessage from "./ImageMessage";
+import TextMessage from "./TextMessage";
+import VideoMessage from "./VideoMessage";
+
 interface MessageTextProps {
-  text: string;
-  sender: string;
+  message: MessageProps;
+  userCurrent?: string;
+  err: string;
 }
 
-const MessageContent: React.FC<MessageTextProps> = ({ text, sender }) => {
-  const isImage = text.startsWith("blob:") || text.startsWith("https://sales-app-bucket.s3.ap-southeast-1.amazonaws.com/");
-  
+const MessageContent: React.FC<MessageTextProps> = ({ message, userCurrent, err }) => {
+  const [errors, setErrors] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (err && message.text && err === message.text && !errors.includes(err)) {
+      setErrors([...errors, err]);
+    }
+  }, [err, message.text, errors]);
+
+  const isSender = message.sender === userCurrent;
+  const hasError = errors.includes(message.text);
+
   return (
-    <div className={`message-text-${sender === "minhboy172@gmail.com" ? "sender" : "receiver"}`}>
-      {isImage ? (
-        <img 
-          className="img-message-sender" 
-          src={text} 
-          alt="Sent Image" 
-          style={{ maxWidth: '60%' }} 
+    <div className={`message-text-${isSender ? "sender" : "receiver"}`}>
+      {message.messageType === MessageType.IMAGE ? (
+        <ImageMessage
+          src={message.text}
+          timestamp={message.timestamp}
+          status={message.messageStatus}
+          isSender={isSender}
+          hasError={hasError}
         />
-      ) : (
-        <span>{text}</span>
-      )}
+      ) : message.messageType === MessageType.TEXT ? (
+        <TextMessage
+          text={message.text}
+          timestamp={message.timestamp}
+          status={message.messageStatus}
+          isSender={isSender}
+          hasError={hasError}
+        />
+      ) : message.messageType === MessageType.VIDEO ? (
+        <VideoMessage
+          src={message.text}
+          timestamp={message.timestamp}
+          status={message.messageStatus}
+          isSender={isSender}
+          hasError={hasError}
+        />
+      ) : null}
     </div>
   );
 };

@@ -8,13 +8,13 @@ import { faCheck, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import './product-detail.scss'
 import Address from "../../../components/address/Address";
 import Comment from "./CommentComp";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useGetProductByUrlQuery } from "../../../services/product.service";
 import ModalLoading from "../../../components/loading/ModalLoading";
-import { convertPrice } from "../../../utils/convert-price";
+import { calcDiscountPrice, calcPercentDiscount, calcPromotion, convertPrice } from "../../../utils/convert-price";
 import RenderVideo from "../../../components/image-details/RenderVideo";
 import ProductAttribute from "./ProductAttribute";
-import {  useLazyGetVariantsQuery } from "../../../services/variant.service";
+import { useLazyGetVariantsQuery } from "../../../services/variant.service";
 import { VariantResponse } from "../../../dtos/response/variant/variant-response";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import { useAddToCartMutation, useGetCartByUserIdQuery } from "../../../services/cart.service";
@@ -24,15 +24,22 @@ import { useDispatch } from "react-redux";
 import { setNotify } from "../../../rtk/slice/notify-slice";
 import { motion } from "framer-motion";
 import ProductEmpty from "./ProductEmpty";
+import { useGetListCategoryQuery } from "../../../services/category.service";
+import Countdown from 'react-countdown';
+import { connect, disconnect, isConnected, stompClient } from "../../../websocket/websocket-config";
+import { Message } from "stompjs";
+import { pageQueryHanlder } from "../../../utils/query-handler";
+import { useGetCommentsQuery } from "../../../services/comment.service";
 
 
 function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
     const { key } = useParams();
 
-    const { data: resProduct, isLoading,  isSuccess } = useGetProductByUrlQuery(key || "");
-
-    
+    const { data: resProduct, isLoading, isSuccess } = useGetProductByUrlQuery(key || "");
+    const { data: categories } = useGetListCategoryQuery(resProduct?.data.categories || [], {
+        skip: !Array.isArray(resProduct?.data.categories) || resProduct?.data.categories.length === 0,
+    });
     const product = resProduct?.data;
     const [images, setIamges] = useState<any[]>([]);
     const [startIndex, setStartIndex] = useState(0);
@@ -43,7 +50,7 @@ function ProductDetail() {
     const [productPrice, setProductPrice] = useState(0);
     const [disabledBtn, setDisabledBtn] = useState(true);
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
-    const {refetch} = useGetCartByUserIdQuery(user?.data?.id || "", {
+    const { refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
     const [addToCart] = useAddToCartMutation();
@@ -52,22 +59,57 @@ function ProductDetail() {
     const [y, setY] = useState(0);
     const [rotate, setRotate] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
-    const [initialVisible, setInitialVisible] = useState(true);
-    console.log(setInitialVisible)
+    const param = pageQueryHanlder(1, 100);
+    const { data : dataComment, isSuccess:commentSuccess, refetch:refetchComment } = useGetCommentsQuery({
+        productId: product?.id || '',
+        params: param
+    },{skip:!isSuccess || !product?.id});
+
+    useEffect(() => {
+        if(isSuccess) {
+            if (!isConnected()) {
+                connect(onConnected, onError);
+            }
+            else if (stompClient) {
+                stompClient.subscribe('/topic/' + product?.id, onCommentReceived, { id: product?.id });
+            }
+            return () => {
+                if (isConnected() && stompClient) {
+                    stompClient.unsubscribe(`${product?.id}`);
+                }
+            }
+        }
+    }, [stompClient, isSuccess]);
+
+    const onConnected = () => {
+        console.log("Connected to websocket server");
+        if (isConnected() && stompClient) {
+            stompClient.subscribe('/topic/' + product?.id, onCommentReceived, { id: product?.id });
+        }
+    }
+    const onCommentReceived = (comment: Message) => {
+        const commentResponse = JSON.parse(comment.body);
+        console.log(commentResponse);
+        refetchComment();
+    }
+    const onError = () => {
+        console.log("Error connecting to websocket server");
+    }
+
     const handleAdd = () => {
         setIsVisible(true);
         const cartElement = document.getElementById("cart-motion-id");
         if (cartElement) {
             const iconRect = cartElement.getBoundingClientRect();
-            setX(iconRect.left + window.scrollX - 1225); // Căn giữa biểu tượng
-            setY(iconRect.top + window.scrollY - 260); // Điều chỉnh vị trí cho phù hợp
+            setX(iconRect.left + window.scrollX - 1225);
+            setY(iconRect.top + window.scrollY - 260);
             setRotate(360);
         }
     };
     const { data: address } = useGetAddressByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     })
-console.log(variant)
+
     const onSelect = (value: string, url: string, index: number) => {
         const currentUrl = images.indexOf(images.find((img) => img.original === url));
         if (currentUrl !== -1) {
@@ -80,6 +122,13 @@ console.log(variant)
             setSelectValue2(value);
         }
     }
+
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "instant"
+        });
+    }, []);
 
     useEffect(() => {
         if (variant) {
@@ -195,8 +244,10 @@ console.log(variant)
             {isLoading && <ModalLoading loading={isLoading} />}
             {isSuccess && <>
                 <div className="p-1 text-meidum d-flex gap-2 text-muted">
-                    <span className="me-2">Trang chủ <FontAwesomeIcon icon={faChevronRight} /></span>
-                    <span>Thời trang nam <FontAwesomeIcon icon={faChevronRight} /></span>
+                    <Link to={"/"}>Trang chủ <FontAwesomeIcon icon={faChevronRight} /></Link>
+                    {categories?.data?.map((category) => {
+                        return <Link to={"/" + category.urlPath}>{category.categoryName} <FontAwesomeIcon icon={faChevronRight} /></Link>
+                    })}
                 </div>
                 <Row className="align-center ">
                     <Col md={4} className="">
@@ -219,9 +270,9 @@ console.log(variant)
                                 <h5 className="mb-1">{product?.productName}</h5>
 
                                 {product?.rating ? <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
-                                    <span className="text-medium">4.2</span>
+                                    <span className="text-medium">{product.rating}</span>
                                     <Rating size="text-medium" variant="secondary" star={product.rating} />
-                                    <span className=" text-muted">(16)</span>
+                                    <span className=" text-muted">({product.reviews})</span>
                                     <span></span>
                                     <span className=" text-muted">Đã bán: {product?.buyQuantity}</span>
                                 </div> : <div className="d-flex gap-2 pt-2 pb-2 align-items-center">
@@ -229,15 +280,19 @@ console.log(variant)
                                     <span className=" text-muted">Đã bán: {product?.buyQuantity}</span>
                                 </div>}
                                 <div className="d-flex align-items-center mb-2">
-                                    <h4 className=" text-large mb-0">{convertPrice(productPrice)}</h4>
-                                    {/* <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">-4%</small> */}
+                                    <h4 className={product?.promotion ? "text-line-through text-large mb-0" : "text-large mb-0"}>{convertPrice(productPrice)}</h4>
+                                    <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">- {calcPercentDiscount(productPrice, product?.promotion)}%</small>
+
+                                    {product && product.promotion && product.promotion.endDate && <div className="ms-2">Kết thúc trong: <Countdown date={Date.now() +
+                                        ((new Date(product.promotion.endDate.toString()).getTime() - new Date().getTime()) || 0)} /></div>}
+
                                 </div>
                                 <div className="mb-2">
                                     {product?.promotion && <div className="p-2 border border-radius-small">
                                         <span className="text-medium">Giá sau khi giảm:</span> <br />
-                                        <span className="text-large primary">225.000₫</span> <br />
+                                        <span className="text-large primary">{calcPromotion(productPrice, product.promotion)}</span> <br />
                                         <FontAwesomeIcon color="blue" icon={faCheck} className="pe-2 ps-1 " />
-                                        <span>Giảm 10.000₫ </span>
+                                        <span>Giảm {calcDiscountPrice(productPrice, product.promotion)} </span>
                                     </div>}
                                 </div>
                                 <div className="mt-4">
@@ -276,40 +331,40 @@ console.log(variant)
                                     </Col>
                                 </Row>
                                 <div style={{ position: "relative", height: '80px' }}>
-                                    {initialVisible && (
-                                        <motion.div
-                                            className="box "
-                                            initial={{ opacity: 1 }}
-                                            style={{
-                                                opacity: "50%",
-                                                position: "absolute",
-                                                top: 0,
-                                                left: 0,
-                                            }}
-                                        >
-                                            {variant && <Row className="mt-3  ">
-                                                <Col>
-                                                    <div className="d-flex  ">
-                                                        <img
-                                                            src={variant.image || product?.thumbnail}
-                                                            alt="variant"
-                                                            className="img-fluid img-ft"
-                                                        />
-                                                        <div className="ps-1">
-                                                            <span>{variant.attributeValue1}</span> <br />
-                                                            <span>{variant.attributeValue2}</span>
-                                                        </div>
-                                                    </div>
-                                                </Col>
-                                                <Col>
-                                                    <div className="ps-1">
-                                                        <span>Kho hàng: {variant.quantity}</span> <br />
 
+                                    <motion.div
+                                        className="box "
+                                        initial={{ opacity: 1 }}
+                                        style={{
+                                            opacity: "50%",
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                        }}
+                                    >
+                                        {variant && <Row className="mt-3  ">
+                                            <Col>
+                                                <div className="d-flex  ">
+                                                    <img
+                                                        src={variant.image || product?.thumbnail}
+                                                        alt="variant"
+                                                        className="img-fluid img-ft"
+                                                    />
+                                                    <div className="ps-1">
+                                                        <span>{variant.attributeValue1}</span> <br />
+                                                        <span>{variant.attributeValue2}</span>
                                                     </div>
-                                                </Col>
-                                            </Row>}
-                                        </motion.div>
-                                    )}
+                                                </div>
+                                            </Col>
+                                            <Col>
+                                                <div className="ps-1">
+                                                    <span>Kho hàng: {variant.quantity}</span> <br />
+
+                                                </div>
+                                            </Col>
+                                        </Row>}
+                                    </motion.div>
+
                                     {isVisible && (
                                         <motion.div
                                             className="box border"
@@ -374,7 +429,7 @@ console.log(variant)
                                         <Row className="mt-3">
                                             <Col className="d-flex justify-content-between">
                                                 <span>Tạm tính</span>
-                                                <span className="text-large">{convertPrice(quantity * variant.price)}</span>
+                                                <span className="text-large">{calcPromotion(quantity * variant.price, product?.promotion)}</span>
                                             </Col>
                                         </Row>
                                     </> : <>
@@ -441,7 +496,7 @@ console.log(variant)
 
                 <Row>
                     <Col md={9}>
-                        {product && <Comment productId={product.id} />}
+                        {product && <Comment comments = {dataComment?.data.items || []} />}
                     </Col>
                     <Col md={3}>
 
