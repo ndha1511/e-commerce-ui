@@ -330,3 +330,17 @@ pre {
   pointer-events: none;
   user-select: none;
 }
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  row-gap: 10px;
+  column-gap: 10px;
+  justify-items: center;
+}
+
+@media (max-width: 768px) {
+  .products {
+      grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+}
