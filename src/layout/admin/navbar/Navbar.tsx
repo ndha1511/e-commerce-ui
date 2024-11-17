@@ -65,7 +65,19 @@ const menu: Menu[] = [
     {
         name: 'QL thương hiệu',
         path: '/admin',
-        icon: <i className="bi bi-patch-check"></i>
+        icon: <i className="bi bi-patch-check"></i>,
+        children: [
+            {
+                name: '● Thêm thương hiệu',
+                path: '/admin/brand',
+                fontSize: 13
+            },
+            {
+                name: '● Danh sách thương hiệu',
+                path: '/admin/brands',
+                fontSize: 13
+            },
+        ]
 
     },
     {
@@ -80,7 +92,7 @@ const menu: Menu[] = [
         children: [
             {
                 name: 'Danh sách nhân viên',
-                path: '/admin/employee/list',
+                path: '/admin/employees',
                 fontSize: 13
             },
             {

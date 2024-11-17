@@ -1,17 +1,17 @@
 import { Attribute } from "../../../models/attriubte";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { useGetVariantsByProductIAndAttVl1Query, useGetVariantsByProductIdQuery } from "../../../services/variant.service";
 
-const ProductAttribute = ({ productId, attribute, onSelect, index }: {
+
+const ProductAttribute = ({  attribute, onSelect, index }: {
     productId: string,
     attribute: Attribute,
     onSelect: (value: string, url: string, index: number) => void,
     index: number
 }) => {
     const [selected, setSelected] = useState<string>('');
-    const handleClick = (value: any, url: string) => {
+    const handleClick = (value: string, url: string) => {
         setSelected(value);
         onSelect(value, url, index);
     };

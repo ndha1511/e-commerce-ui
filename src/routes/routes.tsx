@@ -27,13 +27,13 @@ import ProductImport from "../pages/admin/product/ProductImport";
 import Category from "../pages/admin/category/Category";
 import CategoryUser from "../pages/user/category/Category";
 import PurchaseAdmin from "../pages/admin/purchase/PurchaseAdmin";
+import Brand from "../pages/admin/brand/CreateBrand";
 import Batch from "../pages/admin/product/Batch";
+import BrandList from "../pages/admin/brand/BrandList";
+import CreateEmployee from "../pages/admin/employee/CreateEmployee";
+import EmployeeList from "../pages/admin/employee/EmployeeList";
+import MessageView from "../pages/user/message/MessageView";
 import App from "../App";
-
-
-
-
-
 
 export const router = createBrowserRouter([
     {
@@ -98,6 +98,10 @@ export const router = createBrowserRouter([
         element: <UserLayout><Account><Notification/></Account></UserLayout>
     },
     {
+        path: "/user/message",
+        element: <UserLayout><MessageView/></UserLayout>
+    },
+    {
         path: "/user/vouchers",
         element: <UserLayout><Account><Voucher/></Account></UserLayout>
     }
@@ -147,5 +151,22 @@ export const router = createBrowserRouter([
         path: "/admin/purchase",
         element: <AdminLayout><PurchaseAdmin/></AdminLayout>
     },
+    {
+        path: "/admin/brand",
+        element: <AdminLayout><Brand/></AdminLayout>
+    },
+    {
+        path: "/admin/brands",
+        element: <AdminLayout><BrandList/></AdminLayout>
+    },
+    {
+        path: "/admin/employee/create",
+        element: <AdminLayout><CreateEmployee/></AdminLayout>
+    },
+    {
+        path: "/admin/employees",
+        element: <AdminLayout><EmployeeList/></AdminLayout>
+    },
+
 
 ]);

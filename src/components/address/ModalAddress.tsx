@@ -4,6 +4,8 @@ import Select from 'react-select'
 import { useEffect, useState } from "react";
 import { useCheckLoginQuery } from "../../services/auth.service";
 import { UserAddressDto } from "../../dtos/request/address/user-address-dto";
+import { useDispatch } from "react-redux";
+import { setNotify } from "../../rtk/slice/notify-slice";
 
 export type Action = "save" | "update" | "null";
 interface Props {
@@ -23,31 +25,44 @@ const ModalAddress = ({ show, handleClose, refetch, action, addressId }: Props) 
   const [phone, setPhone] = useState<string>('');
   const [detail, setDetail] = useState<string>('');
   const [trigger] = useUpdateUserAddressMutation();
-  const { data: provinces } = useGetProvincesQuery();
+  const { data: provinces, isSuccess: provinceSuccess } = useGetProvincesQuery();
   const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
-  const { data: dataUserAddress } = useGetUserAddressQuery(user?.data?.id || "", {
-    skip: !loginSuccess || !user?.data?.id,
-  });
-  const address = dataUserAddress?.data.find((addr: UserAddressDto) => addr.id === addressId);
-
-  const { data: districts, refetch: districtRefetch } = useGetDistrictsQuery(provinceID, {
+  const [fetchAllSuccess, setFetchAllSuccess] = useState(false);
+  const { data: districts, refetch: districtRefetch, isSuccess: districtsSuccess } = useGetDistrictsQuery(provinceID, {
     skip: provinceID === 0,
   });
-  const { data: wards, refetch: wardRefetch } = useGetWardsQuery(districtID, {
+  const { data: wards, refetch: wardRefetch, isSuccess: wardsSuccess } = useGetWardsQuery(districtID, {
     skip: districtID === 0,
   });
-
+  const { data: dataUserAddress, isSuccess: addressSuccess, refetch: refetchAddress } = useGetUserAddressQuery(user?.data?.id || "", {
+    skip: !loginSuccess || !user?.data?.id || !provinceSuccess
+  });
+  const address = dataUserAddress?.data.find((addr: UserAddressDto) => addr.id === addressId);
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (action === "update" && dataUserAddress) {
-      setName(address?.receiverName || '');
-      setPhone(address?.phoneNumber || '');
-      setDetail(address?.addressDetail || '');
-      setProvinceId(provinces?.data.find(p => p.ProvinceName === address?.province)?.ProvinceID || 0);
-      setDistrictId(districts?.data.find(d => d.DistrictName === address?.district)?.DistrictID || 0);
-      setWardId(wards?.data.find(w => w.WardName === address?.ward)?.WardCode || 0);
-    }
-  }, [action, dataUserAddress, provinces, districts, wards]);
 
+    if (!fetchAllSuccess) {
+      if (provinceSuccess) {
+
+        setProvinceId(provinces?.data.find(p => p.ProvinceName === address?.province)?.ProvinceID || 0);
+      }
+      if (provinceSuccess && districtsSuccess) {
+
+        setDistrictId(districts?.data?.find(d => d.DistrictName === address?.district)?.DistrictID ?? 0);
+      }
+      if (provinceSuccess && districtsSuccess && wardsSuccess) {
+
+        setWardId(wards?.data.find(w => w.WardName === address?.ward)?.WardCode || 0);
+        setName(address?.receiverName || '');
+        setPhone(address?.phoneNumber || '');
+        setDetail(address?.addressDetail || '');
+        setFetchAllSuccess(true);
+
+      }
+    }
+
+
+  }, [provinceSuccess, addressSuccess, districtsSuccess, wardsSuccess, fetchAllSuccess])
 
   const provinceOptions = provinces?.data.map(p => ({
     value: p.ProvinceID,
@@ -102,10 +117,8 @@ const ModalAddress = ({ show, handleClose, refetch, action, addressId }: Props) 
       console.log(error);
     }
   }
-  console.log(address)
   const handleUpdate = async () => {
     try {
-      console.log('1234324S')
       await trigger({
         updateUserAddress: {
           userId: user?.data?.id || '',
@@ -119,9 +132,16 @@ const ModalAddress = ({ show, handleClose, refetch, action, addressId }: Props) 
         },
         addressId: addressId || ''
       }).unwrap();
-      alert('thành cong')
+      refetch();
+      refetchAddress();
+      handleClose();
+      dispatch(setNotify({
+        type: 'success', message: 'Cập nhật thành công'
+      }))
     } catch (error) {
-      alert('khong thành cong')
+      dispatch(setNotify({
+        type: 'error', message: 'Cập nhật Không thành công'
+      }))
     }
   }
   return (
@@ -184,7 +204,7 @@ const ModalAddress = ({ show, handleClose, refetch, action, addressId }: Props) 
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={action === "update" ? handleUpdate : handleAddAddress}>
+        <Button variant="primary" onClick={action === 'update' ? handleUpdate : handleAddAddress}>
           Lưu
         </Button>
 

@@ -86,11 +86,15 @@ export const createProductSlice = createSlice({
             state = initialState
             return state;
         },
+        clearCategories: (state) => {
+            state.categories = [];
+        },
     }
 })
 export const { setProductName, setRegularPrice, setDescription,setAttributeDto,
     setCategories, setBrandId, setCity, addCategories,
     setThumbnailIndex, addImage, setVideo, setAttributeValue,
+    clearCategories,
     addAttributeDto, addVariantDto, addTag, setVariantDto,
     removeImage, removeAttributeDto, removeVariantDto, removeTag,removeAll } = createProductSlice.actions
 export default createProductSlice.reducer;

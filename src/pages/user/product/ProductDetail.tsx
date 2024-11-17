@@ -26,16 +26,23 @@ import ProductEmpty from "./ProductEmpty";
 import { useGetListCategoryQuery } from "../../../services/category.service";
 import Countdown from 'react-countdown';
 import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
+import { connect, disconnect, isConnected, stompClient } from "../../../websocket/websocket-config";
+import { Message } from "stompjs";
+import { pageQueryHanlder } from "../../../utils/query-handler";
+import { useGetCommentsQuery } from "../../../services/comment.service";
+
 
 
 function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
     const { key } = useParams();
 
+
     const { data: resProduct, isSuccess: getProductSuccess } = useGetProductByUrlQuery(key || "");
     const { data: categories, isSuccess: getCategoriesSuccess } = useGetListCategoryQuery(resProduct?.data.categories || [], {
         skip: !Array.isArray(resProduct?.data.categories) || resProduct?.data.categories.length === 0,
     });
+
 
     const product = resProduct?.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,6 +64,42 @@ function ProductDetail() {
     const [y, setY] = useState(0);
     const [rotate, setRotate] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
+    const param = pageQueryHanlder(1, 100);
+    const { data: dataComment, isSuccess: commentSuccess, refetch: refetchComment } = useGetCommentsQuery({
+        productId: product?.id || '',
+        params: param
+    }, { skip: !getProductSuccess || !product?.id });
+
+    useEffect(() => {
+        if (getProductSuccess) {
+            if (!isConnected()) {
+                connect(onConnected, onError);
+            }
+            else if (stompClient) {
+                stompClient.subscribe('/topic/' + product?.id, onCommentReceived, { id: product?.id });
+            }
+            return () => {
+                if (isConnected() && stompClient) {
+                    stompClient.unsubscribe(`${product?.id}`);
+                }
+            }
+        }
+    }, [stompClient, getProductSuccess]);
+
+    const onConnected = () => {
+        console.log("Connected to websocket server");
+        if (isConnected() && stompClient) {
+            stompClient.subscribe('/topic/' + product?.id, onCommentReceived, { id: product?.id });
+        }
+    }
+    const onCommentReceived = (comment: Message) => {
+        const commentResponse = JSON.parse(comment.body);
+        console.log(commentResponse);
+        refetchComment();
+    }
+    const onError = () => {
+        console.log("Error connecting to websocket server");
+    }
 
     const handleAdd = () => {
         setIsVisible(true);
@@ -206,6 +249,7 @@ function ProductDetail() {
 
     return (
         <Container className="mt-4 bg-light  border-radius-small">
+
             {/* {isLoading && <ModalLoading loading={isLoading} />} */}
 
             <div className="p-1 text-meidum d-flex gap-2 text-muted">
@@ -217,6 +261,7 @@ function ProductDetail() {
                 </QueryWrapper>
             </div>
             <QueryWrapper queriesStatus={[getProductSuccess]} skHeight={500}>
+
                 <Row className="align-center ">
                     <Col md={4} className="">
                         <div className="border-radius-medium bg-white p-3" >
@@ -463,14 +508,15 @@ function ProductDetail() {
                 </Row>
             </QueryWrapper>
 
+
             <Row>
                 <Col md={9}>
-                    {product && <Comment productId={product.id} />}
+                    {product && <Comment comments={dataComment?.data.items || []} />}
                 </Col>
-
             </Row>
         </Container>
     );
 }
+
 
 export default ProductDetail;

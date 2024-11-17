@@ -2,18 +2,13 @@ import { useState } from 'react';
 import { Card, Col, Image, Pagination, ProgressBar, Row } from "react-bootstrap";
 import './comment.scss';
 import Rating from '../../../components/rating/Rating';
-import { useGetCommentsQuery } from '../../../services/comment.service';
-import { pageQueryHanlder } from '../../../utils/query-handler';
-import { MediaType } from '../../../models/comment';
+import { Comment, MediaType } from '../../../models/comment';
 import Avatar from '../../../components/avatar/Avatar';
 
-const CommentComp = ({ productId }: { productId: string }) => {
+
+const CommentComp = ({ comments }: { comments: Comment[] }) => {
     const totalReviews = 16;
-    const param = pageQueryHanlder(1, 10);
-    const { data, isSuccess } = useGetCommentsQuery({
-        productId: productId,
-        params: param
-    });
+
 
 
     
@@ -110,7 +105,7 @@ const CommentComp = ({ productId }: { productId: string }) => {
             </div>
             
             
-            {isSuccess && data?.data.items?.map((value, idx) => {
+            {comments.map((value, idx) => {
                 return (
                     <Card key={idx} style={{ border: 'none' }} className="mb-1">
                         <Card.Body>

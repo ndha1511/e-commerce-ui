@@ -71,7 +71,7 @@ const Profile: React.FC = () => {
         try {
             await trigger({ email: formData.email, newUser: formDataToSubmit }).unwrap();
             dispatch(setNotify({
-                type: 'success', message: 'Thao tác không thành công'
+                type: 'success', message: 'Thao tác thành công'
             }))
             setIsBtn(false);
         } catch (error) {

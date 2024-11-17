@@ -111,25 +111,29 @@ const Cart: React.FC = () => {
                     </Col>
                 </Row>
             </div>
-
-
             <div id="cart-items" className="">
                 {data?.data.length === 0 &&
                     <div className='bg-white d-flex justify-content-center ' style={{ height: 200 }}>
                         <CartEmpty />
                     </div>}
-                {data?.data.map((item, index) => (
-                    <CartItem
-                        refetch={refetch}
-                        key={index}
-                        item={item}
-                        index={index}
-                        addVariant={addSelectVariant}
-                        removeVariant={removeSelectVariant}
-                        selectVariant={selectVariant}
-                    />
-                ))}
-            </div>
+
+
+                {
+                    data?.data.map((item, index) => (
+                        <CartItem
+                            refetch={refetch}
+                            key={index}
+                            item={item}
+                            index={index}
+                            addVariant={addSelectVariant}
+                            removeVariant={removeSelectVariant}
+                            selectVariant={selectVariant}
+
+                        />
+                    ))
+                }
+            </div >
+
             <div className={`p-3 pt-2 border-top bg-white ${isFooterFixed ? 'fixed-footer container' : ''}`}>
                 <Row className="align-items-center p-3">
                     <Col xs={6} md={6} className="d-flex align-items-center">
@@ -158,7 +162,7 @@ const Cart: React.FC = () => {
                 </Row>
             </div>
             {isLoading && <ModalLoading loading={isLoading} />}
-        </Container>
+        </Container >
     );
 };
 
