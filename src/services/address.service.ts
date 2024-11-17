@@ -32,7 +32,14 @@ const addressApi = createApi({
             query: ({ updateUserAddress, addressId }) => ({
                 url: '/addresses/update-user-address/' + addressId,
                 method: 'put',
-                data: { updateUserAddress, addressId }
+                data: updateUserAddress
+            })
+        }),
+        deleteUserAddress: build.mutation<BaseResponse<null>,string >({
+            query: (addressId) => ({
+                url: '/addresses/delete-user-address/' + addressId,
+                method: 'delete',
+                data: null
             })
         }),
         getProvinces: build.query<BaseResponse<Province[]>, void>({
@@ -40,21 +47,21 @@ const addressApi = createApi({
                 url: '/addresses/provinces',
                 method: 'get',
             }),
-            keepUnusedDataFor: 180,
+            keepUnusedDataFor: 0,
         }),
         getDistricts: build.query<BaseResponse<District[]>, number>({
             query: (provinceId) => ({
                 url: `/addresses/districts?province_id=${provinceId}`,
                 method: 'get',
             }),
-            keepUnusedDataFor: 180,
+            keepUnusedDataFor: 0,
         }),
         getWards: build.query<BaseResponse<Ward[]>, number>({
             query: (districtId) => ({
                 url: `/addresses/wards?district_id=${districtId}`,
                 method: 'get',
             }),
-            keepUnusedDataFor: 180,
+            keepUnusedDataFor: 0,
         }),
         addAddress: build.mutation<BaseResponse<Address>, AddressDto>({
             query: (address) => ({
@@ -90,7 +97,9 @@ export const {
     useGetWardsQuery,
     useAddAddressMutation,
     useGetAddressQuery,
-    useGetUserAddressQuery
+    useGetUserAddressQuery,
+    useLazyGetUserAddressQuery,
+    useDeleteUserAddressMutation,
 } = addressApi;
 
 export default addressApi;

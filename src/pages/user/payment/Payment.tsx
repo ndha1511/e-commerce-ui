@@ -15,6 +15,7 @@ import { useCreateOrderMutation, useLazyGetFeeQuery, useLazyGetPaymentQuery } fr
 import { convertPrice } from '../../../utils/convert-price';
 import { OrderItem, OrderRequest, PaymentMethod } from '../../../dtos/request/payment/order-request';
 import ModalLoading from '../../../components/loading/ModalLoading';
+import CreateAddressModal from '../../../components/address/CreateAddressModal';
 
 const Payment = () => {
     const selectVariant = useGetParam('select-variant');
@@ -208,7 +209,7 @@ const Payment = () => {
                     </div>
                 </Col>
             </Row>
-            {modalAdd && <ModalAddress action='null' show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch}/>}  
+            {modalAdd && <CreateAddressModal  show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch}/>}  
             {isLoading && <ModalLoading loading={isLoading}/>}                  
         </Container>
     );

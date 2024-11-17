@@ -1,6 +1,7 @@
 .btn-address {
     border: none;
-    color: rgb(231, 86, 9);
+
+    color: rgb(21, 170, 224);
     font-weight: 500;
     border-radius: 4px;
     background-color: white;
@@ -19,8 +20,9 @@
 
 }
 .btn-setting{
-    border: 1px solid rgb(231, 86, 9);
+    border: none;
     color: rgb(231, 86, 9);
     font-weight: 500;
     background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

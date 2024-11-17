@@ -8,7 +8,6 @@ interface Item {
     item: CategoryResponse
 }
 function MenuCategory({ item }: Item) {
-    console.log(item);
     const [open, setOpen] = useState<boolean>(false);
     const [isSelected, setIsSelected] = useState<boolean>(false);
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -27,9 +26,10 @@ function MenuCategory({ item }: Item) {
             </div>
             {item.children && (
                 <Collapse in={open}>
-                    <div className=''>
+                    <div key={item.id} className=''>
                         {item.children.map((item) => (
                             <MenuCategory
+                                key={item.id}
                                 item={item}
                             />
                         ))}

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../rtk/store/store";
 import { clearNotify } from "../../rtk/slice/notify-slice";
 import NotificationButton from "../../components/notify/NotificationButton";
+import MessageView from "../../pages/user/message/MessageView";
 type Props = {
     children: ReactNode;
 }
@@ -13,7 +14,7 @@ type Props = {
 const UserLayout = ({ children }: Props) => {
     const [scrollPosition, setScrollPosition] = useState<number>(0);
     const [fixedSearch, setFixedSearch] = useState<boolean>(false);
-    const notify = useSelector((state:RootState)=>state.notification)
+    const notify = useSelector((state: RootState) => state.notification)
     const dispatch = useDispatch();
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -45,12 +46,14 @@ const UserLayout = ({ children }: Props) => {
     }, [scrollPosition]);
 
     return <>
-        <MenuFixed fixedSearch={fixedSearch}/>
+        <MenuFixed fixedSearch={fixedSearch} />
         <Header fixedSearch={fixedSearch} />
         <div style={{
             marginTop: fixedSearch ? '100px' : 0,
         }}>{children}</div>
+        <MessageView />
         <Footer />
+
         {notify.type && <NotificationButton type={notify.type} message={notify.message} />}
     </>
 

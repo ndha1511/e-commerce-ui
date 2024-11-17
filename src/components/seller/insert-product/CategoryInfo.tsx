@@ -39,7 +39,7 @@ const CategoryInfo = () => {
 
     };
 
-    const handleBrandClick = (brand: any) => {
+    const handleBrandClick = (brand:string) => {
         setSelectedBrand(brand);
         setDropdownVisible(false);
     };
@@ -85,7 +85,7 @@ const CategoryInfo = () => {
                         toggleDropdown={toggleDropdown}
                         selectedBrand={selectedBrand}
                         brands={brands}
-                        onBrandClick={handleBrandClick}
+                        onBrandClick={(e)=>handleBrandClick(e)}
                     />
                          <SelectCategory
                         lable='Mẫu: '

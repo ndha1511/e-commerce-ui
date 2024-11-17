@@ -331,6 +331,7 @@ pre {
   user-select: none;
 }
 
+
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -343,4 +344,14 @@ pre {
   .products {
       grid-template-columns: repeat(2, minmax(180px, 1fr));
   }
+}
+
+.shadow-all {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+.shadow-all:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+
 }

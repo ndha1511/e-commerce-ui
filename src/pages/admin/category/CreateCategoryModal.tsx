@@ -57,6 +57,7 @@ const CreateCategoryModal = ({ show, handleClose, refetch, parentId }: Props) =>
       if (refetch) refetch();
       handleClose();
     } catch (error) {
+      console.log(error);
       dispatch(setNotify({
         type: 'error', message: 'Thêm không thành công'
       }))
