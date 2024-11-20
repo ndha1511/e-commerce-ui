@@ -10,7 +10,6 @@ import Address from "../../../components/address/Address";
 import Comment from "./CommentComp";
 import { Link, useParams } from "react-router-dom";
 import { useGetProductByUrlQuery } from "../../../services/product.service";
-import ModalLoading from "../../../components/loading/ModalLoading";
 import { calcDiscountPrice, calcPercentDiscount, calcPromotion, convertPrice } from "../../../utils/convert-price";
 import RenderVideo from "../../../components/image-details/RenderVideo";
 import ProductAttribute from "./ProductAttribute";
@@ -26,21 +25,27 @@ import { motion } from "framer-motion";
 import ProductEmpty from "./ProductEmpty";
 import { useGetListCategoryQuery } from "../../../services/category.service";
 import Countdown from 'react-countdown';
-import { connect, disconnect, isConnected, stompClient } from "../../../websocket/websocket-config";
+import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
+import { connect, isConnected, stompClient } from "../../../websocket/websocket-config";
 import { Message } from "stompjs";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetCommentsQuery } from "../../../services/comment.service";
+
 
 
 function ProductDetail() {
     const [quantity, setQuantity] = useState(1);
     const { key } = useParams();
 
-    const { data: resProduct, isLoading, isSuccess } = useGetProductByUrlQuery(key || "");
-    const { data: categories } = useGetListCategoryQuery(resProduct?.data.categories || [], {
+
+    const { data: resProduct, isSuccess: getProductSuccess } = useGetProductByUrlQuery(key || "");
+    const { data: categories, isSuccess: getCategoriesSuccess } = useGetListCategoryQuery(resProduct?.data.categories || [], {
         skip: !Array.isArray(resProduct?.data.categories) || resProduct?.data.categories.length === 0,
     });
+
+
     const product = resProduct?.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [images, setIamges] = useState<any[]>([]);
     const [startIndex, setStartIndex] = useState(0);
     const [selectValue1, setSelectValue1] = useState('');
@@ -60,13 +65,13 @@ function ProductDetail() {
     const [rotate, setRotate] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
     const param = pageQueryHanlder(1, 100);
-    const { data : dataComment, isSuccess:commentSuccess, refetch:refetchComment } = useGetCommentsQuery({
+    const { data: dataComment, isSuccess: commentSuccess, refetch: refetchComment } = useGetCommentsQuery({
         productId: product?.id || '',
         params: param
-    },{skip:!isSuccess || !product?.id});
+    }, { skip: !getProductSuccess || !product?.id });
 
     useEffect(() => {
-        if(isSuccess) {
+        if (getProductSuccess) {
             if (!isConnected()) {
                 connect(onConnected, onError);
             }
@@ -79,7 +84,7 @@ function ProductDetail() {
                 }
             }
         }
-    }, [stompClient, isSuccess]);
+    }, [stompClient, getProductSuccess]);
 
     const onConnected = () => {
         console.log("Connected to websocket server");
@@ -142,6 +147,7 @@ function ProductDetail() {
             setProductPrice(product?.regularPrice || 0);
             setDisabledBtn(true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [variant])
 
     useEffect(() => {
@@ -167,10 +173,11 @@ function ProductDetail() {
             }
         }
         getVariantByAttrValue();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectValue1, selectValue2])
 
     useEffect(() => {
-        if (isSuccess) {
+        if (getProductSuccess) {
             const imgs = [];
 
             const newImages = product?.images.map((image) => ({
@@ -207,7 +214,8 @@ function ProductDetail() {
             setIamges(imgs);
             setProductPrice(product?.regularPrice || 0);
         }
-    }, [isSuccess]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getProductSuccess]);
 
 
 
@@ -241,14 +249,19 @@ function ProductDetail() {
 
     return (
         <Container className="mt-4 bg-light  border-radius-small">
-            {isLoading && <ModalLoading loading={isLoading} />}
-            {isSuccess && <>
-                <div className="p-1 text-meidum d-flex gap-2 text-muted">
-                    <Link to={"/"}>Trang chủ <FontAwesomeIcon icon={faChevronRight} /></Link>
-                    {categories?.data?.map((category) => {
-                        return <Link to={"/" + category.urlPath}>{category.categoryName} <FontAwesomeIcon icon={faChevronRight} /></Link>
-                    })}
-                </div>
+
+            {/* {isLoading && <ModalLoading loading={isLoading} />} */}
+
+            <div className="p-1 text-meidum d-flex gap-2 text-muted">
+                <QueryWrapper queriesStatus={[getCategoriesSuccess]} skHeight={20} skWidth={300}>
+                    <> <Link to={"/"}>Trang chủ <FontAwesomeIcon icon={faChevronRight} /></Link>
+                        {categories?.data?.map((category) => {
+                            return <Link to={"/" + category.urlPath}>{category.categoryName} <FontAwesomeIcon icon={faChevronRight} /></Link>
+                        })}</>
+                </QueryWrapper>
+            </div>
+            <QueryWrapper queriesStatus={[getProductSuccess]} skHeight={500}>
+
                 <Row className="align-center ">
                     <Col md={4} className="">
                         <div className="border-radius-medium bg-white p-3" >
@@ -297,7 +310,7 @@ function ProductDetail() {
                                 </div>
                                 <div className="mt-4">
                                     {product?.attributes?.map((attribute, index) => (
-                                        <ProductAttribute productId={resProduct.data.id} index={index} attribute={attribute} key={attribute.id} onSelect={onSelect} />
+                                        <ProductAttribute productId={resProduct?.data.id || ""} index={index} attribute={attribute} key={attribute.id} onSelect={onSelect} />
                                     ))}
                                 </div>
                             </div>
@@ -493,20 +506,17 @@ function ProductDetail() {
                         </div>
                     </Col>
                 </Row>
-
-                <Row>
-                    <Col md={9}>
-                        {product && <Comment comments = {dataComment?.data.items || []} />}
-                    </Col>
-                    <Col md={3}>
-
-                    </Col>
-                </Row>
+            </QueryWrapper>
 
 
-            </>}
+            <Row>
+                <Col md={9}>
+                    {product && <Comment comments={dataComment?.data.items || []} />}
+                </Col>
+            </Row>
         </Container>
     );
 }
+
 
 export default ProductDetail;

@@ -4,13 +4,14 @@ import './CategoriesCarousel .scss'; // Optional: Create a separate CSS file for
 import { useGetCategoriesQuery } from '../../services/category.service';
 import { pageQueryHanlder } from '../../utils/query-handler';
 import useRedirect from '../../hooks/useRedirect';
+import QueryWrapper from '../query-wrapper/QueryWrapper';
 
 const CategoriesCarousel = () => {
   const redirect = useRedirect();
   const params: string = pageQueryHanlder(1, 1000, [{ filed: 'parentId', operator: '=', value: 'null' }]);
-  const {data:parentCategory} = useGetCategoriesQuery(params);
-const itemsPerSlide = 20; // Number of items per slide
-const totalSlides = Math.ceil((parentCategory?.data.items.length || 0) / itemsPerSlide);
+  const { data: parentCategory, isSuccess: getCategoriesSuccess } = useGetCategoriesQuery(params);
+  const itemsPerSlide = 20; // Number of items per slide
+  const totalSlides = Math.ceil((parentCategory?.data.items.length || 0) / itemsPerSlide);
   const renderCarouselItems = () => {
     const slides = [];
     for (let i = 0; i < totalSlides; i++) {
@@ -18,7 +19,7 @@ const totalSlides = Math.ceil((parentCategory?.data.items.length || 0) / itemsPe
         <Carousel.Item key={i}>
           <div className="d-flex  align-items-center flex-wrap items-categories">
             {parentCategory?.data.items.slice(i * itemsPerSlide, (i + 1) * itemsPerSlide).map((category, idx) => (
-              <div className="category-item text-center  " onClick={()=> redirect('/'+ category.urlPath)} key={idx}>
+              <div className="category-item text-center  " onClick={() => redirect('/' + category.urlPath)} key={idx}>
                 <img src={category.image} alt={category.categoryName} className="category-icon" />
                 <p>{category.categoryName}</p>
               </div>
@@ -31,14 +32,19 @@ const totalSlides = Math.ceil((parentCategory?.data.items.length || 0) / itemsPe
   };
 
   return (
-    <div className="categories-carousel">
-      <div className='title-categories'>
-        <span >Danh mục</span>
-      </div>
+    <QueryWrapper queriesStatus={[getCategoriesSuccess]}>
+      <div className="categories-carousel">
+        <div className='title-categories'>
+          <span >Danh mục</span>
+        </div>
+
         <Carousel interval={null} indicators={false} controls={true}>
           {renderCarouselItems()}
         </Carousel>
-    </div>
+
+      </div >
+    </QueryWrapper>
+
   );
 };
 
