@@ -110,7 +110,7 @@ const menu: Menu[] = [
     },
     {
         name: 'Tin nhắn',
-        path: '/admin/customer',
+        path: '/admin/messages',
         icon: <i className="bi bi-chat"></i>
     },
     {

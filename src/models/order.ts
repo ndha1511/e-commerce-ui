@@ -9,6 +9,8 @@ export enum OrderStatus {
     SHIPPED_CONFIRMATION = "SHIPPED_CONFIRMATION", 
     RECEIVED = "RECEIVED",
     CANCELLED = "CANCELLED",
+    AWAITING_PICKUP = "AWAITING_PICKUP",
+    ERROR = "ERROR",
 }
 
 export enum PaymentStatus {

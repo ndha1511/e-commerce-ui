@@ -5,6 +5,9 @@ import { isMobile } from "../../utils/responsive";
 import useRedirect from "../../hooks/useRedirect";
 import { useGetCartByUserIdQuery } from "../../services/cart.service";
 import { useCheckLoginQuery } from "../../services/auth.service";
+import { pageQueryHanlder } from "../../utils/query-handler";
+import { useGetNotificationsQuery } from "../../services/notification.service";
+import NotificationItems from "../../pages/user/notification/NotificationItems";
 
 type Props = {
     fixedSearch: boolean;
@@ -13,11 +16,20 @@ type Props = {
 const MenuFixed = ({ fixedSearch }: Props) => {
 
     const [showMenu, setShowMenu] = useState<boolean>(true);
+    const [showNotification, setShowNotification] = useState<boolean>(false);
     const redirect = useRedirect();
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
     const { data } = useGetCartByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
+    const paramNotification = pageQueryHanlder(1, 40);
+    const { data: dataNotification } = useGetNotificationsQuery({
+        id: user?.data?.id || '',
+        param: paramNotification,
+    },{skip: !loginSuccess});
+    console.log(dataNotification);
+    console.log(user?.data?.id);
+    const unseenCount = dataNotification?.data.items?.filter(item => item.seen === false).length || 0;
     useEffect(() => {
         const container1: HTMLElement | null = document.querySelector('.menu-container');
         const container2: HTMLElement | null = document.querySelector('.menu-container-2');
@@ -78,10 +90,10 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                 <span className="text-small">Tin nhắn</span>
                 <span className="badge-item background-primary text-small">2</span>
             </div>
-            <div className="menu-item">
+            <div className="menu-item" onClick={() => setShowNotification(!showNotification)}>
                 <i className="bi bi-bell"></i>
                 <span className="text-small">Thông báo</span>
-                <span className="badge-item background-primary text-small">2</span>
+                {unseenCount !== 0 && <span className="badge-item background-primary text-small">{unseenCount}</span>}
             </div>
 
             {fixedSearch && <div className="menu-item" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -98,6 +110,13 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                 <span aria-hidden="true" className="carousel-control-prev-icon"></span>
             </button>
         </div>
+        {showNotification && (
+                <NotificationItems
+                    notifications={dataNotification?.data.items || []}
+                    isVisible={showNotification}
+                    setIsVisible={setShowNotification}
+                />
+            )}
     </>
 }
 

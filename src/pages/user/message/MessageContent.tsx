@@ -1,7 +1,7 @@
 // src/components/MessageContent.tsx
 import React, { useEffect, useState } from "react";
 import './message.scss'
-import { MessageStatus, MessageType } from "../../../models/message";
+import {  MessageType } from "../../../models/message";
 import { MessageProps } from "./MessageView";
 import ImageMessage from "./ImageMessage";
 import TextMessage from "./TextMessage";

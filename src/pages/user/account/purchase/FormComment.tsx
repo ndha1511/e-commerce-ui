@@ -6,6 +6,8 @@ import SimpleBar from "simplebar-react";
 import { useCreateCommentMutation } from "../../../../services/comment.service";
 import { useCheckLoginQuery } from "../../../../services/auth.service";
 import ModalLoading from "../../../../components/loading/ModalLoading";
+import { useDispatch } from "react-redux";
+import { setNotify } from "../../../../rtk/slice/notify-slice";
 
 interface Props {
     show: boolean;
@@ -39,6 +41,8 @@ const FormComment = ({ show, handleClose, product, orderId, attributes }: Props)
         setStar(star);
     }
 
+    const dispatch = useDispatch();
+
     const getFileType = (file: File): FileType => {
         const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
         const videoExtensions = ['mp4', 'mov', 'avi', 'mkv', 'flv', 'wmv'];
@@ -60,7 +64,7 @@ const FormComment = ({ show, handleClose, product, orderId, attributes }: Props)
         if(star <= 0) return;
         if(content === '') return;
        
-
+        const productNumId =100;
         const formData: FormData = new FormData();
         for (const f of file) {
             formData.append('files', f);
@@ -69,14 +73,22 @@ const FormComment = ({ show, handleClose, product, orderId, attributes }: Props)
         formData.append('productId', product.productId);
         formData.append('orderId', orderId);
         formData.append('rating', star.toString());
+        formData.append('productNumId', productNumId.toString());
         for (const attr of attributes) {
             formData.append('attributes', attr);
         }
         formData.append('userId', user?.data?.id || "");
         try {
             await send(formData).unwrap();
+            handleClose();
+            dispatch(setNotify({
+                type:'success', message: 'Thao tác thành công'
+            }))
         } catch (error) {
             console.log(error);
+            dispatch(setNotify({
+                type:'error', message: 'Thao tác không thành công'
+            }))
         }
     }
 
