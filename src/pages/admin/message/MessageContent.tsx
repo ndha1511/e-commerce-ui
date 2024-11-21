@@ -13,7 +13,6 @@ interface MessagesProps {
 }
 function MessageContent({ message, userCurrent, err }: MessagesProps) {
     const [errors, setErrors] = useState<string[]>([]);
-
     useEffect(() => {
         if (err && message.text && err === message.text && !errors.includes(err)) {
             setErrors([...errors, err]);

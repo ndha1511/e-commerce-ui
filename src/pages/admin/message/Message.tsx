@@ -8,6 +8,7 @@ import './message.scss'
 import { useGetMessageQuery } from "../../../services/message.service";
 import ViewContent from "./ViewContent";
 import moment from 'moment';
+import anh from '../../../assets/gdtn.jpg';
 function Message() {
     const [roomActive, setRoomActive] = useState<string>('');
 
@@ -41,7 +42,10 @@ function Message() {
     }, { skip: !roomSuccess });
 
     const [updateRoom] = useUpdateRoomMutation();
-    const handleUpdateRoom = async (id: string) => {
+    const handleUpdateRoom = async (id: string, count: number) => {
+        if (count === 0) {
+            return;
+        }
         try {
             await updateRoom(id);
             refetchRoom();
@@ -63,10 +67,10 @@ function Message() {
             refetch();
         }
     }, [messagesData, isSuccess]);
-
+    console.log(sortedRooms)
     return (
         <div className=" bg-light p-4" style={{ height: '100%', }}>
-            <div className="row bg-white"  style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+            <div className="row bg-white" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 <div className="col-3 border-end">
                     <div>
                         <div className='search-message'>
@@ -76,29 +80,29 @@ function Message() {
                         <SimpleBar style={{ height: 500 }}>
                             {sortedRooms?.map((item: Room) => (
                                 <div key={item.conversationId} className="d-flex align-items-center gap-2 menu-message-items"
-                                    onClick={() => { handleActive(item.conversationId); handleUpdateRoom(item.conversationId) }}
+                                    onClick={() => { handleActive(item.conversationId); handleUpdateRoom(item.conversationId, item.count) }}
                                 >
                                     <img src={item.avatarSender !== null ? item.avatarSender : 'https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg'} width={50} height={50} alt="" />
                                     <div className="d-flex flex-column gap-1">
                                         <span>{item.receiver}</span>
-                                        {(item.count > 0 || (item.seen === true && item.count === 0)) ?
-                                            <span className="text-muted">{item.lastMessageReceiver}</span> :
-                                            <span className="text-muted">Bạn: {item.lastMessageSender}</span>
-                                        }
+                                        <span className="text-muted">{(item.count === 0 && item.seen === false) ? 'Bạn: ' : ''}{item.lastMessageSender}</span>
 
                                     </div>
-                                    {(item.seen === false && item.count > 0)  && <div className='count-message'>{item.count}</div>}
+                                    {(item.seen === false && item.count > 0) && <div className='count-message'>{item.count}</div>}
                                 </div>
                             ))}
                         </SimpleBar>
                     </div>
                 </div>
                 <div className="col-9 ">
-                    <ViewContent messagesData={messagesData?.data.items || []}
+                    {roomActive !== '' && <ViewContent messagesData={messagesData?.data.items || []}
                         userCurrent={userCurrent || ''}
                         refetch={refetch}
                         refetchRoom={refetchRoom}
-                    />
+                    />}
+                    {roomActive === '' && <div className="d-flex justify-content-center align-items-center mt-3">
+                        <img src="https://img.freepik.com/premium-photo/speech-bubble-as-cloud-with-blue-border-isolated_113767-1431.jpg" alt="" />
+                    </div>}
                 </div>
             </div>
         </div>

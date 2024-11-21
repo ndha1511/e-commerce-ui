@@ -7,7 +7,6 @@ export interface Room  {
     receiverName: string;
     sendDate:Date;
     lastMessageSender: string;
-    lastMessageReceiver:string;
     count: number;
     avatarSender:string;
     avatarReceiver:string;

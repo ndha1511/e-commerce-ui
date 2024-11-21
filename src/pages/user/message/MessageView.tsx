@@ -103,7 +103,7 @@ const MessageView: React.FC = () => {
                     newFormData.append('file', file);
                 }
                 newFormData.append('sender', userCurrent || '');
-                newFormData.append('receiver', 'tcminh172@gmail.com');
+                newFormData.append('receiver', 'admin@gmail.com');
                 const res = await createMessage(newFormData).unwrap();
                 if (res.data.content) {
                     refetch();

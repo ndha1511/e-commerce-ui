@@ -39,7 +39,6 @@ const ModalCategoryBrand = forwardRef<DeleteCategoryItems, CategoryModalProps>(
         const [category, setCategory] = useState<CategoryItems[]>([]);
         const dispatch = useDispatch();
         const [getCategory] = useLazyGetCategoriesQuery();
-        console.log(categoryId2)
         const paramsParent = pageQueryHanlder(1, 100, categoryId.length > 0
             ? [{ filed: 'parentId', operator: '=', value: categoryId[categoryId.length - 1] }]
             : []
@@ -77,7 +76,7 @@ const ModalCategoryBrand = forwardRef<DeleteCategoryItems, CategoryModalProps>(
                     } catch (error) {
                         console.error(error);
                     }
-                    // dispatch(setCategories('123'));
+                    dispatch(setCategories([...categoryId]));
                 }
 
                 if (categoryId1.length > 0) {
@@ -102,6 +101,13 @@ const ModalCategoryBrand = forwardRef<DeleteCategoryItems, CategoryModalProps>(
             setCategory(prev => prev.filter(item => item.id !== id));
             setCategoryId1(prev => prev.filter(categoryId => categoryId !== id));
             setCategoryId2(prev => prev.filter(categoryId => categoryId !== id));
+            const updatedCategories = [
+                ...categoryId.filter(categoryId => categoryId !== id),
+                ...categoryId1.filter(categoryId => categoryId !== id),
+                ...categoryId2.filter(categoryId => categoryId !== id),
+            ];
+
+            dispatch(setCategories(updatedCategories));
         };
         const handleClear = () => {
             setCategoryId([]);
