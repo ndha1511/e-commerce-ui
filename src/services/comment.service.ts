@@ -23,6 +23,16 @@ const commentApi = createApi({
                 }
             })
         }),
+        replyComment: build.mutation<BaseResponse<Comment>, {commentId: string, formData:FormData}>({
+            query: (comment) => ({
+                url: '/comments/'+ comment.commentId,
+                method: 'put',
+                headers: {
+                    'Content-Type':'multipart/form-data'
+                },
+                data: comment.formData
+            })
+        }),
     })
        
 })
@@ -30,6 +40,7 @@ const commentApi = createApi({
 export const { 
     useGetCommentsQuery,
     useCreateCommentMutation,
+    useReplyCommentMutation
 } = commentApi;
 
 export default commentApi;

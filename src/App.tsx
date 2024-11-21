@@ -6,14 +6,16 @@ import { pageQueryHanlder } from "./utils/query-handler";
 import { useGetRoomQuery } from "./services/room.service";
 import { useGetMessageQuery } from "./services/message.service";
 import { useGetCommentsQuery } from "./services/comment.service";
+import { useGetNotificationsQuery } from "./services/notification.service";
 
 const App = ({ children }: { children: ReactNode }) => {
     const {data, isSuccess} = useCheckLoginQuery();
     const [connectFinish, setConnectFinish] = useState<boolean>(false);
-    // message
+    ///////////// message
+    
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
     const paramsRoom = pageQueryHanlder(1, 100);
-    const { data: room, isSuccess: roomSuccess } = useGetRoomQuery({
+    const { data: room, isSuccess: roomSuccess, refetch: refetchRoom } = useGetRoomQuery({
         email: user?.data?.email || '',
         param: paramsRoom,
     }, { skip: !loginSuccess || !user?.data?.id })
@@ -22,16 +24,16 @@ const App = ({ children }: { children: ReactNode }) => {
         roomId: room?.data?.items?.[0]?.conversationId || '',
         params: paramsMessage,
     }, { skip: !roomSuccess });
-    ///
 
-    //////Comment
-    const param = pageQueryHanlder(1, 10);
-    const { data: dataComment, refetch: refetchComment } = useGetCommentsQuery({
-        productId: '670b3306754821709ebdbcdc',
-        params: param
-    });
+
+
+    //////Notification
+    const paramNotification = pageQueryHanlder(1,40);
+    const { data: dataNotification,refetch:notificationRefetch } = useGetNotificationsQuery({
+        id: user?.data?.id || '',
+        param: paramNotification,
+    },{skip: !loginSuccess});
     ///////////
-console.log(dataComment)
     useEffect(() => {
         if(isSuccess) {
             if(data.data) {
@@ -48,6 +50,7 @@ console.log(dataComment)
         console.log("Connected to websocket server");
         if (isConnected() && stompClient) {
             stompClient.subscribe("/user/" + data?.data?.email + "/queue/messages", onMessageReceived);
+            stompClient.subscribe("/topic/notification/" + data?.data?.id , onNotification);
         }
         setConnectFinish(true);
     }
@@ -56,6 +59,12 @@ console.log(dataComment)
         const messageResponse = JSON.parse(message.body);
         console.log(messageResponse);
         refetch();
+        refetchRoom();
+    }
+    const onNotification = (notification: Message) => {
+        const notificationResponse = JSON.parse(notification.body);
+        console.log(notificationResponse);
+        notificationRefetch();
     }
 
 

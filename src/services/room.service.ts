@@ -2,7 +2,6 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./base-query";
 import { BaseResponse } from "../dtos/response/base-response";
 import { PageResponse } from "../dtos/response/page-response";
-import { Message } from "../models/message";
 import { Room } from "../models/room";
 const roomApi = createApi({
     reducerPath: 'room',
@@ -15,12 +14,19 @@ const roomApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
+        updateRoom: build.mutation<BaseResponse<PageResponse<Room>>, string>({
+            query: (roomId) => ({
+                url: `/rooms/roomId/` + roomId,
+                method: 'put',
+            }),
+        }),
 
     })
 })
 
 export const {
-    useGetRoomQuery
+    useGetRoomQuery,
+    useUpdateRoomMutation
 } = roomApi;
 
 export default roomApi;

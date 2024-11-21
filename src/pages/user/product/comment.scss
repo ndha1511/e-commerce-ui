@@ -49,5 +49,52 @@
     border-right: 5px solid transparent;
     border-bottom: 5px solid #d13c13; /* Màu của mũi tên giống với màu nền */
 }
+.input-reply{
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid gray;
+    outline: none;
+    &:focus{
+        border-bottom: 1px solid #333;
+    }
+}
+.btn-cancel{
+    background-color: #fff;
+    color: #333;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    &:hover{
+        background-color: #efeaea;
+    }
+}
+.btn-send{
+    background-color: #d0cfcf99;
+    color: #333;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    &:hover{
+        background-color: #efeaea;
+    }
+}
+.btn-reply{
+    background-color: white;
+    color: black;
+    font-weight: 500;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    &:hover{
+        background-color: #efeaea;
+    }
+}
 
 

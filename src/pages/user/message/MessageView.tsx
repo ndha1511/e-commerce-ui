@@ -81,7 +81,7 @@ const MessageView: React.FC = () => {
     const handleSendMessage = async (file?: File) => {
 
         if (newMessage || file) {
-            let imageUrl = ""
+            let imageUrl = "";
             if (file) {
                 imageUrl = URL.createObjectURL(file);
             }
@@ -103,22 +103,14 @@ const MessageView: React.FC = () => {
                     newFormData.append('file', file);
                 }
                 newFormData.append('sender', userCurrent || '');
-                newFormData.append('receiver', 'ndha1115@gmail.com');
+                newFormData.append('receiver', 'admin@gmail.com');
                 const res = await createMessage(newFormData).unwrap();
                 if (res.data.content) {
                     refetch();
+                        setUrl('')
+                    setFile(undefined);
                 }
                 
-                // if (file) {
-                //     setTimeout(() => {
-                //         refetch();
-                //     }, 1000); // 1000ms = 1 giây
-                //     setUrl('')
-                //     setFile(undefined);
-                // }else{
-                //     refetch();
-                // }
-                // refetch();
                 setErr('');
                 setNewMessage("");
 

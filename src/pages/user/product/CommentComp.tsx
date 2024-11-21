@@ -4,14 +4,37 @@ import './comment.scss';
 import Rating from '../../../components/rating/Rating';
 import { Comment, MediaType } from '../../../models/comment';
 import Avatar from '../../../components/avatar/Avatar';
+import { useReplyCommentMutation } from '../../../services/comment.service';
 
 
 const CommentComp = ({ comments }: { comments: Comment[] }) => {
     const totalReviews = 16;
+    const [isReply, setIsReply] = useState<string | null>(null);
+    const [textReply, setTextReply] = useState<string>('');
+    const handleOpenReply = (commentId: string) => {
+        setIsReply(isReply === commentId ? null : commentId); 
+    };
+    const [reply] = useReplyCommentMutation();
 
+    const handleChangeReply = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setTextReply(e.target.value);
+    }   
 
-
-    
+    const handleReply = async (commentId: string) => {
+        console.log(commentId);
+        console.log(textReply);
+        const newFormData = new FormData();
+        newFormData.append('content',textReply);
+        try {
+            await reply({
+                commentId: commentId,
+                formData: newFormData
+            });
+            setIsReply(null);
+        } catch (error) {
+            alert('khoong thành công')
+        }
+    }
     const ratings = [
         { stars: 5, count: 13 },
         { stars: 4, count: 2 },
@@ -103,9 +126,9 @@ const CommentComp = ({ comments }: { comments: Comment[] }) => {
                     </Col>
                 </Row>
             </div>
-            
-            
-            {comments.map((value, idx) => {
+
+
+            {comments.slice().reverse().map((value, idx) => {
                 return (
                     <Card key={idx} style={{ border: 'none' }} className="mb-1">
                         <Card.Body>
@@ -126,20 +149,38 @@ const CommentComp = ({ comments }: { comments: Comment[] }) => {
                                 </Col>
                             </Row>
                             <Card.Text className="mt-2">
-                                {value.content}
+                           
                             </Card.Text>
-                            <div className="d-flex gap-3">
-                                {value.commentMedia?.map((img, imgIndex) => (
-                                    <div key={imgIndex} className="">
-                                        {img.mediaType === MediaType.IMAGE ?
-                                            <Image className='img-cm' src={img.path} thumbnail /> :
-                                            <video src={img.path}></video>
-                                        }
+                            <div className='d-flex align-items-center gap-1'>
+                                    <div className="d-flex gap-3">
+                                        {value.content}
+                                        {value.commentMedia?.map((img, imgIndex) => (
+                                            <div key={imgIndex} className="">
+                                                {img.mediaType === MediaType.IMAGE ?
+                                                    <Image className='img-cm' src={img.path} thumbnail /> :
+                                                    <video src={img.path}></video>
+                                                }
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                    <button className='btn-reply' onClick={()=>handleOpenReply(value.id)}>Phản hồi</button>
+                                </div>
+                            {isReply === value.id &&
+                                <div className=' d-flex flex-column'>
+                                    <div className='d-flex align-items-end'>
+                                        <Avatar name={value?.user?.name || ""} url={value?.user?.avatar} />
+                                        <input onChange={(e)=>handleChangeReply(e)} type="text" placeholder='Phản hồi' className='input-reply' />
+                                    </div>
+                                    <div className='d-flex justify-content-end gap-2 mt-1'>
+                                        <button className='btn-cancel' onClick={() => setIsReply(null)}>Hủy</button>
+                                        <button className='btn-send' onClick={()=>handleReply(value.id)}>Phản hồi</button>
+                                    </div>
+                                </div>
+                            }
                             {value.replyComment ? <div className="bg-light p-3 mt-3 custom-background">
-                                <span>Phản Hồi Của Người Bán</span>
+                                <span>Phản Hồi Của Shop
+                                    
+                                </span>
                                 <Card.Text className='text-muted'>
                                     {value.replyComment}
                                 </Card.Text>

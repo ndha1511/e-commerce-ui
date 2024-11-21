@@ -3,7 +3,6 @@ import { axiosBaseQuery } from "./base-query";
 import { BaseResponse } from "../dtos/response/base-response";
 import { PageResponse } from "../dtos/response/page-response";
 import { Message } from "../models/message";
-import { MessageDto } from "../dtos/request/message/message-request";
 const messageApi = createApi({
     reducerPath: 'message',
     baseQuery: axiosBaseQuery(),

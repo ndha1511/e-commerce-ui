@@ -32,9 +32,9 @@ import Batch from "../pages/admin/product/Batch";
 import BrandList from "../pages/admin/brand/BrandList";
 import CreateEmployee from "../pages/admin/employee/CreateEmployee";
 import EmployeeList from "../pages/admin/employee/EmployeeList";
-import MessageView from "../pages/user/message/MessageView";
 import App from "../App";
 import NotFound from "../pages/not-found/NotFound";
+import Message from "../pages/admin/message/Message";
 
 export const router = createBrowserRouter([
     {
@@ -96,15 +96,12 @@ export const router = createBrowserRouter([
     },
     {
         path: "/user/purchase",
-        element: <UserLayout><Account><Purchase/></Account></UserLayout>
+        element: <App><UserLayout><Account><Purchase/></Account></UserLayout></App>
+        
     },
     {
         path: "/user/notifications",
         element: <UserLayout><Account><Notification/></Account></UserLayout>
-    },
-    {
-        path: "/user/message",
-        element: <UserLayout><MessageView/></UserLayout>
     },
     {
         path: "/user/vouchers",
@@ -113,7 +110,7 @@ export const router = createBrowserRouter([
     ,
     {
         path: "/product/:key",
-        element: <UserLayout><ProductDetail/></UserLayout>
+        element: <App><UserLayout><ProductDetail/></UserLayout></App>
     },
     {
         path: "/:categoryPath",
@@ -154,7 +151,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/admin/purchase",
-        element: <AdminLayout><PurchaseAdmin/></AdminLayout>
+        element: <App><AdminLayout><PurchaseAdmin/></AdminLayout></App>
     },
     {
         path: "/admin/brand",
@@ -171,6 +168,10 @@ export const router = createBrowserRouter([
     {
         path: "/admin/employees",
         element: <AdminLayout><EmployeeList/></AdminLayout>
+    },
+    {
+        path: "/admin/messages",
+        element: <App><AdminLayout><Message/></AdminLayout> </App>
     },
 
 

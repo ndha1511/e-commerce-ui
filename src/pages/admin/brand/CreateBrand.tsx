@@ -24,6 +24,7 @@ function Brand() {
     const params: string = pageQueryHanlder(1, 40, [{ filed: 'parentId', operator: '=', value: 'null' }]);
     const { data } = useGetCategoriesQuery(params);
     const product = useSelector((state: RootState) => state.product);
+    console.log(product);
     const chilRef = useRef<DeleteCategoryItems>(null)
     const [btnSubmit, setBtnSubmit] = useState<boolean>(false);
     const dispatch = useDispatch();
@@ -104,7 +105,7 @@ function Brand() {
             chilRef.current.handleRemoveCategory(id);
         }
     };
-    console.log(categories.length)
+
     return (
         <div>
             <div className="bg-light p-3 border-radius-small mb-3 mt-3">
@@ -181,44 +182,44 @@ function Brand() {
                         </OverlayTrigger>
                     </PromotionRow>
                     <PromotionRow label="Ngành hàng:">
-                    <OverlayTrigger
-                                placement="bottom"
-                                overlay={categories.length === 0 && btnSubmit ? CustomTooltip("Không được để trống!") : <></>}
-                                show={categories.length === 0}
-                            >
-                        <div className="border p-3 border-radius-small d-flex justify-content-between align-items-center">
-                           
+                        <OverlayTrigger
+                            placement="bottom"
+                            overlay={categories.length === 0 && btnSubmit ? CustomTooltip("Không được để trống!") : <></>}
+                            show={categories.length === 0}
+                        >
+                            <div className="border p-3 border-radius-small d-flex justify-content-between align-items-center">
+
                                 <div className="d-flex flex-wrap justify-content-start col-11 ">
 
                                     {categories.map((category, index) => (
-                                        <>
 
-                                            <div key={index} className="border me-3 p-1 mb-2">
-                                                <span>{category.name}</span>
-                                                <button
-                                                    onClick={() => handleRemoveCategory(category.id)}
-                                                    style={{
-                                                        marginLeft: '5px',
-                                                        background: 'transparent',
-                                                        border: 'none',
-                                                        color: '#999',
-                                                        cursor: 'pointer'
-                                                    }}
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
 
-                                        </>
+                                        <div key={index} className="border me-3 p-1 mb-2">
+                                            <span>{category.name}</span>
+                                            <button
+                                                onClick={() => handleRemoveCategory(category.id)}
+                                                style={{
+                                                    marginLeft: '5px',
+                                                    background: 'transparent',
+                                                    border: 'none',
+                                                    color: '#999',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+
+
                                     ))}
                                 </div>
-                      
-                            <div className="col-1 d-flex justify-content-end ">
-                                <div className="brand-shadow d-flex justify-content-center align-items-center" onClick={handleOpenCategoryModal} style={{cursor:'pointer',width:30,height:20}} >
-                                    <FontAwesomeIcon style={{ right: 20, fontSize:11 }} icon={faPen} />
+
+                                <div className="col-1 d-flex justify-content-end ">
+                                    <div className="brand-shadow d-flex justify-content-center align-items-center" onClick={handleOpenCategoryModal} style={{ cursor: 'pointer', width: 30, height: 20 }} >
+                                        <FontAwesomeIcon style={{ right: 20, fontSize: 11 }} icon={faPen} />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </OverlayTrigger>
                     </PromotionRow>
                     <PromotionRow label="Mô tả chi tiết:">

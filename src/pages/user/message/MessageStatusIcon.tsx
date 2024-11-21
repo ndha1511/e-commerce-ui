@@ -11,7 +11,7 @@ const MessageStatusIcon: React.FC<MessageStatusIconProps> = ({ hasError, status 
   return (
     <div className="d-flex justify-content-center align-items-center">
       {hasError ? (
-        <i className="bi bi-exclamation-circle"></i>
+        <i style={{color:'red'}} className="bi bi-exclamation-circle"></i>
       ) : status === 'SENDING' ? (
         <Spinner animation="border" className="small-spinner" role="status">
           <span className="visually-hidden">Loading...</span>
