@@ -34,8 +34,13 @@ import CreateEmployee from "../pages/admin/employee/CreateEmployee";
 import EmployeeList from "../pages/admin/employee/EmployeeList";
 import MessageView from "../pages/user/message/MessageView";
 import App from "../App";
+import NotFound from "../pages/not-found/NotFound";
 
 export const router = createBrowserRouter([
+    {
+        path: "*",
+        element: <App><UserLayout><NotFound /></UserLayout></App>
+    },
     {
         path: "/",
         element: <App><UserLayout><Home/></UserLayout></App>

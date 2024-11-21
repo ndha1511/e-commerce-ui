@@ -25,8 +25,10 @@ import { motion } from "framer-motion";
 import ProductEmpty from "./ProductEmpty";
 import { useGetListCategoryQuery } from "../../../services/category.service";
 import Countdown from 'react-countdown';
-import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
+import SkeletonWrapper from "../../../components/query-wrapper/SkeletonWrapper";
+
 import { connect, isConnected, stompClient } from "../../../websocket/websocket-config";
+
 import { Message } from "stompjs";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetCommentsQuery } from "../../../services/comment.service";
@@ -253,14 +255,14 @@ function ProductDetail() {
             {/* {isLoading && <ModalLoading loading={isLoading} />} */}
 
             <div className="p-1 text-meidum d-flex gap-2 text-muted">
-                <QueryWrapper queriesStatus={[getCategoriesSuccess]} skHeight={20} skWidth={300}>
+                <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skHeight={20} skWidth={300}>
                     <> <Link to={"/"}>Trang chủ <FontAwesomeIcon icon={faChevronRight} /></Link>
                         {categories?.data?.map((category) => {
-                            return <Link to={"/" + category.urlPath}>{category.categoryName} <FontAwesomeIcon icon={faChevronRight} /></Link>
+                            return <Link key={category.id} to={"/" + category.urlPath}>{category.categoryName} <FontAwesomeIcon icon={faChevronRight} /></Link>
                         })}</>
-                </QueryWrapper>
+                </SkeletonWrapper>
             </div>
-            <QueryWrapper queriesStatus={[getProductSuccess]} skHeight={500}>
+            <SkeletonWrapper queriesStatus={[getProductSuccess]} skHeight={500}>
 
                 <Row className="align-center ">
                     <Col md={4} className="">
@@ -497,16 +499,18 @@ function ProductDetail() {
                             <div style={{ border: 'none' }} className="card border-radius-medium ">
                                 <div className="card-body border-radius-medium ">
                                     <h5 className="card-title">Mô tả sản phẩm</h5>
-                                    <pre className="text-align-start">
-                                        {product?.description}
-                                    </pre>
+                                    {product?.description.startsWith("<") ? <div dangerouslySetInnerHTML={{ __html: product?.description || "" }} />
+                                        : <pre className="text-align-start">
+                                            {product?.description}
+                                        </pre>}
+
 
                                 </div>
                             </div>
                         </div>
                     </Col>
                 </Row>
-            </QueryWrapper>
+            </SkeletonWrapper>
 
 
             <Row>

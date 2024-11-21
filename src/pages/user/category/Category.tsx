@@ -11,12 +11,15 @@ import { useGetProductByCategoryQuery } from "../../../services/product.service"
 import './category.scss'
 import { useState } from "react";
 import CategoryEmpty from "./CategoryEmpty";
-import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
+import SkeletonWrapper from "../../../components/query-wrapper/SkeletonWrapper";
 import ListProduct from "../../../components/products/ListProduct";
+import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
+
 function Category() {
     const { categoryPath } = useParams();
-    const { data: parentCategory, isSuccess: getCategoriesSuccess } = useGetCategoryByUrlQuery(categoryPath || '');
+    const { data: parentCategory, isSuccess: getCategoriesSuccess, isError: getCategoriesError, error: categoriesError } = useGetCategoryByUrlQuery(categoryPath || '');
     const [activeButton, setActiveButton] = useState<string | null>(null);
+
     const images = [
         {
             src: ["https://salt.tikicdn.com/ts/tka/a9/ec/4f/e95b916999b2dd40b3a8e2af30e704e8.png", "https://salt.tikicdn.com/ts/tka/99/ce/6a/9c0a7990ddba5207da7cc37b85bdc2f0.png"],
@@ -52,7 +55,7 @@ function Category() {
     const handleSubmit = (buttonName: string) => {
         setActiveButton(buttonName);
     };
-    const { data, isSuccess: getProductsSuccess } = useGetProductByCategoryQuery(categoryPath || '');
+    const { data, isSuccess: getProductsSuccess, isError: getProductsError } = useGetProductByCategoryQuery(categoryPath || '');
     const totalItems = data?.data.pageSize || 0; // Tổng số sản phẩm
     const itemsPerPage = 10; // Số sản phẩm mỗi trang
     const totalPages = Math.ceil(totalItems / itemsPerPage); // Tổng số trang
@@ -65,36 +68,37 @@ function Category() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentProducts = data?.data.items?.slice(startIndex, startIndex + itemsPerPage);
     return (
-        <div className="p-3 bg-light">
-            <QueryWrapper queriesStatus={[getCategoriesSuccess]} skWidth={200}>
+       <QueryWrapper queriesError={[getCategoriesError, getProductsError]} error={categoriesError}>
+         <div className="p-3 bg-light">
+            <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skWidth={200}>
                 <div>
                     <span>Trang chủ <BsChevronRight /> </span>
                     <span>{parentCategory?.data.categoryName}</span>
                 </div>
-            </QueryWrapper>
+            </SkeletonWrapper>
             <Row className=" custom-row p-2 ">
                 <Col md={2} className=" p-2">
-                    <QueryWrapper queriesStatus={[getCategoriesSuccess]} skHeight={300}>
+                    <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skHeight={300}>
                         <div className="bg-white border-radius-small">
                             <div className="text-medium p-3 ">Khám phá theo danh mục</div>
                             {parentCategory?.data.children.map((item) => (
                                 <MenuCategory key={item.id} item={item} />
                             ))}
                         </div>
-                    </QueryWrapper>
+                    </SkeletonWrapper>
                 </Col>
                 <Col md={10} className="p-2">
                     <div className="mb-2">
-                        <QueryWrapper queriesStatus={[getProductsSuccess]} skHeight={200}>
+                        <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={200}>
                             <div className="p-3 bg-white border-radius-small d-flex align-items-center ">
                                 <span className="text-large">{parentCategory?.data.categoryName}</span>
                             </div>
                             <div className='mt-1'>
                                 <CarouseCustom images={images} height={200} />
                             </div>
-                        </QueryWrapper>
+                        </SkeletonWrapper>
                     </div>
-                    <QueryWrapper queriesStatus={[getProductsSuccess]} skHeight={50}>
+                    <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={50}>
                         <div className='mt-3 option-filter-user p-3  d-flex gap-3 align-items-center'>
                             <div className="text-muted">Sắp xếp theo</div>
                             <button className={`${activeButton === 'popular' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('popular')}>Phổ biến</button>
@@ -103,7 +107,7 @@ function Category() {
                             <div style={{ minWidth: 200 }}><Select options={options} placeholder="Giá" /></div>
                             <div style={{ minWidth: 200 }}><Select options={optionRating} placeholder="Đánh giá" /></div>
                         </div>
-                    </QueryWrapper>
+                    </SkeletonWrapper>
                     <div className='mt-2  pt-1 pb-3'>
                         <ListProduct products={currentProducts} />
                         <div className="d-flex justify-content-center align-items-center">
@@ -123,6 +127,7 @@ function Category() {
                 </Col>
             </Row>
         </div>
+       </QueryWrapper>
     );
 }
 

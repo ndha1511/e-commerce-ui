@@ -72,6 +72,13 @@ const productApi = createApi({
                 url: '/products/attributes/' + productId,
                 method: 'get',
             })
+        }),
+        getProductsRecommend: build.query<BaseResponse<Product[]>, {nRecommend?: number}>({
+            query: (params) => ({
+                url: `/products/recommend?nRecommend=${params.nRecommend ? params.nRecommend : 0}`,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
         })
     }),
 });

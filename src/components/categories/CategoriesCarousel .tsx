@@ -4,7 +4,7 @@ import './CategoriesCarousel .scss'; // Optional: Create a separate CSS file for
 import { useGetCategoriesQuery } from '../../services/category.service';
 import { pageQueryHanlder } from '../../utils/query-handler';
 import useRedirect from '../../hooks/useRedirect';
-import QueryWrapper from '../query-wrapper/QueryWrapper';
+import QueryWrapper from '../query-wrapper/SkeletonWrapper';
 
 const CategoriesCarousel = () => {
   const redirect = useRedirect();
