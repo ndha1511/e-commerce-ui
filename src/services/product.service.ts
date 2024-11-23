@@ -73,9 +73,9 @@ const productApi = createApi({
                 method: 'get',
             })
         }),
-        getProductsRecommend: build.query<BaseResponse<Product[]>, {nRecommend?: number}>({
+        getProductsRecommend: build.query<BaseResponse<Product[]>, {productId?: number; nRecommend?: number; type: string}>({
             query: (params) => ({
-                url: `/products/recommend?nRecommend=${params.nRecommend ? params.nRecommend : 0}`,
+                url: `/recommend?productId=${params.productId ? params.productId : 0}&nRecommend=${params.nRecommend ? params.nRecommend : 20}&type=${params.type}`,
                 method: 'get',
             }),
             keepUnusedDataFor: 180,
@@ -91,7 +91,8 @@ export const {
     useCreateAttributeMutation,
     useGetAttributeByIdQuery,
     useGetAttributeByProductIdQuery,
-    useGetProductsPageQuery
+    useGetProductsPageQuery,
+    useGetProductsRecommendQuery
 } = productApi;
 
 export default productApi;

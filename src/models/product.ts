@@ -10,6 +10,7 @@ export interface Product extends BaseModel {
     categories: string[];
     brandId?: string;
     totalQuantity: number;
+    numId: number;
     thumbnail: string;
     reviews: number;
     buyQuantity: number;

@@ -16,5 +16,6 @@ export interface QueryWrapperProps {
 }
 
 export interface ListProductProps {
+    title?: string;
     products?: Product[];
 }
