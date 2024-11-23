@@ -9,7 +9,7 @@ import './product-detail.scss'
 import Address from "../../../components/address/Address";
 import Comment from "./CommentComp";
 import { Link, useParams } from "react-router-dom";
-import { useGetProductByUrlQuery } from "../../../services/product.service";
+import { useGetProductByUrlQuery, useGetProductsRecommendQuery } from "../../../services/product.service";
 import { calcDiscountPrice, calcPercentDiscount, calcPromotion, convertPrice } from "../../../utils/convert-price";
 import RenderVideo from "../../../components/image-details/RenderVideo";
 import ProductAttribute from "./ProductAttribute";
@@ -32,6 +32,7 @@ import { connect, isConnected, stompClient } from "../../../websocket/websocket-
 import { Message } from "stompjs";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetCommentsQuery } from "../../../services/comment.service";
+import ListProduct from "../../../components/products/ListProduct";
 
 
 
@@ -40,7 +41,7 @@ function ProductDetail() {
     const { key } = useParams();
 
 
-    const { data: resProduct, isSuccess: getProductSuccess } = useGetProductByUrlQuery(key || "");
+    const { data: resProduct, isSuccess: getProductSuccess, isFetching: getProductFetching } = useGetProductByUrlQuery(key || "");
     const { data: categories, isSuccess: getCategoriesSuccess } = useGetListCategoryQuery(resProduct?.data.categories || [], {
         skip: !Array.isArray(resProduct?.data.categories) || resProduct?.data.categories.length === 0,
     });
@@ -53,7 +54,7 @@ function ProductDetail() {
     const [selectValue1, setSelectValue1] = useState('');
     const [selectValue2, setSelectValue2] = useState('');
     const [getVariant] = useLazyGetVariantsQuery();
-    const [variant, setVariant] = useState<VariantResponse>();
+    const [variant, setVariant] = useState<VariantResponse | null>();
     const [productPrice, setProductPrice] = useState(0);
     const [disabledBtn, setDisabledBtn] = useState(true);
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
@@ -71,6 +72,11 @@ function ProductDetail() {
         productId: product?.id || '',
         params: param
     }, { skip: !getProductSuccess || !product?.id });
+
+    const {data: queryRecommendResult} = useGetProductsRecommendQuery({
+        productId: product?.numId,
+        type: "content-filtering"
+    }, { skip: !getProductSuccess || !product?.id});
 
     useEffect(() => {
         if (getProductSuccess) {
@@ -135,7 +141,8 @@ function ProductDetail() {
             top: 0,
             behavior: "instant"
         });
-    }, []);
+        setVariant(null)
+    }, [key]);
 
     useEffect(() => {
         if (variant) {
@@ -217,7 +224,7 @@ function ProductDetail() {
             setProductPrice(product?.regularPrice || 0);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getProductSuccess]);
+    }, [getProductFetching, key]);
 
 
 
@@ -399,7 +406,7 @@ function ProductDetail() {
                                             }}
                                             onAnimationComplete={() => setIsVisible(false)}
                                         >
-                                            {variant && <Row className="mt-3 border ">
+                                            {(product?.attributes && product.attributes.length > 0) ? variant && <Row className="mt-3 border ">
                                                 <Col>
                                                     <div className="d-flex  ">
                                                         <img
@@ -416,6 +423,23 @@ function ProductDetail() {
                                                 <Col>
                                                     <div className="ps-1">
                                                         <span>Kho hàng: {variant.quantity}</span> <br />
+
+                                                    </div>
+                                                </Col>
+                                            </Row> : 
+                                            <Row className="mt-3 border ">
+                                                 <Col>
+                                                    <div className="d-flex  ">
+                                                        <img
+                                                            src={product?.thumbnail}
+                                                            alt="variant"
+                                                            className="img-fluid img-ft"
+                                                        />
+                                                    </div>
+                                                </Col>
+                                                <Col>
+                                                    <div className="ps-1">
+                                                        <span>Kho hàng: {product?.totalQuantity}</span> <br />
 
                                                     </div>
                                                 </Col>
@@ -503,8 +527,6 @@ function ProductDetail() {
                                         : <pre className="text-align-start">
                                             {product?.description}
                                         </pre>}
-
-
                                 </div>
                             </div>
                         </div>
@@ -517,6 +539,9 @@ function ProductDetail() {
                 <Col md={9}>
                     {product && <Comment comments={dataComment?.data.items || []} />}
                 </Col>
+            </Row>
+            <Row>
+                <ListProduct products={queryRecommendResult?.data} title="Sản phẩm tương tự"/>
             </Row>
         </Container>
     );
