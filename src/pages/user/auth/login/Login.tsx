@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useLoginMutation } from '../../../../services/auth.service';
 import ModalLoading from '../../../../components/loading/ModalLoading';
 import useGetParam from '../../../../hooks/useGetParam';
+import { loginWithSocial } from '../../../../utils/auth';
 
 
 
@@ -46,7 +47,6 @@ function Login() {
       <div className="text-center mb-4">
         <h3 className="text-center">ĐĂNG NHẬP</h3>
       </div>
-      <form>
         <div className="mb-3">
           <input type="text" className="form-control no-shadow"
             placeholder="Email/Số điện thoại/Tên đăng nhập"
@@ -81,10 +81,12 @@ function Login() {
         </div>
         <hr />
         <div className="d-flex justify-content-center">
-          <button className="btn btn-outline-primary me-3 btn-social">
+          <button type="button" className="btn btn-outline-primary me-3 btn-social">
             <FaFacebook className="me-2" /> Facebook
           </button>
-          <button className="btn btn-outline-danger btn-social">
+          <button className="btn btn-outline-danger btn-social" onClick={() => {
+            loginWithSocial("google");
+          }}>
             <FaGoogle className="me-2" /> Google
           </button>
         </div>
@@ -94,7 +96,6 @@ function Login() {
         <p className="text-center mt-3">
           <Link to="/" >Về trang chủ</Link>
         </p>
-      </form>
       {isLoading && <ModalLoading loading={isLoading}/>}
     </div>
   );
