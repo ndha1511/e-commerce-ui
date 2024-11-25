@@ -26,10 +26,9 @@ const ProductAttribute = ({  attribute, onSelect, index }: {
                                 className={`w-100 btn-sc border-radius-small bg-white p-1 d-flex align-items-center justify-content-center ${selected === value.value ? 'selected' : ''} `}
                                 onClick={() => {
                                     handleClick(value.value, value.image || "");
-                                    if (selected !== value.value) setSelected(value.value); // Cập nhật selected
+                                    if (selected !== value.value) setSelected(value.value); 
                                 }}
-                            // disabled={isDisabled} // Vô hiệu hóa nút nếu là disabled
-                            // style={{ opacity: isDisabled ? 0.5 : 1 }} // Thay đổi độ mờ
+
                             >
                                 <div className="bg-light">
                                     {value.image && (

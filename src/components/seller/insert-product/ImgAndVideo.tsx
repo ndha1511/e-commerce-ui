@@ -8,12 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { addImage, setVideo } from "../../../rtk/slice/product-slice";
 import CustomTooltip from "../../tooltip/CustomTooltipProps";
 import { RootState } from "../../../rtk/store/store";
+import { isMobile } from "../../../utils/responsive";
 
 interface AddProductClick {
   addProductClick: boolean;
 }
 function ImgAndVideo({ addProductClick }: AddProductClick) {
   const [previewVideoUrl, setPreviewVideoUrl] = useState<string>();
+  const mobile = isMobile();
   const { files, previewUrls, handleFileChange, shouldHideInput, handleDeleteImage, setPreviewUrls } = useChangeFile(9, [], []);
   const imgRedux = useSelector((state: RootState) => state.product.images)
   const videoRedux = useSelector((state: RootState) => state.product.video)
@@ -57,20 +59,20 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
     }
   }
   useEffect(() => {
-     if(!addProductClick ){
+    if (!addProductClick) {
       setPreviewUrls([]);
-     }
+    }
   }, [addProductClick])
   return (
     <div>
       <div className="w-100 bg-white mt-4 ">
         <Row className="mb-2">
-          <Col md={2} className="text-end mt-4">
+          <Col xs={12} md={2} className={`${mobile ? 'mt-3' : "text-end mt-3"}`}>
             <span>
               <span className="primary">*</span> Hình ảnh sản phẩm :
             </span>
           </Col>
-          <Col md={10}>
+          <Col xs={12} md={10}>
 
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="images" direction="horizontal">
@@ -174,12 +176,12 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
           </Col>
         </Row>
         <Row className="mb-4">
-          <Col md={2} className="text-end mt-3">
+          <Col xs={12} md={2} className={`${mobile ? 'mt-3 mb-3' : "text-end mt-3"}`}>
             <span>
               <span className="primary">* </span>Ảnh bìa :
             </span>
           </Col>
-          <Col md={10} className="d-flex gap-3">
+          <Col xs={12} md={10} className="d-flex gap-3">
             <div className="d-flex align-items-center gap-2">
               {previewUrls[0] && (
                 <div className="ps-3">
@@ -190,7 +192,7 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
                   />
                 </div>
               )}
-              {files.length <=0 && (
+              {files.length <= 0 && (
                 <>
                   <label htmlFor="" className="d-flex align-items-center primary ps-3">
                     <div className="image-insert-product-seller p-2">
@@ -220,7 +222,7 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
               )}
             </div>
             <div className="p-2">
-              <pre className="text-muted" style={{ whiteSpace: 'pre-wrap' }}>
+              <pre className="text-muted" style={{ whiteSpace: 'pre-wrap', fontSize: mobile ? 8 : 10 }}>
                 • Ảnh bìa sẽ được hiển thị tại các trang Kết quả tìm kiếm, Gợi ý hôm nay,... Việc sử dụng ảnh bìa đẹp
                 sẽ thu hút thêm lượt truy cập vào sản phẩm của bạn.
               </pre>
@@ -228,7 +230,7 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
           </Col>
         </Row>
         <Row className="mb-4">
-          <Col md={2} className="text-end mt-3">
+          <Col xs={12} md={2} className={`${mobile ? 'mt-3' : "text-end mt-3"}`}>
             <span>Video sản phẩm :</span>
           </Col>
           <Col md={10} className="d-flex gap-3">
@@ -272,35 +274,35 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
                     accept="video/*" // Chỉ chấp nhận file video
                   />
 
-                    <label htmlFor="fileInputVideo" className="d-flex align-items-center primary ps-3">
-                      <div className="image-insert-product-seller p-2">
-                        <div className="icon-image-insert">
-                          <i style={{ fontSize: 29 }} className="bi bi-play-btn"></i>
-                          <FontAwesomeIcon
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              fontSize: 12,
-                              position: 'absolute',
-                              height: 15,
-                              width: 15,
-                              backgroundColor: 'white',
-                              borderRadius: '50%',
-                              right: -6,
-                              bottom: 5,
-                            }}
-                            icon={faPlus}
-                          />
-                        </div>
-                        <span className="w-100 text-center">({previewVideoUrl ? '1' : '0'}/1)</span>
+                  <label htmlFor="fileInputVideo" className="d-flex align-items-center primary ps-3">
+                    <div className="image-insert-product-seller p-2">
+                      <div className="icon-image-insert">
+                        <i style={{ fontSize: 29 }} className="bi bi-play-btn"></i>
+                        <FontAwesomeIcon
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: 12,
+                            position: 'absolute',
+                            height: 15,
+                            width: 15,
+                            backgroundColor: 'white',
+                            borderRadius: '50%',
+                            right: -6,
+                            bottom: 5,
+                          }}
+                          icon={faPlus}
+                        />
                       </div>
-                    </label>
+                      <span className="w-100 text-center">({previewVideoUrl ? '1' : '0'}/1)</span>
+                    </div>
+                  </label>
                 </>
               )}
             </div>
             <div className="p-2">
-              <pre className="text-muted mt-2" style={{ whiteSpace: 'pre-wrap' }}>
+              <pre className="text-muted mt-2" style={{ whiteSpace: 'pre-wrap',fontSize: mobile ? 8 : 10 }}>
                 • Kích thước tối đa 30Mb, độ phân giải không vượt quá 1280x1280px <br />
                 • Độ dài: 10s-60s <br />
                 • Định dạng: MP4 <br />

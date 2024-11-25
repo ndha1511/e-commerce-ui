@@ -132,7 +132,7 @@ function ProductStockItems({ product }: ProductStockItems) {
             <tr key={product.id}>
                 <td>
                     <span onClick={openCollapse} className="text-orange text-large cursor-pointer">
-                        {open ? <FontAwesomeIcon icon={faAngleUp} /> : <FontAwesomeIcon icon={faAngleDown} />}
+                        {open ? <FontAwesomeIcon className="icon-stock-pr" icon={faAngleUp} /> : <FontAwesomeIcon className="icon-stock-pr" icon={faAngleDown} />}
                     </span>
                 </td>
                 <td className="pt-1 pb-1"><img src={product.thumbnail} alt='anh' width={60} height={60} /></td>

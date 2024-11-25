@@ -139,12 +139,12 @@ function InsertProduct() {
     return (
         <div className="w-100 container-fluid">
             <Row>
-                <Col md={12} className="border bg-light p-3">
-                    <div className="bg-white p-4 border-radius-medium" style={{ width: '95%' }}>
+                <Col md={12} xs={12} className="border bg-light p-3">
+                    <div className="bg-white p-4 border-radius-medium" style={{ width: '100%'}}>
                         <h4>Thông tin cơ bản</h4>
                         <ImgAndVideo addProductClick={addProductClick} />
                         <div className="d-flex flex-column gap-4"> <Row>
-                            <Col md={2} className="text-end">
+                            <Col  md={2} className="text-end">
                                 <div className="mt-2"> <span><span className="primary">*</span> Tên sản phẩm :</span></div>
                             </Col>
                             <Col md={10}>

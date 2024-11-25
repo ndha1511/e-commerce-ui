@@ -19,6 +19,7 @@
     z-index: 998;
 }
 
+
 .content-navbar-admin {
     margin-top: 70px;
     margin-left: 200px;
@@ -33,3 +34,11 @@
     z-index: 999;
 }
 
+@media (max-width: 768px) {
+    .header-admin{
+     padding-left: 0;
+    }
+    .content-navbar-admin{
+     margin-left: 0;
+    }
+ }

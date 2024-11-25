@@ -4,6 +4,7 @@ import { Col, Collapse, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useRedirect from '../../../hooks/useRedirect';
+import { isMobile } from '../../../utils/responsive';
 
 interface Menu {
     name: string;
@@ -162,11 +163,11 @@ const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selec
     return (
         <div className='w-100 pt-1 pb-1 none-select' onClick={(e) => handleClickMenu(e)}>
             <div className={`w-100 ps-3 d-inline-flex align-items-center gap-2 ${isActive ? 'menu-navbar-active' : 'menu-navbar'}`}>
-                <Row className='w-100 custom-row-menu p-2 '>
-                    <Col className='d-flex justify-content-center' md={2}>
+                <Row className='w-100 custom-row-menu p-2  d-flex'>
+                    <Col className='d-flex justify-content-center' md={2} xs={2}>
                         <span>{icon}</span>
                     </Col>
-                    <Col md={10}>
+                    <Col md={10} xs={10}>
                         <div className='d-flex justify-content-between align-items-center w-100 pe-1'>
                             <span style={{ fontSize: fontSize || 14, color: isChild && selectedPath === path ? 'rgb(235, 105, 35)' : '' }}>
                                 {name}
@@ -202,6 +203,7 @@ const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selec
 }
 
 const Navbar = () => {
+    const mobile = isMobile();
     const [selectedPath, setSelectedPath] = React.useState<string | undefined>(undefined);
     const [selectedName, setSelectedName] = React.useState<string | undefined>(undefined);
     const [openMenu, setOpenMenu] = React.useState<string | undefined>(undefined); // Trạng thái menu cha đang mở
@@ -220,11 +222,13 @@ const Navbar = () => {
     };
     return (
         <div className="w-100 d-flex justify-content-center flex-column gap-2">
-            <div className='d-flex  align-items-center gap-4 p-2 title-navbar-top ' >
-                <i  style={{ fontSize: 30, color:'white' }} className="bi bi-list-ul"></i>
-                <span className='text-large text-white' style={{fontFamily:'Lobster'}}>SOSELL</span>
-            </div>
-            <div className='w-100 mt-2'>
+            {!mobile && 
+              <div className='d-flex  align-items-center gap-4 p-2 title-navbar-top ' >
+              <i  style={{ fontSize: 30, color:'white' }} className="bi bi-list-ul"></i>
+              <span className='text-large text-white' style={{fontFamily:'Lobster'}}>SOSELL</span>
+          </div>}
+          
+            <div className={mobile ? '': 'w-100 mt-2'}>
                 {menu.map((item, index) => (
                     <MenuItem
                         key={index}

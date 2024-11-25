@@ -20,12 +20,14 @@ import brandAPi from '../../services/brand.service'
 import messageApi from '../../services/message.service'
 import roomApi from '../../services/room.service'
 import notificationApi from '../../services/notification.service'
+import { orderSlice } from '../slice/order-slice'
 
 
 export const store = configureStore({
   reducer: {
     product: createProductSlice.reducer,
     notification: Notification.reducer,
+    order: orderSlice.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,

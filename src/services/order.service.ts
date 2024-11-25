@@ -15,6 +15,13 @@ const orderApi = createApi({
             }),
             keepUnusedDataFor: 2,
         }),
+        getOrderById: build.query<BaseResponse<Order>, string>({
+            query: (orderId) => ({
+                url: '/orders/orderId/' + orderId,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 2,
+        }),
         getOrdersByUserId: build.query<BaseResponse<PageResponse<Order>>, {userId: string, param: string}>({
             query: ({ userId, param }) => ({
                 url: `/orders/${userId}?${param}`,
@@ -39,6 +46,7 @@ const orderApi = createApi({
 
 export const {
     useGetOrdersQuery,
+    useGetOrderByIdQuery,
     useGetOrdersByUserIdQuery,
     useConfirmReceivedMutation,
     useConfirmActionMutation

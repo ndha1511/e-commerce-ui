@@ -7,9 +7,11 @@ import { convertPrice } from '../../../utils/convert-price';
 import useRedirect from '../../../hooks/useRedirect';
 import ModalLoading from '../../../components/loading/ModalLoading';
 import CartEmpty from './CartEmpty';
+import { isMobile } from '../../../utils/responsive';
 
 
 const Cart: React.FC = () => {
+    const mobile = isMobile();
     const redirect = useRedirect();
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
     const { data, refetch, isLoading } = useGetCartByUserIdQuery(user?.data?.id || "", {
@@ -97,18 +99,18 @@ const Cart: React.FC = () => {
                         </div>
                     </Col>
 
-                    <Col md={2} className="text-center">
+                    {!mobile && <>   <Col md={2} className="text-center">
                         <span>Đơn Giá</span>
                     </Col>
-                    <Col md={2} className="text-center">
-                        <span>Số Lượng</span>
-                    </Col>
-                    <Col md={2} className="text-center">
-                        <span>Số Tiền</span>
-                    </Col>
-                    <Col md={2} className="text-center">
-                        <span>Thao Tác</span>
-                    </Col>
+                        <Col md={2} className="text-center">
+                            <span>Số Lượng</span>
+                        </Col>
+                        <Col md={2} className="text-center">
+                            <span>Số Tiền</span>
+                        </Col>
+                        <Col md={2} className="text-center">
+                            <span>Thao Tác</span>
+                        </Col></>}
                 </Row>
             </div>
             <div id="cart-items" className="">
@@ -145,7 +147,7 @@ const Cart: React.FC = () => {
                         <Button variant="link" className="ms-3 primary p-0">Xóa</Button>
                     </Col>
                     <Col xs={12} md={6} className="text-end mt-3 mt-md-0">
-                        <div className='d-flex justify-content-end align-items-center w-100'>
+                        <div className={`d-flex justify-content-end align-items-center w-100 ${mobile ? 'flex-column gap-2 ' : ''}`}>
                             {selectVariant.length > 0 && <div className="text-medium me-4">
                                 Tổng thanh toán ({selectVariant.length} sản phẩm):
                                 <span className="primary fw-bold ms-2">{convertPrice(totalPrice)}</span>

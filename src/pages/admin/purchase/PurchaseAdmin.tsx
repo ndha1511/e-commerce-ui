@@ -8,9 +8,10 @@ import ModalLoading from "../../../components/loading/ModalLoading";
 import Tab from "../../../components/seller/insert-product/Tab";
 import SimpleBar from "simplebar-react";
 import Select from 'react-select'
+import { isMobile } from "../../../utils/responsive";
 
 const PurchaseAdmin = () => {
-
+    const mobile = isMobile();
     const [orderStatus, setOrderStatus] = React.useState(OrderStatus.RECEIVED);
     // default order status is pending
     const param = pageQueryHanlder(1, 40, [{
@@ -89,60 +90,62 @@ const PurchaseAdmin = () => {
 
 
     const displayedPurchases = filteredPurchase?.slice(startIndex, startIndex + itemsPerPage);
-    return <div className="profile-container">
-        <div className="d-flex justify-content-between align-items-center">
-            <span className="text-large">Danh sách đơn hàng</span>
-        </div>
-
-        <div className="d-flex">
-            <Tab tabNames={tabs} activeTab={activeTab} handleButtonClick={handleTabClick} />
-            <div className="w-25">
-                <Select options={options} placeholder="Lọc theo mã đơn hàng" onChange={setSelectedPurchase} />
+    return <div className={`${mobile ? "bg-light p-3  w-50 ": "bg-light p-3  w-100 "}`}>
+        <div className="profile-container">
+            <div className="d-flex justify-content-between align-items-center">
+                <span className="text-large">Danh sách đơn hàng</span>
             </div>
-        </div>
-        <SimpleBar style={{ height: 480 }} scrollableNodeProps={{ ref: simplebarRef }}>
-            <div className="w-100 d-flex justify-content-center align-items-center flex-1 ">
-                {(currentProducts && currentProducts.length > 0) ?
-                    <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.PENDING ||
-                        orderStatus === OrderStatus.SHIPPING || orderStatus === OrderStatus.SHIPPED_CONFIRMATION
-                        ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
-                        <thead>
-                            <tr>
-                                <th>Mã đơn hàng</th>
-                                <th>Ngày đặt</th>
-                                <th>Thanh toán</th>
-                                <th>Tổng tiền</th>
-                                {orderStatus === OrderStatus.PENDING || orderStatus === OrderStatus.SHIPPING
-                                    || orderStatus === OrderStatus.SHIPPED_CONFIRMATION ? <th>Thao tác</th> : <></>}
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {displayedPurchases?.map((item, idx) => (
-                                <PurchaseItem refetch={refetch} item={item} key={idx} />
+
+            <div className={`${mobile ? "d-flex flex-column": "d-flex"}`}>
+                <Tab tabNames={tabs} activeTab={activeTab} handleButtonClick={handleTabClick}  />
+                <div className={`${mobile ? "w-75 mb-3" : "w-25"}`}>
+                    <Select options={options} placeholder="Lọc theo mã đơn hàng" onChange={setSelectedPurchase} />
+                </div>
+            </div>
+            <SimpleBar style={{ height: 480 }} scrollableNodeProps={{ ref: simplebarRef }}>
+                <div className="w-100 d-flex justify-content-center align-items-center flex-1 ">
+                    {(currentProducts && currentProducts.length > 0) ?
+                        <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.PENDING ||
+                            orderStatus === OrderStatus.SHIPPING || orderStatus === OrderStatus.SHIPPED_CONFIRMATION
+                            ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn hàng</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Thanh toán</th>
+                                    <th>Tổng tiền</th>
+                                    {orderStatus === OrderStatus.PENDING || orderStatus === OrderStatus.SHIPPING
+                                        || orderStatus === OrderStatus.SHIPPED_CONFIRMATION ? <th>Thao tác</th> : <></>}
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {displayedPurchases?.map((item, idx) => (
+                                    <PurchaseItem refetch={refetch} item={item} key={idx} />
+                                ))}
+                            </tbody>
+                        </Table> :
+                        <span className="text-medium">Không có dữ liệu</span>
+
+                    }
+
+                </div>
+                {(currentProducts && currentProducts.length > 0) &&
+                    <div className="d-flex justify-content-center align-items-center">
+                        <Pagination className="">
+                            <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
+                            <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                            {[...Array(totalPages)].map((_, index) => (
+                                <Pagination.Item key={index + 1} active={index + 1 === currentPage} onClick={() => handlePageChange(index + 1)}>
+                                    {index + 1}
+                                </Pagination.Item>
                             ))}
-                        </tbody>
-                    </Table> :
-                    <span className="text-medium">Không có dữ liệu</span>
-
-                }
-
-            </div>
-            {(currentProducts && currentProducts.length > 0) &&
-                <div className="d-flex justify-content-center align-items-center">
-                    <Pagination className="">
-                        <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-                        <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                        {[...Array(totalPages)].map((_, index) => (
-                            <Pagination.Item key={index + 1} active={index + 1 === currentPage} onClick={() => handlePageChange(index + 1)}>
-                                {index + 1}
-                            </Pagination.Item>
-                        ))}
-                        <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                        <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
-                    </Pagination>
-                </div>}
-        </SimpleBar>
+                            <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+                            <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+                        </Pagination>
+                    </div>}
+            </SimpleBar>
+        </div>
         {isLoading && <ModalLoading loading={isLoading} />}
     </div>
 }

@@ -75,3 +75,14 @@
     vertical-align: middle;
 
 }
+@media (max-width: 768px) {
+    .custom-table-purchase>:not(caption)>*>* {
+        font-size: 8px !important;
+    }
+    .custom-table-purchase-ss>:not(caption)>*>* {
+        font-size: 8px !important;
+    }
+    .custom-table-purchase-cs tbody tr td{
+        font-size: 5px !important;
+    }
+}
