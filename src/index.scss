@@ -339,7 +339,9 @@ pre {
   column-gap: 10px;
   justify-items: center;
 }
-
+.shadow-container{
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
 @media (max-width: 768px) {
   .products {
       grid-template-columns: repeat(2, minmax(180px, 1fr));
@@ -347,11 +349,8 @@ pre {
 }
 
 .shadow-all {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0px 4px 6px  rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
-.shadow-all:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 
-}

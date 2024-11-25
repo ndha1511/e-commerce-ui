@@ -4,8 +4,10 @@ import { FaCheck, FaEnvelope, FaLock, FaUser, FaEye, FaEyeSlash } from "react-ic
 import { useCreateEmployeeMutation } from "../../../services/user.service";
 import { useDispatch } from "react-redux";
 import { setNotify } from "../../../rtk/slice/notify-slice";
+import { isMobile } from "../../../utils/responsive";
 
 function CreateEmployee() {
+    const mobile = isMobile();
     const [createEmployee] = useCreateEmployeeMutation();
     const dispatch = useDispatch();
     const [formData, setFormData] = useState({
@@ -26,7 +28,6 @@ function CreateEmployee() {
 
     useEffect(() => {
         if (formData.email !== '' && formData.name !== '' && formData.password !== '' && formData.confirmPassword !== '') {
-            console.log('123')
             setDisable(false);
         } else {
             setDisable(true);
@@ -58,7 +59,7 @@ function CreateEmployee() {
         <div className="bg-light p-3">
             <span className="text-medium">Thêm tài khoản nhân viên</span>
             <div className="border border-radius-small bg-white p-5 mt-3 d-flex align-items-center justify-content-center">
-                <Form onSubmit={(e)=>handleSubmit(e)} className="border p-4 w-50 border-radius-small shadow-all">
+                <Form onSubmit={(e)=>handleSubmit(e)} className={`border p-4 ${mobile ? 'w-100':'w-50'} border-radius-small shadow-all`}>
                     <Form.Group controlId="formEmail" className="mb-3">
                         <Form.Label>Email</Form.Label>
                         <InputGroup>

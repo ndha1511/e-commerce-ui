@@ -6,9 +6,11 @@ import NotificationButton from "../../components/notify/NotificationButton";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../rtk/store/store";
 import { clearNotify } from "../../rtk/slice/notify-slice";
+import { isMobile } from "../../utils/responsive";
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
-    const notify = useSelector((state:RootState)=>state.notification)
+    const isMB = isMobile();
+    const notify = useSelector((state: RootState) => state.notification)
     const dispatch = useDispatch();
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -19,14 +21,15 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         return () => clearTimeout(timer);
     }, [dispatch, notify]);
     return <div className="admin-layout">
-        <div className="navbar-admin">
+        {!isMB && <div className="navbar-admin">
             <Navbar></Navbar>
-        </div>
+        </div>}
+
         <div className="admin-layout-left">
             <div className="header-admin">
                 <Header></Header>
             </div>
-            <div className="content-navbar-admin">{children}</div>           
+            <div className="content-navbar-admin">{children}</div>
         </div>
         {notify.type && <NotificationButton type={notify.type} message={notify.message} />}
     </div>

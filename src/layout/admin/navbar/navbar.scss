@@ -64,6 +64,7 @@
 
 .input-search-category-admin {
     border: none;
+    width: 100%;
     flex: 1;
 
     &:focus {
@@ -93,7 +94,7 @@
         width: 12%;
     }
     &:nth-child(5){
-        width: 12.5%;
+        width: 5%;
     }
     &:nth-child(6){
         width: 5%;
@@ -142,4 +143,15 @@
 .title-navbar-top{
     height: 64px;
     background-color: rgb(241, 122, 58);
+}
+@media(max-width:768px){
+    .custom-table-category-cs{
+        font-size: 8px !important;
+    }
+    .search-category-admin{
+        width: 60%;
+    }
+    .custom-table-category tbody tr td{
+        font-size: 8px !important;
+    }
 }

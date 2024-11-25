@@ -103,7 +103,7 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
 
         </tr>
         <tr>
-            <td colSpan={7} >
+            <td colSpan={10} >
                 <Collapse in={open}>
                     <div className="p-3">
                         <Table className="mb-0 table-bordered table-responsive custom-table-purchase-cs" >

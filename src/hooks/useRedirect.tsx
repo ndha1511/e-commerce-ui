@@ -4,8 +4,8 @@ const useRedirect = () => {
 
     const navigate = useNavigate();
 
-    const redirect = (path: string) => {
-        navigate(path);
+    const redirect = (path: string,data?: any) => {
+        navigate(path,{ state: data });
         setTimeout(() => {
             window.scrollTo({
                 top: 0,

@@ -7,10 +7,11 @@ import Tab from "../../../../components/seller/insert-product/Tab";
 import ModalLoading from "../../../../components/loading/ModalLoading";
 import PurchaseItem from "./PurchaseItem";
 import { Table } from "react-bootstrap";
+import { isMobile } from "../../../../utils/responsive";
 
 const Purchase = () => {
     const { data: user } = useCheckLoginQuery();
-
+    const mobile = isMobile();
     const [orderStatus, setOrderStatus] = React.useState(OrderStatus.RECEIVED);
 
     // default order status is pending
@@ -74,8 +75,10 @@ const Purchase = () => {
         <div className="d-flex justify-content-between align-items-center">
             <span className="text-large">Đơn hàng đã mua</span>
         </div>
-        <Tab tabNames={tabs} activeTab={activeTab} handleButtonClick={handleTabClick} />
-        <div className="w-100 d-flex justify-content-center align-items-center flex-1">
+        <div style={{width: mobile ?'48%': '100%', }}>
+            <Tab tabNames={tabs} activeTab={activeTab} handleButtonClick={handleTabClick} />
+        </div>
+        <div className="d-flex justify-content-center align-items-center flex-1" style={{width: mobile?'45%':'100%'}}>
             {(purchase?.data?.items && purchase?.data?.items.length > 0) ?
                 <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.PENDING ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
                     <thead>
@@ -84,13 +87,13 @@ const Purchase = () => {
                             <th>Ngày đặt</th>
                             <th>Thanh toán</th>
                             <th>Tổng tiền</th>
-                            {orderStatus === OrderStatus.PENDING ?   <th>Thao tác</th> : <></>} 
+                            {orderStatus === OrderStatus.PENDING ? <th>Thao tác</th> : <></>}
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {purchase?.data?.items.map((item, idx) => (
-                           <PurchaseItem refetch={refetch} item={item} key={idx}/>
+                            <PurchaseItem refetch={refetch} item={item} key={idx} />
                         ))}
                     </tbody>
                 </Table> :

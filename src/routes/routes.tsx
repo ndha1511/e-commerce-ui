@@ -35,6 +35,8 @@ import EmployeeList from "../pages/admin/employee/EmployeeList";
 import App from "../App";
 import NotFound from "../pages/not-found/NotFound";
 import Message from "../pages/admin/message/Message";
+import PaymentSuccess from "../pages/user/payment/PaymentSuccess";
+import PuchaseDetail from "../pages/user/payment/PurchaseDetail";
 
 export const router = createBrowserRouter([
     {
@@ -106,6 +108,14 @@ export const router = createBrowserRouter([
     {
         path: "/user/vouchers",
         element: <UserLayout><Account><Voucher/></Account></UserLayout>
+    },
+    {
+        path: "/user/payment/success",
+        element: <UserLayout><PaymentSuccess/></UserLayout>
+    },
+    {
+        path: "/user/payment/purchase/detail",
+        element: <UserLayout><PuchaseDetail/></UserLayout>
     }
     ,
     {

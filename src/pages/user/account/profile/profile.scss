@@ -1,13 +1,14 @@
 @import '../../../../variables.scss';
 
 .profile-container {
-    margin: auto;
+
     padding: 20px;
     min-height: 520px;
     background-color: #fff;
     border-radius: $border-radius-small;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     flex: 1;
+
 }
 
 
