@@ -67,7 +67,7 @@ const SideBar = () => {
                     <i className="bi bi-cart-fill"></i>
                     Giỏ hàng
                 </span>
-                {data?.data ? <Account username={data.data.username}/> : <>
+                {data?.data ? <Account username={data.data.email}/> : <>
                     <span className='side-bar-item' onClick={() => redirect('/auth/login')}>Đăng nhập</span>
                     <span className='side-bar-item' onClick={() => redirect('/auth/register')}>Đăng ký</span>
                 </>}

@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom';
 import { Product } from '../../models/product';
 import { calcPercentDiscount, calcPromotion, convertPrice } from '../../utils/convert-price';
 import './product-card.scss';
 
 const ProductCard = ({ product }: { product: Product }) => {
-    return <Link className='card-container card-container-size a-disable-default' to={'/product/' + product.urlPath}>
+    return <div className='card-container card-container-size a-disable-default' onClick={() => {
+        window.location.href = '/product/' + product.urlPath;
+    }} >
         <div className='img-container'>
             <img src={product.thumbnail}
                 alt='image'
@@ -37,7 +38,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                 </div>
             </div>
         </div>
-    </Link>
+    </div>
 }
 
 export default ProductCard;

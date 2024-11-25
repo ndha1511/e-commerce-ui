@@ -20,6 +20,8 @@ import brandAPi from '../../services/brand.service'
 import messageApi from '../../services/message.service'
 import roomApi from '../../services/room.service'
 import notificationApi from '../../services/notification.service'
+import promotionApi from '../../services/promotion.service'
+import voucherApi from '../../services/voucher.service'
 
 
 export const store = configureStore({
@@ -42,6 +44,8 @@ export const store = configureStore({
     [messageApi.reducerPath]: messageApi.reducer,
     [roomApi.reducerPath]: roomApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
+    [promotionApi.reducerPath]: promotionApi.reducer,
+    [voucherApi.reducerPath]: voucherApi.reducer
 
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
@@ -61,6 +65,8 @@ export const store = configureStore({
     .concat(messageApi.middleware)
     .concat(roomApi.middleware)
     .concat(notificationApi.middleware)
+    .concat(promotionApi.middleware)
+    .concat(voucherApi.middleware)
 
 })
 

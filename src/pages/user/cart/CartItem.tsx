@@ -2,7 +2,7 @@ import React, {useState } from 'react';
 import { Row, Col, Form, Button, Dropdown, Image } from 'react-bootstrap';
 import './cart-item.scss';
 import { ProductCartResponse } from '../../../dtos/response/cart/product-cart-response';
-import { convertPrice } from '../../../utils/convert-price';
+import { calcPromotion, convertPrice } from '../../../utils/convert-price';
 import { Link } from 'react-router-dom';
 import { useDeleteCartItemMutation, useUpdateCartMutation } from '../../../services/cart.service';
 import { UpdateCartRequest } from '../../../dtos/request/cart/update-cart-request';
@@ -148,7 +148,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
                        {item.promotion ? <>
                         <p className="text-muted mb-1"><s>{convertPrice(item.variantResponse.price)}</s></p>
-                        <p className="primary fw-bold mb-1">{convertPrice(item.variantResponse.price)}</p>
+                        <p className="primary fw-bold mb-1">{calcPromotion(item.variantResponse.price, item.promotion)}</p>
                        </> : <p className="primary fw-bold mb-1">{convertPrice(item.variantResponse.price)}</p> }
                     </Col>
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
@@ -162,7 +162,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
                         </div>
                     </Col>
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
-                        <p className="primary fw-bold mb-1">{convertPrice(item.variantResponse.price * item.quantity)}</p>
+                        <p className="primary fw-bold mb-1">{calcPromotion(item.variantResponse.price * item.quantity, item.promotion)}</p>
                     </Col>
                     <Col xs={6} md={2} className="text-end d-flex justify-content-center align-items-center flex-column">
                         <Button variant="link" className="primary p-0" onClick={handleDelete}>Xóa</Button>
