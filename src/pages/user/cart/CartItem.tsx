@@ -1,4 +1,4 @@
-import React, {useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Form, Button, Dropdown, Image } from 'react-bootstrap';
 import './cart-item.scss';
 import { ProductCartResponse } from '../../../dtos/response/cart/product-cart-response';
@@ -20,19 +20,30 @@ interface CartItemProps {
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, removeVariant, selectVariant }) => {
-    const {data: user} = useCheckLoginQuery();
+    const { data: user } = useCheckLoginQuery();
     const [showOptions, setShowOptions] = useState(false);
     const quantityInStock = item.variantResponse.quantity;
     const [getVariant] = useLazyGetVariantsQuery();
     const [trigger] = useUpdateCartMutation();
     const [deleteItem] = useDeleteCartItemMutation();
     const checked = selectVariant.findIndex(v => v === item.variantResponse.id) !== -1;
-
+    const variantOptionsRef = useRef<HTMLDivElement | null>(null);
 
     const toggleOptions = () => {
         setShowOptions(!showOptions)
     };
+    const handleClickOutside = (event: MouseEvent) => {
+        if (variantOptionsRef.current && !variantOptionsRef.current.contains(event.target as Node)) {
+            setShowOptions(false);
+        }
+    };
 
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
     const increment = async () => {
         if (item.quantity < quantityInStock) {
             await updateCart({
@@ -63,7 +74,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
         try {
             const rs = await getVariant({
                 productId: item.variantResponse.product.id,
-                attr1: attr1, 
+                attr1: attr1,
                 attr2: attr2
             }).unwrap();
             const variant = rs.data;
@@ -75,7 +86,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
                     quantity: 1
                 }
             });
-           
+
         } catch (error) {
             console.log(error);
         }
@@ -91,7 +102,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
     }
 
     const handleCheck = () => {
-        if(checked) {
+        if (checked) {
             removeVariant(item.variantResponse.id)
         } else {
             addVariant(item.variantResponse.id)
@@ -115,7 +126,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
             <div className="cart-item border-bottom p-3 pl-3 pt-5 pr-3 pb-5 bg-white">
                 <Row className="align-items-center">
                     <Col xs={12} md={4} className="d-flex align-items-center mb-3 mb-md-0">
-                        <Form.Check type="checkbox" className="checkbox-cart me-3" checked={checked} 
+                        <Form.Check type="checkbox" className="checkbox-cart me-3" checked={checked}
                             onChange={handleCheck}
                         />
                         <div className="d-flex align-items-center">
@@ -126,8 +137,8 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
                                         {item.variantResponse.product.productName.split(" ").slice(0, 10).join(" ") + (item.variantResponse.product.productName.split(" ").length > 10 ? "..." : "")}
                                     </p>
                                 </Link>
-                                <div className="variant-selector" style={{ position: 'relative', cursor: 'pointer' }}>
-                                    <div className="selected-variant text-muted" onClick={toggleOptions}>
+                                <div className="variant-selector" style={{ position: 'relative', cursor: 'pointer' }} ref={variantOptionsRef}>
+                                    <div className="selected-variant text-muted none-select" onClick={toggleOptions}>
                                         <span>Phân Loại Hàng:</span>
                                         <i
                                             className={`bi ${showOptions ? 'bi-caret-up-fill' : 'bi-caret-down-fill'} ms-2`}
@@ -138,8 +149,8 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
 
                                     </div>
 
-                                    {showOptions && <ToggleAttribute updateAttribute={updateAttribute} close={toggleOptions} productId={item.variantResponse.product.id} 
-                                    attributeValue1={item.variantResponse.attributeValue1} attributeValue2={item.variantResponse.attributeValue2}/>}
+                                    {showOptions && <ToggleAttribute updateAttribute={updateAttribute} close={toggleOptions} productId={item.variantResponse.product.id}
+                                        attributeValue1={item.variantResponse.attributeValue1} attributeValue2={item.variantResponse.attributeValue2} />}
                                 </div>
                             </div>
                         </div>
@@ -150,6 +161,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
                         <p className="text-muted mb-1"><s>{convertPrice(item.variantResponse.price)}</s></p>
                         <p className="primary fw-bold mb-1">{calcPromotion(item.variantResponse.price, item.promotion)}</p>
                        </> : <p className="primary fw-bold mb-1">{convertPrice(item.variantResponse.price)}</p> }
+
                     </Col>
                     <Col xs={6} md={2} className="text-center mb-3 mb-md-0">
                         <div className="d-flex justify-content-center align-items-center mb-2">
@@ -165,7 +177,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
                         <p className="primary fw-bold mb-1">{calcPromotion(item.variantResponse.price * item.quantity, item.promotion)}</p>
                     </Col>
                     <Col xs={6} md={2} className="text-end d-flex justify-content-center align-items-center flex-column">
-                        <Button variant="link" className="primary p-0" onClick={handleDelete}>Xóa</Button>
+                        <Button variant="link" className="primary p-0" onClick={handleDelete}><i className="bi bi-trash" style={{ color: 'red', cursor: 'pointer' }}></i></Button>
                         <Dropdown align="end">
                             <Dropdown.Toggle variant="link" className="text-muted p-0">
                                 Tìm sản phẩm tương tự

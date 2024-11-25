@@ -12,9 +12,11 @@ import { InventoryDto } from "../../../dtos/request/inventory/inventory-request"
 import { useCreateInventoryMutation } from "../../../services/inventory.service";
 import { useDispatch } from "react-redux";
 import { setNotify } from "../../../rtk/slice/notify-slice";
+import { isMobile } from "../../../utils/responsive";
 
 function ProductImport() {
     const [searchKeyword, setSearchKeyword] = useState<string>('');
+    const mobile = isMobile();
     const [open, setOpen] = useState<boolean>(false);
     const debounce = useDebounce(searchKeyword, 500)
     const params: string = pageQueryHanlder(1, 100, [{ filed: 'productName', operator: ':', value: debounce }]);
@@ -179,6 +181,7 @@ function ProductImport() {
                             <div className="select-search-sale-info w-25">
                                 <input
                                     className="select-sale-info no-spinner"
+                                    style={{ fontSize: mobile ? 8 : 10 }}
                                     placeholder="Số lượng"
                                     type="number"
                                     value={inputQuantity || convertPrice(0)}
@@ -186,11 +189,12 @@ function ProductImport() {
                                 />
                             </div>
                             <div className="select-search-sale-info w-25">
-                                <div className="p-1 pe-2" style={{ borderRight: '2px solid rgb(241, 236, 236)' }}>
+                                <div className="p-1 pe-2" style={{ borderRight: '2px solid rgb(241, 236, 236)', fontSize: mobile ? 8 : 10 }}>
                                     <span>₫</span>
                                 </div>
                                 <input
                                     className="select-sale-info no-spinner"
+                                    style={{ fontSize: mobile ? 8 : 10 }}
                                     placeholder="Giá nhập"
                                     type="number"
                                     value={inputPrice || convertPrice(0)}
@@ -244,10 +248,10 @@ function ProductImport() {
                                     </td>
                                     <td>{variant.attributeValue2}</td>
                                     <td className="p-3">
-                                        <div className="p-1 border border-radius-small">
+                                        <div className="p-1 border border-radius-small" style={{ width: mobile ? '20px' : 'auto' }}>
                                             <input
                                                 className="no-spinner"
-                                                style={{ outline: "none", border: "none" }}
+                                                style={{ outline: "none", border: "none", width: mobile ? '100%' : 'auto' }}
                                                 type="number"
                                                 value={quantities[variant.id] || convertPrice(0)}
                                                 onChange={(e) => handleQuantityChange(variant.id, Number(e.target.value))}
@@ -255,10 +259,10 @@ function ProductImport() {
                                         </div>
                                     </td>
                                     <td className="p-3">
-                                        <div className="p-1 border border-radius-small">
+                                        <div className="p-1 border border-radius-small" style={{ width: mobile ? '20px' : 'auto' }}>
                                             <input
                                                 className="no-spinner"
-                                                style={{ outline: "none", border: "none" }}
+                                                style={{ outline: "none", border: "none", width: mobile ? '100%' : 'auto' }}
                                                 type="number"
                                                 value={prices[variant.id] || convertPrice(0)}
                                                 onChange={(e) => handlePriceChange(variant.id, Number(e.target.value))}
@@ -279,8 +283,8 @@ function ProductImport() {
                 </Table>
                 {variants?.data.length && variants?.data.length > 0 &&
                     <div className="  d-flex justify-content-end pe-4">
-                        <Row className=" w-25" >
-                            <Col md={6}>
+                        <Row className={`${mobile? 'w-100':'w-25'}`} >
+                            <Col xs={6} md={6}>
                                 <div className="d-flex flex-column">
                                     <p>Số lượng</p>
                                     <p>Tạm tính</p>
@@ -288,7 +292,7 @@ function ProductImport() {
                                     <h5>Tổng cộng</h5>
                                 </div>
                             </Col>
-                            <Col md={6}>
+                            <Col xs={6} md={6}>
                                 <div className="d-flex flex-column text-end">
                                     <p>{Object.values(quantities).reduce((acc, quantity) => acc + quantity, 0)} sản phẩm</p>
                                     <p>{convertPrice(totalAmount)}</p>
@@ -299,8 +303,8 @@ function ProductImport() {
                         </Row>
                     </div>}
                 {variants?.data && variants.data.length > 0 &&
-                    <div className="p-2  d-flex justify-content-start">
-                        <button onClick={() => handleAddInventory()} className="btn-save-all-category p-2" style={{ width: '12%' }} >Hoàn tất</button>
+                    <div className="p-2  d-flex justify-content-start ">
+                        <button onClick={() => handleAddInventory()} className="btn-save-all-category p-2" style={{ width: mobile ? '20%':'12%' }} >Hoàn tất</button>
                     </div>}
             </div>
             {isLoading || addInventory && <ModalLoading loading={isLoading || addInventory} />}

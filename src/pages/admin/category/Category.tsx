@@ -10,6 +10,7 @@ import { pageQueryHanlder } from "../../../utils/query-handler";
 import ClipLoader from "react-spinners/ClipLoader";
 import { Category as CategoryModel } from "../../../models/category";
 import SimpleBar from "simplebar-react";
+import { isMobile } from "../../../utils/responsive";
 
 interface ItemProps {
     category: CategoryModel;
@@ -45,17 +46,12 @@ const CategoryItem = ({ category }: ItemProps) => {
     return (
         <React.Fragment key={category.id}>
 
-            <tr>
+            <tr style={{fontSize:3}}>
                 <td>
                     {category.image && <img src={category.image} alt="category" width={50} height={50} />}
                 </td>
-                <td><h6>{category.categoryName}</h6></td>
-                <td><h6>{category.children}</h6></td>
-                <td>
-                    <span className="text-large cursor-pointer text-success">
-                        {category.inActive ? <i className="bi bi-toggle-off"></i> : <i className="bi bi-toggle-on"></i>}
-                    </span>
-                </td>
+                <td>{category.categoryName}</td>
+                <td>{category.children}</td>
                 <td>
                     <div className="d-flex align-items-center gap-3 justify-content-center">
                         <span className="text-medium cursor-pointer secondary" data-toggle="tooltip" title="chỉnh sửa">
@@ -87,7 +83,6 @@ const CategoryItem = ({ category }: ItemProps) => {
                                         <th>Hình ảnh</th>
                                         <th>Danh mục</th>
                                         <th>Danh mục con</th>
-                                        <th>Trạng thái</th>
                                         <th>Các chức năng</th>
                                         <th></th>
                                     </tr>
@@ -111,7 +106,7 @@ const Category = () => {
     const pageParams = useGetParam('page');
     const [show, setShow] = React.useState(false);
     const [page, setPage] = React.useState<number>(pageParams ? Number(pageParams) : 1);
-
+    const mobile = isMobile();
     const { data, isFetching, refetch } = useGetCategoriesQuery(pageQueryHanlder(page, 20, [{ filed: 'parentId', operator: ':', value: 'null' }]));
 
     const handleClose = () => {
@@ -141,7 +136,6 @@ const Category = () => {
                                     <th>Hình ảnh</th>
                                     <th>Danh mục</th>
                                     <th>Danh mục con</th>
-                                    <th>Trạng thái</th>
                                     <th>Các chức năng</th>
                                     <th></th>
                                 </tr>

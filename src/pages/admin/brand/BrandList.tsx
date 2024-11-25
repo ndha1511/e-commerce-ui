@@ -6,12 +6,14 @@ import './brand.scss';
 import { Brand } from '../../../models/brand';
 import useRedirect from '../../../hooks/useRedirect';
 import { BsGear, BsTrash } from 'react-icons/bs';
+import { isMobile } from '../../../utils/responsive';
 
 interface BrandProps {
     brand: Brand;
 }
 
 function BrandList() {
+    const mobile = isMobile();
     const params = pageQueryHanlder(1, 40);
     const { data, refetch } = useGetBrandsQuery(params);
     const brands = data?.data.items;
@@ -20,14 +22,14 @@ function BrandList() {
         refetch(); 
      }, [data])
     return (
-        <div className="p-3  bg-light w-100">
+        <div className={`${mobile ? "w-50": "p-3  bg-light w-100"}`}>
             <div className='d-flex w-100 justify-content-between'>
                 <span className="text-large">Danh sách thương hiệu</span>
-                <div className="p-2  d-flex justify-content-start">
+                <div className= {`${mobile ?"p-2  d-flex justify-content-start mt-5": "p-2  d-flex justify-content-start"}`}>
                     <button className="btn-save-all-category p-2" onClick={() => redirect('/admin/brand')} >Thêm thương hiệu</button>
                 </div>
             </div>
-            <div className="p-3 bg-light border-radius-small row">
+            <div className="p-3 bg-light border-radius-small row border ">
                 {brands?.map((brand) => (
                     <BrandCard key={brand.brandName} brand={brand} />
                 ))}
@@ -47,8 +49,8 @@ function BrandCard({ brand }: BrandProps) {
     const isLongDescription = brand.description.length > 100;
 
     return (
-        <div className="col-md-6  bg-white p-3">
-            <div className="bg-white d-flex flex-column p-3   brand-shadow" style={{ position: 'relative' }}>
+        <div className=" col-xs-12 col-md-6 bg-white p-3 border">
+            <div className="bg-white d-flex flex-column p-3 brand-shadow" style={{ position: 'relative', }}>
                 <img src={brand.image} alt={brand.image} style={{ objectFit: 'fill' }} height={200} />
                 <span>{brand.brandName}</span>
 

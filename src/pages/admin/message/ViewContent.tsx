@@ -6,14 +6,17 @@ import { Message, MessageStatus, MessageType } from '../../../models/message';
 import { useCreateMessageMutation } from '../../../services/message.service';
 import moment from 'moment';
 import SimpleBar from 'simplebar-react';
+import { isMobile } from '../../../utils/responsive';
 interface ViewContentProps {
     messagesData: Message[];
     userCurrent: string;
     refetch: () => void;
     refetchRoom: () => void;
+    handleBack: () => void;
 }
 
-const ViewContent: React.FC<ViewContentProps> = ({ messagesData, userCurrent, refetch,refetchRoom }) => {
+const ViewContent: React.FC<ViewContentProps> = ({ messagesData, userCurrent, refetch, refetchRoom, handleBack }) => {
+    const mobile = isMobile();
     const [newMessage, setNewMessage] = useState<string>("");
     const [file, setFile] = useState<File>();
     const [url, setUrl] = useState<string>("");
@@ -138,6 +141,7 @@ const ViewContent: React.FC<ViewContentProps> = ({ messagesData, userCurrent, re
     return (
         <div className='view-content'>
             <div className="sender-message-title">
+                {mobile && <i className="bi bi-chevron-compact-left" onClick={() => handleBack()}></i>}
                 <img
                     src="https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg"
                     alt="User Avatar"
@@ -163,7 +167,7 @@ const ViewContent: React.FC<ViewContentProps> = ({ messagesData, userCurrent, re
                 </div>
                 <div ref={messagesEndRef} />
             </SimpleBar>
-            <div className="message-content-footer pb-2">
+            <div className={`${mobile ? 'message-content-footer-mobile' : 'message-content-footer'} pb-2`}>
                 <div className="footer-motion-admin">
                     <label htmlFor="file-message" style={{ cursor: 'pointer' }}>
                         <i className="bi bi-camera"></i>

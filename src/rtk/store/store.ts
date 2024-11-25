@@ -13,9 +13,7 @@ import orderApi from '../../services/order.service'
 import inventoryApi from '../../services/inventory.service'
 import commentApi from '../../services/comment.service'
 import userApi from '../../services/user.service'
-
 import historySearchApi from '../../services/history-search.service'
-
 import brandAPi from '../../services/brand.service'
 import messageApi from '../../services/message.service'
 import roomApi from '../../services/room.service'
@@ -23,11 +21,15 @@ import notificationApi from '../../services/notification.service'
 import promotionApi from '../../services/promotion.service'
 import voucherApi from '../../services/voucher.service'
 
+import { orderSlice } from '../slice/order-slice'
+
+
 
 export const store = configureStore({
   reducer: {
     product: createProductSlice.reducer,
     notification: Notification.reducer,
+    order: orderSlice.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,

@@ -4,12 +4,13 @@ import { convertPrice } from "../../../utils/convert-price";
 import React, { LegacyRef, ReactNode, useState } from "react";
 import useRedirect from "../../../hooks/useRedirect";
 import './insert-product.scss'
-import Select from 'react-select';
+import { isMobile } from "../../../utils/responsive";
 
 function Product() {
     const { data: pageResponse } = useGetProductsQuery();
+    const mobile = isMobile();
     const redirect = useRedirect();
-    const [selectedProduct, setSelectedProduct] = useState<{value: string, label: string}>({
+    const [selectedProduct, setSelectedProduct] = useState<{ value: string, label: string }>({
         value: '',
         label: '',
     }); // Trạng thái tên sản phẩm đã chọn
@@ -29,7 +30,7 @@ function Product() {
         value: product.id,
         label: product.productName
     }));
-    const filteredProducts = selectedProduct
+    const filteredProducts = selectedProduct.value != ''
         ? products?.filter(product => product.productName === selectedProduct.label)
         : products;
 
@@ -39,13 +40,13 @@ function Product() {
         <div className=" bg-light p-3">
             <h5>Danh sách sản phẩm</h5>
             <div className="bg-white p-3 border-radius-small">
-                <div className="mb-3  d-flex justify-content-between">
-                    <div className="d-flex gap-3 w-75">
-                        <div className="search-list-product p-2 ">
+                <div className="mb-3  d-flex justify-content-between " >
+                    <div className="d-flex gap-2  justify-content-between align-items-center w-100">
+                        <div className="search-list-product p-2  ">
                             <input className="input-search-list-product" placeholder="Tìm theo tên sản phẩm" type="text" />
                             <i className="bi bi-search"></i>
                         </div>
-                        <div className="">
+                        {/* <div className="">
                             <Select
                                 id=""
                                 options={options}
@@ -58,12 +59,13 @@ function Product() {
                                 }}
                                 placeholder="Lọc theo tên sản phẩm"
                             />
+                        </div> */}
+                        <div className=" d-flex justify-content-start gap-3    ">
+                            <button onClick={() => redirect('/admin/product/insert')} className="btn-save-all-products "  >Tạo sản phẩm</button>
+                            <button onClick={() => redirect('/admin/product/import')} className="btn-save-all-products " >Nhập hàng</button>
                         </div>
                     </div>
-                    <div className=" d-flex justify-content-start  gap-3 w-25 ">
-                        <button onClick={() => redirect('/admin/product/insert')} className="btn-save-all-category ps-4 pe-4" style={{ display: 'inline-block' }} >Tạo sản phẩm</button>
-                        <button onClick={() => redirect('/admin/product/import')} className="btn-save-all-category ps-4 pe-4" >Nhập hàng</button>
-                    </div>
+
                 </div>
                 <Table className='table-bordered table-responsive  custom-table-product '>
                     <thead>
