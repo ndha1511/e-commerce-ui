@@ -11,15 +11,18 @@ import PaymentItem from './PaymentItem';
 import { useGetAddressByUserIdQuery, useGetAddressQuery } from '../../../services/address.service';
 import { useEffect, useState } from 'react';
 import { useCreateOrderMutation, useLazyGetFeeQuery, useLazyGetPaymentQuery } from '../../../services/payment.service';
-import { convertPrice } from '../../../utils/convert-price';
+import { calcPromotionNum, convertPrice } from '../../../utils/convert-price';
 import { OrderItem, OrderRequest, PaymentMethod } from '../../../dtos/request/payment/order-request';
 import ModalLoading from '../../../components/loading/ModalLoading';
 import CreateAddressModal from '../../../components/address/CreateAddressModal';
+import VoucherModal from './VoucherModal';
+import { Voucher } from '../../../models/voucher';
 import useRedirect from '../../../hooks/useRedirect';
 import { useDispatch } from 'react-redux';
 import { setOrderId } from '../../../rtk/slice/order-slice';
 import { Collapse } from 'react-bootstrap';
 import { isMobile } from '../../../utils/responsive';
+
 const Payment = () => {
     const mobile = isMobile();
     const redirect = useRedirect();
@@ -32,7 +35,9 @@ const Payment = () => {
     const { data: address, refetch: addressRefetch, isSuccess } = useGetAddressByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
-    const { data: shopAddress } = useGetAddressQuery();
+
+    const {data: shopAddress} = useGetAddressQuery();
+
     const itemViews = cart?.data.filter(item => variantIds.includes(item.variantResponse.id)) || [];
     const [modalAdd, setModalAdd] = useState(false);
     const [getFee] = useLazyGetFeeQuery();
@@ -43,14 +48,23 @@ const Payment = () => {
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.COD);
     const [createOrder, { isLoading }] = useCreateOrderMutation();
     const [getUrlPayment] = useLazyGetPaymentQuery();
+
+    const [showVoucherModal, setShowVoucherModal] = useState(false);
+    const [voucher, setVoucher] = useState<Voucher | null>(null);
+
+    const handleSelectVoucher = (voucher: Voucher) => {
+        setVoucher(voucher);
+        setShowVoucherModal(false);
+    }
     const [openMs, setOpenMs] = useState<boolean>(false);
     const [openShip, setOpenShip] = useState<boolean>(false);
     const dispatch = useDispatch();
+
     useEffect(() => {
         const getPrice = async () => {
             if (address?.data && shopAddress?.data && itemViews.length > 0) {
                 const totalPrice = itemViews.reduce((acc, item) => {
-                    return acc + (item.variantResponse.price * item.quantity);
+                    return acc + calcPromotionNum(item.variantResponse.price * item.quantity, item.promotion);
                 }, 0);
                 const weight = itemViews.reduce((acc, item) => {
                     return acc + (item.variantResponse.product.weight * item.quantity)
@@ -241,9 +255,13 @@ const Payment = () => {
                                 ))}</div>
                         </SimpleBar >
                         <div className="mb-2">
-                            <span className="text-muted">Voucher ưu đãi của sàn: </span>
-                            <span className="primary fw-bold ms-2">15k</span>
-                            <span className="info fw-bold ms-2 btn-pointer">Chọn voucher khác</span>
+                            <span className="text-muted">Voucher ưu đãi: </span>
+                            <button
+                             onClick={() => setShowVoucherModal(true)}
+                             className='button-hover primary' style={{
+                                background: "none",
+                                border: "none"
+                            }}>Chọn voucher</button>
                         </div>
                         <div className="p-3 bg-white border rounded">
                             <Row className="mb-2">
@@ -272,8 +290,12 @@ const Payment = () => {
                     </div>
                 </Col>
             </Row>
-            {modalAdd && <CreateAddressModal show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch} />}
-            {isLoading && <ModalLoading loading={isLoading} />}
+            {modalAdd && <CreateAddressModal  show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch}/>}  
+            {isLoading && <ModalLoading loading={isLoading}/>}       
+            {showVoucherModal && <VoucherModal voucherSelected={voucher} handleSelect={handleSelectVoucher} show={showVoucherModal} handleClose={() => {
+                setShowVoucherModal(false)
+            }}/>}           
+
         </Container>
     );
 };

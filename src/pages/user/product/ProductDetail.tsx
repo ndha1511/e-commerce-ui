@@ -68,7 +68,7 @@ function ProductDetail() {
     const [rotate, setRotate] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
     const param = pageQueryHanlder(1, 100);
-    const { data: dataComment, isSuccess: commentSuccess, refetch: refetchComment } = useGetCommentsQuery({
+    const { data: dataComment, refetch: refetchComment } = useGetCommentsQuery({
         productId: product?.id || '',
         params: param
     }, { skip: !getProductSuccess || !product?.id });
@@ -199,6 +199,7 @@ function ProductDetail() {
                 imgs.push(...newImages);
             }
             const attrValues = product?.attributes?.[0]?.attributeValues;
+            const attrValues1 = product?.attributes?.[1]?.attributeValues;
             if (attrValues) {
                 const imgAttr = [];
                 for (let i = 0; i < attrValues.length; i++) {
@@ -211,6 +212,19 @@ function ProductDetail() {
                     }
                 }
                 imgs.push(...imgAttr);
+            }
+            if(attrValues1) {
+                const imgAttr1 = [];
+                for (let i = 0; i < attrValues1.length; i++) {
+                    if (attrValues1[i].image) {
+                        imgAttr1.push({
+                            original: attrValues1[i].image,
+                            thumbnail: attrValues1[i].image,
+                            renderItem: RenderImage
+                        });
+                    }
+                }
+                imgs.push(...imgAttr1);
             }
             if (product && product.video) {
                 imgs.push({
@@ -505,8 +519,8 @@ function ProductDetail() {
                                     <h5 className="card-title">Thông tin chi tiết</h5>
                                     <table className="table text-muted ">
                                         <tbody>
-                                            {product?.tags?.map((tag, idx) => <tr>
-                                                <th key={idx} scope="row">{tag.tagName}</th>
+                                            {product?.tags?.map((tag, idx) => <tr key={idx}>
+                                                <th scope="row">{tag.tagName}</th>
                                                 <td>{tag.tagValue}</td>
 
                                             </tr>)}
@@ -521,9 +535,9 @@ function ProductDetail() {
                     <Col md={9}>
                         <div className=" mt-3 border-radius-medium ">
                             <div style={{ border: 'none' }} className="card border-radius-medium ">
-                                <div className="card-body border-radius-medium ">
+                                <div className="card-body border-radius-medium product-detail">
                                     <h5 className="card-title">Mô tả sản phẩm</h5>
-                                    {product?.description.startsWith("<") ? <div dangerouslySetInnerHTML={{ __html: product?.description || "" }} />
+                                    {product?.description.trimStart().startsWith("<") ? <div dangerouslySetInnerHTML={{ __html: product?.description || "" }} />
                                         : <pre className="text-align-start">
                                             {product?.description}
                                         </pre>}

@@ -1,5 +1,13 @@
 import { DiscountType, Promotion } from "../models/promotion";
 
+export const calcPromotionNum = (price: number, promotion?: Promotion) => {
+    if(!promotion) return price;
+    if(promotion.discountType === DiscountType.AMOUNT) {
+        return price - promotion.discountValue
+    }
+    return price - (price * promotion.discountValue);
+}
+
 export const convertPrice = (price: number = 0) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 }

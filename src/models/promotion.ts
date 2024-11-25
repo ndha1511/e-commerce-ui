@@ -16,14 +16,18 @@ export enum LoopState {
 
 
 export interface Promotion {
+    id: string;
     promotionName: string;
     discountType: DiscountType;
     discountValue: number;
     maxPrice?: number;
     startDate: Date;
     endDate: Date;
-    loopType: LoopState;
-    applyAll: boolean;
     applyFor?: string[];
+    flashSale: boolean;
+    view: boolean;
+    image?: string;
+    url: string;
+    description?: string;
 
 }

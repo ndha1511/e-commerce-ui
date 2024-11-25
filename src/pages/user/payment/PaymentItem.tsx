@@ -1,6 +1,6 @@
 import { Col, Image, Row } from "react-bootstrap";
 import { ProductCartResponse } from "../../../dtos/response/cart/product-cart-response";
-import { convertPrice } from "../../../utils/convert-price";
+import { calcPromotion } from "../../../utils/convert-price";
 
 
 const PaymentItem = ({item} : {item: ProductCartResponse}) => {
@@ -14,7 +14,7 @@ const PaymentItem = ({item} : {item: ProductCartResponse}) => {
                 <Col xs={7}>
                     <p className="mb-1">{item.variantResponse.product.productName}</p>
                     <div className='d-flex'>
-                        <div className="primary fw-bold me-2">{convertPrice(item.variantResponse.price)}</div>
+                        <div className="primary fw-bold me-2">{calcPromotion(item.variantResponse.price, item.promotion)}</div>
                         {/* <div className="text-muted text-decoration-line-through">{item.variantResponse.price}</div> */}
                     </div>
                 </Col>

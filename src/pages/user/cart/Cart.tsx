@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import CartItem from './CartItem';
 import { useGetCartByUserIdQuery } from '../../../services/cart.service';
 import { useCheckLoginQuery } from '../../../services/auth.service';
-import { convertPrice } from '../../../utils/convert-price';
+import { calcPromotionNum, convertPrice } from '../../../utils/convert-price';
 import useRedirect from '../../../hooks/useRedirect';
 import ModalLoading from '../../../components/loading/ModalLoading';
 import CartEmpty from './CartEmpty';
@@ -76,7 +76,7 @@ const Cart: React.FC = () => {
         selectVariant.forEach(variantId => {
             const variant = data?.data.find(v => v.variantResponse.id === variantId);
             if (variant) {
-                total += variant.variantResponse.price * variant.quantity;
+                total += calcPromotionNum(variant.variantResponse.price * variant.quantity, variant.promotion);
             }
         });
         setTotalPrice(total);

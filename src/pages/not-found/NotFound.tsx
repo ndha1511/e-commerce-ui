@@ -9,7 +9,7 @@ const NotFound: React.FC = () => {
         alignItems: "center",
     }}>
         <h3>Không tìm thấy trang này</h3>
-        <button>Vể trang chủ</button>
+        <button>Về trang chủ</button>
     </Container>
 
 }
