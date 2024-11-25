@@ -7,6 +7,7 @@ export interface SkeletonWrapperProps {
     skeleton?: React.ComponentType;
     skWidth?: number;
     skHeight?: number;
+    skCount?: number;
 }
 
 export interface QueryWrapperProps {
