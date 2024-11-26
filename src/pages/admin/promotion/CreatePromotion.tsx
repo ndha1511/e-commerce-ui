@@ -13,8 +13,13 @@ import ProductApply from "./ProductApply";
 import { isMobile } from "../../../utils/responsive";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useCreatePromotionMutation } from "../../../services/promotion.service";
+import { useDispatch } from "react-redux";
+import { setNotify } from "../../../rtk/slice/notify-slice";
+import { convertDateToVietnamTime } from "../../../utils/convert-date";
 
-interface OptionType {
+
+export interface OptionType {
     value: DiscountType;
     label: string;
 }
@@ -28,17 +33,20 @@ const CreatePromotion = () => {
     const handleCloseModal = () => setShowModal(false);
     const [selectedProducts, setSelectedProducts] = useState<{ id: string; productName: string; price: number }[]>([]);
     const { value: promotionName, setValue: setPromotionName, err: errPromotionName } = useValidText();
-    const { value: discountValue, setValue: setDiscountValue, err: errDiscountValue } = useValidText();
+    const { value: discountValue, setValue: setDiscountValue, err: errDiscountValue, setErr: setErrDiscountValue } = useValidText();
     const [discountType, setDiscountType] = useState<DiscountType>(DiscountType.PERCENT);
-    const [avt, setAvt] = useState<File>();
+    const [avt, setAvt] = useState<File |null>();
     const [url, setUrl] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [btnSubmit, setBtnSubmit] = useState<boolean>(false);
     const [isBannerActive, setIsBannerActive] = useState<boolean>(false);
     const [minPrice, setMinPrice] = useState<number>(0);
+    const [addPromotion] = useCreatePromotionMutation();
+    const dispatch = useDispatch();
     const handleChageDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setDescription(e.target.value);
     }
+
     const discountOptions = [
         { value: DiscountType.PERCENT, label: 'Phần trăm' },
         { value: DiscountType.AMOUNT, label: 'Giá cố định' },
@@ -77,23 +85,46 @@ const CreatePromotion = () => {
     const handleToggle = () => {
         setIsBannerActive(prevState => !prevState);
     };
-
-    const handleCreate = () => {
+ 
+    const handleCreate = async () => {
         setBtnSubmit(true);
         const productIds = selectedProducts.map(product => product.id);
-        const request = {
-            name: promotionName,
-            discountValue: discountValue,
-            discountType: discountType,
-            products: productIds,
-            isBannerActive: isBannerActive,
-            avt: avt,
-            startDate: startDate,
-            endDate: endDate,
-
-            description: description
+        if (promotionName === null || productIds.length === 0 || errDiscountValue !== '') {
+            return;
         }
-        console.log(request);
+        try {
+            const formData = new FormData();
+            if (avt) {
+                formData.append('image', avt);
+            }
+            formData.append('promotionName', promotionName);
+            formData.append('discountType', discountType);
+            if (discountType === DiscountType.PERCENT) {
+                formData.append('discountValue', (Number(discountValueString) / 100).toString());
+            } else {
+                formData.append('discountValue', discountValueString);
+
+            }
+
+            productIds.forEach(productId => {
+                formData.append('applyFor', productId);
+            });
+            formData.append('view', isBannerActive.toString());
+            formData.append('startDate', convertDateToVietnamTime(startDate));
+            formData.append('endDate', convertDateToVietnamTime(endDate));
+            formData.append('description', description);
+
+            await addPromotion(formData);
+            handleClear();
+            dispatch(setNotify({
+                type: 'success', message: 'Thao tác thành công'
+            }))
+        } catch (error) {
+            dispatch(setNotify({
+                type: 'error', message: 'Thao tác không thành công'
+            }))
+        }
+
     }
     const findMinPrice = () => {
         if (selectedProducts.length === 0) return 0;
@@ -129,6 +160,7 @@ const CreatePromotion = () => {
         if (discountType === DiscountType.PERCENT) {
             const discountPercent = parseFloat(discountValueString);
             if (discountPercent < 1 || discountPercent >= 100) {
+                setErrDiscountValue('Giảm giá phần trăm phải từ 1 đến 99');
                 return {
                     showTooltip: true,
                     message: 'Giảm giá phần trăm phải từ 1 đến 99'
@@ -142,6 +174,12 @@ const CreatePromotion = () => {
                 message: `Giảm giá phải nhỏ hơn giá sản phẩm tối thiểu (${convertPrice(minPrice)})`
             };
         }
+        if (discountType === DiscountType.AMOUNT && discountValueString && parseFloat(discountValueString) < 1000) {
+            return {
+                showTooltip: true,
+                message: `Giảm giá phải lớn hơn (${convertPrice(1000)})`
+            };
+        }
 
         return { showTooltip: false, message: '' };
     };
@@ -150,6 +188,20 @@ const CreatePromotion = () => {
             setEndDate(new Date(startDate.getTime() + 24 * 60 * 60 * 1000));
         }
     }, [startDate]);
+    const handleClear = ()=>{
+        setSelectedProducts([]);
+        setPromotionName('');
+        setDiscountType(DiscountType.PERCENT);
+        setDiscountValue('');
+        setDescription('');
+        setUrl('');
+        setAvt(null);
+        setStartDate(null);
+        setEndDate(null);
+        setMinPrice(0);
+        setIsBannerActive(false);
+        setBtnSubmit(false);
+    }
     return <div className="d-flex flex-column p-3 bg-light">
         <div className="bg-white p-3 border-radius-small mb-3 mt-3">
             <h6>Tạo chương trình khuyến mãi</h6>
@@ -174,38 +226,32 @@ const CreatePromotion = () => {
                             onChange={handleChangeImage}
                             accept="image/*"
                         />
-                        <OverlayTrigger
-                            placement="right"
-                            overlay={url.trim() === '' && btnSubmit ? CustomTooltip("Không được để trống!", "img") : <></>}
-                            show={url.trim() === ''}
-                        >
-                            <label htmlFor='file=brand' className='primary' style={{ cursor: 'pointer' }}>
-                                <div className="image-insert-product-seller p-2">
-                                    <div className="icon-image-insert">
-                                        <FontAwesomeIcon icon={faImage} fontSize={25} />
-                                        <FontAwesomeIcon
-                                            style={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                fontSize: 12,
-                                                position: 'absolute',
-                                                height: 15,
-                                                width: 15,
-                                                backgroundColor: 'white',
-                                                borderRadius: '50%',
-                                                right: -6,
-                                                bottom: 0,
-                                            }}
-                                            icon={faPlus}
-                                        />
-                                    </div>
-                                    <span className="w-100 text-center primary">
-                                        {url ? 'Thay đổi ' : 'Thêm hình ảnh'}
-                                    </span>
+                        <label htmlFor='file=brand' className='primary' style={{ cursor: 'pointer' }}>
+                            <div className="image-insert-product-seller p-2">
+                                <div className="icon-image-insert">
+                                    <FontAwesomeIcon icon={faImage} fontSize={25} />
+                                    <FontAwesomeIcon
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            fontSize: 12,
+                                            position: 'absolute',
+                                            height: 15,
+                                            width: 15,
+                                            backgroundColor: 'white',
+                                            borderRadius: '50%',
+                                            right: -6,
+                                            bottom: 0,
+                                        }}
+                                        icon={faPlus}
+                                    />
                                 </div>
-                            </label>
-                        </OverlayTrigger>
+                                <span className="w-100 text-center primary">
+                                    {url ? 'Thay đổi ' : 'Thêm hình ảnh'}
+                                </span>
+                            </div>
+                        </label>
                     </div>
                 </PromotionRow>
                 {url &&
@@ -223,7 +269,7 @@ const CreatePromotion = () => {
                     <OverlayTrigger
                         placement="bottom"
                         overlay={(errPromotionName.trim() !== '' || (promotionName === null && btnSubmit)) ? CustomTooltip(errPromotionName ? errPromotionName : 'Vui lòng không để trống') : <></>}
-                        show={(errPromotionName.trim() !== '' || promotionName === null)}
+                        show={(errPromotionName.trim() !== '' && btnSubmit || promotionName === null)}
                     >
                         <input
                             className="input-basic-information-seller"
@@ -239,7 +285,7 @@ const CreatePromotion = () => {
                         <OverlayTrigger
                             placement="bottom"
                             overlay={(selectedProductNames.length === 0 && btnSubmit) ? CustomTooltip('Không được để trống') : <></>}
-                            show={selectedProductNames.length === 0}
+                            show={selectedProductNames.length === 0 && btnSubmit}
                         >
                             <input
                                 className="input-basic-information-seller applyFor"
@@ -272,7 +318,7 @@ const CreatePromotion = () => {
                                 ? CustomTooltip(validateDiscountValue(discountValueString, discountType, errDiscountValue, minPrice, btnSubmit).message)
                                 : <></>
                         }
-                        show={validateDiscountValue(discountValueString, discountType, errDiscountValue, minPrice, btnSubmit).showTooltip}
+                        show={validateDiscountValue(discountValueString, discountType, errDiscountValue, minPrice, btnSubmit).showTooltip && btnSubmit}
                     >
                         <input
                             className="input-basic-information-seller"

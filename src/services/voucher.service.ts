@@ -13,12 +13,23 @@ const voucherApi = createApi({
                 url: `/vouchers/${userId}${param ? "?" + param : ""}`,
             })
         }),
+        createVoucher: build.mutation<BaseResponse<PageResponse<Voucher>>, FormData>({
+            query: (newVoucher) => ({
+                url: `/vouchers`,
+                method: 'post',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                data: newVoucher,
+            })
+        }),
     })
 
 })
 
 export const { 
-    useGetVouchersByUserIdQuery
+    useGetVouchersByUserIdQuery,
+    useCreateVoucherMutation
 } = voucherApi;
 
 export default voucherApi;
