@@ -12,12 +12,23 @@ const promotionApi = createApi({
                 url: `/promotions/carousel`,
             })
         }),
+        createPromotion: build.mutation<BaseResponse<Promotion>, FormData>({
+            query: (newPromotion) => ({
+                url: `/promotions`,
+                method: 'post',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                data: newPromotion,
+            })
+        }),
     })
 
 })
 
 export const { 
-    useGetPromotionCarouselQuery
+    useGetPromotionCarouselQuery,
+    useCreatePromotionMutation
 } = promotionApi;
 
 export default promotionApi;

@@ -1,0 +1,14 @@
+/* Thay đổi màu nút radio khi được chọn */
+.custom-radio input[type="radio"]:checked {
+    background-color: red; /* Màu nền khi được chọn */
+    border-color: red;     /* Đổi màu viền của nút radio */
+    box-shadow: none;
+}
+
+/* Định dạng mặc định cho radio button */
+.custom-radio input[type="radio"] {
+    appearance: none; /* Tắt kiểu mặc định của radio button */
+    outline: none;
+    transition: all 0.3s ease; /* Hiệu ứng khi thay đổi trạng thái */
+}
+
