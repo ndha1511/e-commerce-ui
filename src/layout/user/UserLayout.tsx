@@ -19,7 +19,7 @@ const UserLayout = ({ children }: Props) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             dispatch(clearNotify())
-        }, 3000);
+        }, 2000);
 
         // Dọn dẹp timeout khi component bị hủy hoặc message thay đổi
         return () => clearTimeout(timer);

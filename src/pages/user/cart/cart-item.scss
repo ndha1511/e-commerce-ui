@@ -52,48 +52,46 @@
   transform-origin: top left;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 100;
-  background-color: rgba(255, 253, 250, 1); /* Nhạt hơn một chút */
+  background-color: rgba(255, 253, 250, 1);
+  /* Nhạt hơn một chút */
   font-size: 10px;
   border: none;
 
 }
-.attr1-update{
+
+.attr1-update {
   display: flex;
-  flex-wrap:  wrap;
+  flex-wrap: wrap;
 
 }
+
 .btn-check-variant {
-  display: flex ;
+  display: flex;
   min-width: 10px;
   margin: 5px;
 
 }
+
 .fixed-footer {
-  position: fixed;
+  position: sticky;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 30px);
+  width: calc(100%);
   z-index: 2;
   background-color: white;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .fixed-header {
-  position: fixed;
+  position: sticky;
   top: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 30px);
+  width: calc(100%);
   z-index: 1000;
-  // background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-@media(max-width: 768px){
- .variant-options{
-  left: -90%;
-  width: 195%;
- }
+@media(max-width: 768px) {
+  .variant-options {
+    left: -90%;
+    width: 195%;
+  }
 }
-
