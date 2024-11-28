@@ -12,8 +12,7 @@ export interface SortType {
 
 export const pageQueryHanlder = (page: number = 1, size: number = 40, 
     search?: SearchType[], sort?: SortType[]): string => {
-    
-    let query = `pageNo=${page}&size=${size}`;
+    let query = `page=${page}&size=${size}`;
     
     if (search && search.length > 0) {
         const searchString: string[] = search.map(s => s.filed + s.operator + s.value);

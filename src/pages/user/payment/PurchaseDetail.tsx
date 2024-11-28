@@ -3,16 +3,16 @@ import { isMobile } from "../../../utils/responsive";
 import PurchaseItem from "./PurchaseItem";
 import { convertPrice } from "../../../utils/convert-price";
 import { useGetOrderByIdQuery } from "../../../services/order.service";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 
 
 
 function PuchaseDetail() {
     const mobile = isMobile();
-    const location = useLocation();
-    const newOrder = location.state?.id
-    const { data } = useGetOrderByIdQuery(newOrder);
+ 
+    const { purchaseId } = useParams();
+    const { data } = useGetOrderByIdQuery(purchaseId || '');
     return (
         <Container className=" d-flex flex-column shadow-container mb-4">
             <div className='d-flex  align-items-center border-bottom p-3'>

@@ -1,47 +1,99 @@
-.menu-cate-user{
-    &:hover{
-        *{
+.menu-cate-user {
+    &:hover {
+        * {
             color: red;
         }
     }
-    &:active{
-        *{
-            color:red;
+
+    &:active {
+        * {
+            color: red;
         }
     }
 }
+
 .selected-cate-user * {
     color: red;
 }
-.option-filter-user{
+
+.option-filter-user {
     background-color: rgb(245, 243, 243);
 }
-.btn-filter-cate-user{
+
+.btn-filter-cate-user {
     display: flex;
     justify-content: center;
     align-items: center;
-    border:none;
+    border: none;
     padding: 10px 15px 10px 15px;
     color: black;
     border-radius: 5px;
     background-color: white;
-    &:hover{
+
+    &:hover {
         color: red;
     }
 }
-.btn-filter-cate-user-active{
+
+.btn-filter-cate-user-active {
     display: flex;
     justify-content: center;
     align-items: center;
-    border:none;
+    border: none;
     padding: 10px 15px 10px 15px;
     color: white;
     background-color: red;
     border-radius: 5px;
 }
+
 .err-cate {
     border: 0.5px solid red;
-    *{
+
+    * {
         color: red;
     }
 }
+
+.breadcrumb-category {
+    user-select: none;
+
+    span {
+        &:hover {
+            color: red;
+        }
+    }
+}
+
+.reonly-link {
+    pointer-events: none;
+    cursor: default;
+    color: red !important;
+    user-select: none;
+}
+
+.link-category {
+    color: #615c5c;
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+
+    &:hover {
+        color: red;
+    }
+}
+
+.link-category-active {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+
+    &:hover {
+        color: red;
+    }
+}
+
+.load-run{
+    position: fixed;
+    width: 100%;
+    top: 0;
+}
+  

@@ -1,25 +1,26 @@
 
 
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Select from 'react-select'
 import MenuCategory from "./MenuCategory";
 import { useGetCategoryByUrlQuery } from "../../../services/category.service";
-import { Col, Pagination, Row } from "react-bootstrap";
-import { BsChevronRight } from "react-icons/bs";
+import { Col, Row } from "react-bootstrap";
+
 import CarouseCustom from "../../../components/carousel/CarouseCustom";
 import { useGetProductByCategoryQuery } from "../../../services/product.service";
 import './category.scss'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CategoryEmpty from "./CategoryEmpty";
 import SkeletonWrapper from "../../../components/query-wrapper/SkeletonWrapper";
 import ListProduct from "../../../components/products/ListProduct";
 import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
+import PaginationComponent from "../../../components/Pagination/PaginationComponent";
+import { pageQueryHanlder } from "../../../utils/query-handler";
 
 function Category() {
     const { categoryPath } = useParams();
     const { data: parentCategory, isSuccess: getCategoriesSuccess, isError: getCategoriesError, error: categoriesError } = useGetCategoryByUrlQuery(categoryPath || '');
     const [activeButton, setActiveButton] = useState<string | null>(null);
-
     const images = [
         {
             src: ["https://salt.tikicdn.com/ts/tka/a9/ec/4f/e95b916999b2dd40b3a8e2af30e704e8.png", "https://salt.tikicdn.com/ts/tka/99/ce/6a/9c0a7990ddba5207da7cc37b85bdc2f0.png"],
@@ -55,79 +56,106 @@ function Category() {
     const handleSubmit = (buttonName: string) => {
         setActiveButton(buttonName);
     };
-    const { data, isSuccess: getProductsSuccess, isError: getProductsError } = useGetProductByCategoryQuery(categoryPath || '');
-    const totalItems = data?.data.pageSize || 0; // Tổng số sản phẩm
-    const itemsPerPage = 10; // Số sản phẩm mỗi trang
-    const totalPages = Math.ceil(totalItems / itemsPerPage); // Tổng số trang
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+    const itemsPerPage = 40; // Số sản phẩm mỗi trang
+    const params = pageQueryHanlder(currentPage, itemsPerPage);
+    const { data: productByCategory, isSuccess: getProductsSuccess, isError: getProductsError } = useGetProductByCategoryQuery({ categoryUrl: categoryPath || '', param: params });
+    const totalPages = productByCategory?.data.totalPage || 0;
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
 
-    // Lấy các sản phẩm cho trang hiện tại
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentProducts = data?.data.items?.slice(startIndex, startIndex + itemsPerPage);
+    const [breadcrumb, setBreadcrumb] = useState<{ name: string, url: string }[]>([{ name: 'Trang chủ', url: '/' }]);
+
+    useEffect(() => {
+        if (parentCategory?.data) {
+            const categoryName = parentCategory.data.categoryName;
+            const categoryUrl = parentCategory.data.urlPath;
+            setBreadcrumb(prevBreadcrumb => {
+                const isCategoryExist = prevBreadcrumb.some(item => item.name === categoryName);
+
+                if (!isCategoryExist) {
+                    return [...prevBreadcrumb, { name: categoryName, url: `/${categoryUrl}` }];
+                }
+
+                return prevBreadcrumb;
+            });
+        }
+    }, [parentCategory, categoryPath]);
+
+    const handleBreadcrumbClick = (index: number) => {
+        if (index === 0) {
+            setBreadcrumb([{ name: 'Trang chủ', url: '/' }]); // Chỉ giữ "Trang chủ"
+        } else {
+            const newBreadcrumb = breadcrumb.slice(0, index + 1);
+            setBreadcrumb(newBreadcrumb);
+        }
+
+    };
     return (
-       <QueryWrapper queriesError={[getCategoriesError, getProductsError]} error={categoriesError}>
-         <div className="p-3 bg-light">
-            <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skWidth={200}>
-                <div>
-                    <span>Trang chủ <BsChevronRight /> </span>
-                    <span>{parentCategory?.data.categoryName}</span>
-                </div>
-            </SkeletonWrapper>
-            <Row className=" custom-row p-2 ">
-                <Col md={2} className=" p-2">
-                    <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skHeight={300}>
-                        <div className="bg-white border-radius-small">
-                            <div className="text-medium p-3 ">Khám phá theo danh mục</div>
-                            {parentCategory?.data.children.map((item) => (
-                                <MenuCategory key={item.id} item={item} />
-                            ))}
-                        </div>
-                    </SkeletonWrapper>
-                </Col>
-                <Col md={10} className="p-2">
-                    <div className="mb-2">
-                        <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={200}>
-                            <div className="p-3 bg-white border-radius-small d-flex align-items-center ">
-                                <span className="text-large">{parentCategory?.data.categoryName}</span>
+        <QueryWrapper queriesError={[getCategoriesError, getProductsError]} error={categoriesError}>
+            <div className="p-3 bg-light">
+
+                <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skWidth={200}>
+                    <div className={`d-flex gap-1 breadcrumb-category`}>
+                        {breadcrumb.map((item, index) => (
+                            <div key={index} className={`d-flex gap-1 ${(index < breadcrumb.length - 1) ? '' : 'reonly-link'}`} onClick={() => handleBreadcrumbClick(index)}>
+                                <Link className={`${(index < breadcrumb.length - 1) ? 'link-category' : 'link-category-active'}`} to={'' + item.url || ''}> {item.name}</Link>
+                                <span> {index < breadcrumb.length - 1 && <i style={{ fontSize: 10 }} className="bi bi-chevron-right"></i>}
+                                </span>
                             </div>
-                            <div className='mt-1'>
-                                <CarouseCustom images={images} height={200} />
+                        ))}
+                    </div>
+                </SkeletonWrapper>
+                <Row className=" custom-row p-2 ">
+                    <Col md={2} className=" p-2">
+                        <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skHeight={300}>
+                            <div className="bg-white border-radius-small">
+                                <div className="text-medium p-3 ">Khám phá theo danh mục</div>
+                                {parentCategory?.data.children?.map((item) => (
+                                    <MenuCategory key={item.id} item={item} />
+                                ))}
                             </div>
                         </SkeletonWrapper>
-                    </div>
-                    <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={50}>
-                        <div className='mt-3 option-filter-user p-3  d-flex gap-3 align-items-center'>
-                            <div className="text-muted">Sắp xếp theo</div>
-                            <button className={`${activeButton === 'popular' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('popular')}>Phổ biến</button>
-                            <button className={`${activeButton === 'latest' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('latest')}>Mới nhất</button>
-                            <button className={`${activeButton === 'best-seller' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('best-seller')}>Bán chạy</button>
-                            <div style={{ minWidth: 200 }}><Select options={options} placeholder="Giá" /></div>
-                            <div style={{ minWidth: 200 }}><Select options={optionRating} placeholder="Đánh giá" /></div>
+                    </Col>
+                    <Col md={10} className="p-2">
+                        <div className="mb-2">
+                            <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={200}>
+                                <div className="p-3 bg-white border-radius-small d-flex align-items-center ">
+                                    <span className="text-large">{parentCategory?.data.categoryName}</span>
+                                </div>
+                                <div className='mt-1'>
+                                    <CarouseCustom images={images} height={200} />
+                                </div>
+                            </SkeletonWrapper>
                         </div>
-                    </SkeletonWrapper>
-                    <div className='mt-2  pt-1 pb-3'>
-                        <ListProduct products={currentProducts} />
-                        <div className="d-flex justify-content-center align-items-center">
-                            <Pagination className="mt-3">
-                                <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-                                <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                                {[...Array(totalPages)].map((_, index) => (
-                                    <Pagination.Item key={index + 1} active={index + 1 === currentPage} onClick={() => handlePageChange(index + 1)}>
-                                        {index + 1}
-                                    </Pagination.Item>
-                                ))}
-                                <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                                <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
-                            </Pagination>
-                        </div>
-                    </div>
-                </Col>
-            </Row>
-        </div>
-       </QueryWrapper>
+                        <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={50}>
+                            <div className='mt-3 option-filter-user p-3  d-flex gap-3 align-items-center'>
+                                <div className="text-muted">Sắp xếp theo</div>
+                                <button className={`${activeButton === 'popular' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('popular')}>Phổ biến</button>
+                                <button className={`${activeButton === 'latest' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('latest')}>Mới nhất</button>
+                                <button className={`${activeButton === 'best-seller' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('best-seller')}>Bán chạy</button>
+                                <div style={{ minWidth: 200 }}><Select options={options} placeholder="Giá" /></div>
+                                <div style={{ minWidth: 200 }}><Select options={optionRating} placeholder="Đánh giá" /></div>
+                            </div>
+                        </SkeletonWrapper>
+
+                        <ListProduct products={productByCategory?.data.items} />
+                        {(getProductsSuccess && (productByCategory?.data.items && productByCategory?.data.items.length  ===0) ) && <CategoryEmpty />}
+                        <PaginationComponent
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            handlePageChange={handlePageChange}
+                        />
+
+            
+
+
+
+                    </Col>
+                </Row>
+            </div>
+        </QueryWrapper>
     );
 }
 

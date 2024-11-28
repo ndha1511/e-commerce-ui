@@ -33,9 +33,9 @@ const productApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
-        getProductByCategory: build.query<BaseResponse<PageResponse<Product>>, string>({
+        getProductByCategory: build.query<BaseResponse<PageResponse<Product>>, { categoryUrl: string, param: string }>({
             query: (params) => ({
-                url: '/products/category/' + params,
+                url: `/products/category/${params.categoryUrl}?` + params.param,
                 method: 'get',
             }),
             keepUnusedDataFor: 180,
@@ -73,7 +73,7 @@ const productApi = createApi({
                 method: 'get',
             })
         }),
-        getProductsRecommend: build.query<BaseResponse<Product[]>, {productId?: number; nRecommend?: number; type: string}>({
+        getProductsRecommend: build.query<BaseResponse<Product[]>, { productId?: number; nRecommend?: number; type: string }>({
             query: (params) => ({
                 url: `/recommend?productId=${params.productId ? params.productId : 0}&nRecommend=${params.nRecommend ? params.nRecommend : 20}&type=${params.type}`,
                 method: 'get',
