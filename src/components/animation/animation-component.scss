@@ -1,0 +1,61 @@
+.div-background {
+    height: 5px;
+    background-color: red;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Animation cho phần tử A */
+  @keyframes moveLeftToRightA {
+    0% {
+      width: 0%;
+      opacity: 1;
+    }
+    100% {
+      width: 12%;
+      opacity: 1;
+    }
+  }
+  
+  /* Animation cho phần tử B */
+  @keyframes moveLeftToRightB {
+    0% {
+      width: 12%;
+      opacity: 1;
+    }
+    100% {
+      width: 100%;
+      opacity: 1;
+    }
+  }
+  
+  /* Ẩn phần tử khi hoàn thành */
+  @keyframes hideAfterCompletion {
+    0% {
+      opacity: 1;
+      visibility: visible;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  
+  /* Áp dụng animation cho phần tử A */
+  .div-background.animateA {
+    animation: moveLeftToRightA 0.2s linear forwards;
+  }
+  
+  /* Áp dụng animation cho phần tử B */
+  .div-background.animateB {
+    animation: moveLeftToRightB 0.1s linear forwards;
+    animation-delay: 0.2s; /* B bắt đầu sau A */
+  }
+  
+  /* Ẩn phần tử khi cả A và B hoàn thành */
+  .div-background.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }

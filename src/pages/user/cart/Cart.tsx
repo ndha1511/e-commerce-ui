@@ -46,7 +46,7 @@ const Cart: React.FC = () => {
 
     const handleScroll = () => {
         // Điều kiện để cố định header khi cuộn xuống
-        if (window.scrollY > 150) { // Giá trị 150 là tùy chỉnh, bạn có thể điều chỉnh để phù hợp với yêu cầu thực tế
+        if (window.scrollY >=0) { // Giá trị 150 là tùy chỉnh, bạn có thể điều chỉnh để phù hợp với yêu cầu thực tế
             setIsHeaderFixed(true);
         } else {
             setIsHeaderFixed(false);

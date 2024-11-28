@@ -31,7 +31,7 @@ function PaymentSuccess() {
             </div>
             <div className={`d-flex gap-3 justify-content-between   ${mobile ? 'w-100 ps-4 pe-4': 'w-25'}`}>
                 <button className="btn-payment-success" onClick={()=>redirect("/")}>Trang chủ</button>
-                <button className="btn-payment-success" onClick={()=>redirect("/user/payment/purchase/detail",newOrder)}>Đơn mua</button>
+                <button className="btn-payment-success" onClick={()=>redirect("/user/purchase/"+newOrder.id)}>Đơn mua</button>
             </div>
         </div>
     );

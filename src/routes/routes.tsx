@@ -115,7 +115,7 @@ export const router = createBrowserRouter([
         element: <UserLayout><PaymentSuccess/></UserLayout>
     },
     {
-        path: "/user/payment/purchase/detail",
+        path: "/user/purchase/:purchaseId",
         element: <UserLayout><PuchaseDetail/></UserLayout>
     }
     ,
