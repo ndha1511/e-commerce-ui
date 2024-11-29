@@ -45,6 +45,7 @@ const Header = ({ fixedSearch }: Props) => {
 
     return <>
         <SideBar />
+        
         <div className={fixedSearch ? `search fixed-search` : `search`}>
             <div className="search-arround"></div>
             <div className="search-center">

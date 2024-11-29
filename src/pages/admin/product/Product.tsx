@@ -6,7 +6,7 @@ import useRedirect from "../../../hooks/useRedirect";
 import './insert-product.scss'
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import SimpleBar from "simplebar-react";
-import PaginationComponent from "../../../components/Pagination/PaginationComponent";
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { isMobile } from "../../../utils/responsive";
 import useDebounce from "../../../hooks/useDebounce";
 import SkeltetonWrapper from "../../../components/query-wrapper/SkeletonWrapper";

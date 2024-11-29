@@ -8,7 +8,7 @@ import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import { useGetVariantsByProductIdQuery } from "../../../services/variant.service";
 import SimpleBar from "simplebar-react";
 import Select from 'react-select';
-import PaginationComponent from "../../../components/Pagination/PaginationComponent";
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import useDebounce from "../../../hooks/useDebounce";
 function ProductStock() {

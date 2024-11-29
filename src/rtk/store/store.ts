@@ -22,6 +22,7 @@ import promotionApi from '../../services/promotion.service'
 import voucherApi from '../../services/voucher.service'
 
 import { orderSlice } from '../slice/order-slice'
+import { loadingSlice } from '../slice/loading-slice'
 
 
 
@@ -30,6 +31,7 @@ export const store = configureStore({
     product: createProductSlice.reducer,
     notification: Notification.reducer,
     order: orderSlice.reducer,
+    loading: loadingSlice.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,

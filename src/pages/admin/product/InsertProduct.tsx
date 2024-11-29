@@ -3,7 +3,7 @@ import './insert-product.scss'
 import { useEffect, useState } from "react";
 import ImgAndVideo from "../../../components/seller/insert-product/ImgAndVideo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPen } from "@fortawesome/free-solid-svg-icons";
 import CategoryModal from "../../../components/seller/modal/CategoryModal";
 import { useGetCategoriesQuery } from "../../../services/category.service";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,11 @@ import { setNotify } from "../../../rtk/slice/notify-slice";
 import ModalLoading from "../../../components/loading/ModalLoading";
 import CustomTooltip from "../../../components/tooltip/CustomTooltipProps";
 import useRedirect from "../../../hooks/useRedirect";
+import PromotionRow from "../../../components/promotion/PromotionRow";
+import BrandModal from "./BrandModal";
+import { BiCheckCircle, BiRadioCircle } from 'react-icons/bi';
+import { FaRegCheckCircle } from "react-icons/fa";
+
 
 
 function InsertProduct() {
@@ -29,9 +34,33 @@ function InsertProduct() {
     const [productName, setName] = useState<string>('');
     const [weight, setWeight] = useState<number | null>(null);
     const [regularPrice, setRigularPrice] = useState<number>(0);
-    const dispatch = useDispatch();
-    const redirect =   useRedirect()
+    const [showModal, setShowModal] = useState(false);
+    const [checkCategory, setCheckCategory] = useState(false);
+    const handleOpenModal = () => {
+        if (category === '') {
+            setCheckCategory(true);
+            return;
+        } else {
+            setShowModal(true)
+        }
 
+    };
+    const handleCloseModal = () => setShowModal(false);
+    const [selectedBrand, setSelectedBrand] = useState<{ id: string; name: string; }>({ id: '', name: '' });
+
+    const dispatch = useDispatch();
+    const redirect = useRedirect()
+
+    const handleCheckboxChange = (id: string, name: string) => {
+        // Kiểm tra xem thương hiệu đã được chọn chưa
+        if (selectedBrand.id === id) {
+            // Nếu thương hiệu đã được chọn, bỏ chọn nó (reset lại state)
+            setSelectedBrand({ id: '', name: '' });
+        } else {
+            // Nếu chưa chọn, chọn thương hiệu mới
+            setSelectedBrand({ id, name });
+        }
+    };
     const handleClickAdd = () => {
         setAddProductClick(true);
     }
@@ -68,34 +97,34 @@ function InsertProduct() {
         dispatch(setRegularPrice(value))
     }
     const handleAddProduct = async () => {
-        if(product.images.length === 0 || productName === '' || category === '' || regularPrice === null || weight === null) {
+        if (product.images.length === 0 || productName === '' || category === '' || regularPrice === null || weight === null || selectedBrand.id === '') {
             setAddProductClick(true);
             return;
         }
         const file: File[] = await fetchBlobAndCreateFile(product.images);
         const formData = new FormData();
-        
+
         if (file) {
             for (let i = 0; i < file.length; i++) {
                 formData.append('images', file[i]);
             }
         }
         if (product.video) {
-            if(video){
+            if (video) {
                 formData.append('video', video);
             }
         }
-        
+
         try {
             formData.append('productName', product.productName);
-            formData.append('brandId', product.brandId);
+            formData.append('brandId', selectedBrand.id);
             product.categories.forEach(category => {
                 formData.append('categories', category);
             });
             formData.append('regularPrice', product.regularPrice.toString());
             formData.append('weight', weight.toString());
             formData.append('description', product.description);
-            const res =  await trigger(formData).unwrap();
+            const res = await trigger(formData).unwrap();
             dispatch(setNotify({
                 type: 'success', message: 'Thao tác thành công'
             }))
@@ -104,13 +133,13 @@ function InsertProduct() {
             setWeight(null);
             setDescription('');
             dispatch(removeAll())
-            redirect('/admin/products/attribute?id=' + res.data.id + '&name=='+ res.data.productName)
+            redirect('/admin/products/attribute?id=' + res.data.id + '&name==' + res.data.productName)
         } catch (error) {
             console.log(error);
             dispatch(setNotify({
                 type: 'error', message: 'Thao tác không thành công'
             }))
-           
+
         }
     }
 
@@ -140,11 +169,11 @@ function InsertProduct() {
         <div className="w-100 container-fluid">
             <Row>
                 <Col md={12} xs={12} className="border bg-light p-3">
-                    <div className="bg-white p-4 border-radius-medium" style={{ width: '100%'}}>
+                    <div className="bg-white p-4 border-radius-medium" style={{ width: '100%' }}>
                         <h4>Thông tin cơ bản</h4>
                         <ImgAndVideo addProductClick={addProductClick} />
                         <div className="d-flex flex-column gap-4"> <Row>
-                            <Col  md={2} className="text-end">
+                            <Col md={2} className="text-end">
                                 <div className="mt-2"> <span><span className="primary">*</span> Tên sản phẩm :</span></div>
                             </Col>
                             <Col md={10}>
@@ -176,11 +205,29 @@ function InsertProduct() {
                                     >
                                         <div className={`category-seller `} onClick={handleOpenCategoryModal}>
                                             <input readOnly className={`input-basic-information-seller ${category?.trim() === '' && addProductClick ? 'border-err' : ''}`} value={category || ""} placeholder="Chọn ngành hàng" type="text" />
-                                            <FontAwesomeIcon style={{ position: 'absolute', right: 20 }} icon={faPen} />
-                                        </div>
+                                            {category === '' ? <FontAwesomeIcon style={{ position: 'absolute', right: 20 }} icon={faEdit} /> :
+                                            <FaRegCheckCircle style={{ position: 'absolute', fontSize: 18, color: '#66bb6a  ', right: 20 }} />
+
+                                        }                                        </div>
                                     </OverlayTrigger>
                                 </Col>
                             </Row>
+                            <PromotionRow label="Thương hiệu">
+                                <OverlayTrigger
+                                    placement="bottom"
+                                    overlay={selectedBrand.name?.trim() === '' || checkCategory ? CustomTooltip(checkCategory ? "Vui lòng nhập category!" : "Không được để trống!") : <></>}
+                                    show={selectedBrand.name?.trim() === '' && addProductClick || checkCategory}
+                                >
+                                    <div className={`category-seller `} onClick={handleOpenModal}>
+                                        <input readOnly className={`input-basic-information-seller ${selectedBrand.name?.trim() === '' && addProductClick ? 'border-err' : ''}`} value={selectedBrand.name || ''} placeholder="Chọn thương hiệu" type="text" />
+                                        {selectedBrand.name === '' ? <FontAwesomeIcon style={{ position: 'absolute', right: 20 }} icon={faPen} /> :
+                                            <FaRegCheckCircle style={{ position: 'absolute', fontSize: 18, color: '#66bb6a  ', right: 20 }} />
+
+                                        }
+
+                                    </div>
+                                </OverlayTrigger>
+                            </PromotionRow>
                             <Row>
                                 <Col md={2} className="text-end">
                                     <div className="mt-2"><span><span className="primary">*</span>Giá:</span></div>
@@ -262,6 +309,10 @@ function InsertProduct() {
 
                 </Col>
             </Row>
+            {showModal && <BrandModal show={showModal} handleClose={handleCloseModal}
+                selectedBrand={selectedBrand}
+                handleCheckboxChange={handleCheckboxChange}
+            />}
             {isLoading && <ModalLoading loading={isLoading} />}
             <CategoryModal show={showCategoryModal} handleClose={handleCloseCategoryModal} categories={data?.data.items} handleCategory={handleCategory} />
         </div>

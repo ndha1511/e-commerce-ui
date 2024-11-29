@@ -13,7 +13,7 @@ import { isMobile } from "../../../utils/responsive";
 const PurchaseAdmin = () => {
     const mobile = isMobile();
     const [orderStatus, setOrderStatus] = React.useState(OrderStatus.RECEIVED);
-    // default order status is pending
+    // default order status is .AWAITING_PICKUP
     const param = pageQueryHanlder(1, 40, [{
         filed: "orderStatus",
         operator: "=",
@@ -65,7 +65,7 @@ const PurchaseAdmin = () => {
                 break;
             case "Đang chờ xử lý":
             default:
-                setOrderStatus(OrderStatus.PENDING);
+                setOrderStatus(OrderStatus.AWAITING_PICKUP);
                 break;
         }
     }, [activeTab]);
@@ -105,7 +105,7 @@ const PurchaseAdmin = () => {
             <SimpleBar style={{ height: 480 }} scrollableNodeProps={{ ref: simplebarRef }}>
                 <div className="w-100 d-flex justify-content-center align-items-center flex-1 ">
                     {(currentProducts && currentProducts.length > 0) ?
-                        <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.PENDING ||
+                        <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.AWAITING_PICKUP ||
                             orderStatus === OrderStatus.SHIPPING || orderStatus === OrderStatus.SHIPPED_CONFIRMATION
                             ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
                             <thead>
@@ -114,7 +114,7 @@ const PurchaseAdmin = () => {
                                     <th>Ngày đặt</th>
                                     <th>Thanh toán</th>
                                     <th>Tổng tiền</th>
-                                    {orderStatus === OrderStatus.PENDING || orderStatus === OrderStatus.SHIPPING
+                                    {orderStatus === OrderStatus.AWAITING_PICKUP || orderStatus === OrderStatus.SHIPPING
                                         || orderStatus === OrderStatus.SHIPPED_CONFIRMATION ? <th>Thao tác</th> : <></>}
                                     <th></th>
                                 </tr>

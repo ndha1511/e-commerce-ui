@@ -12,7 +12,7 @@ import { isMobile } from "../../../../utils/responsive";
 const Purchase = () => {
     const { data: user } = useCheckLoginQuery();
     const mobile = isMobile();
-    const [orderStatus, setOrderStatus] = React.useState(OrderStatus.RECEIVED);
+    const [orderStatus, setOrderStatus] = React.useState(OrderStatus.PENDING);
 
     // default order status is pending
     const param = pageQueryHanlder(1, 40, [{
@@ -41,7 +41,7 @@ const Purchase = () => {
 
     ];
 
-    const [activeTab, setActiveTab] = React.useState("Đã nhận hàng");
+    const [activeTab, setActiveTab] = React.useState("Đang chờ xử lý");
 
     React.useEffect(() => {
         switch (activeTab) {
@@ -70,7 +70,7 @@ const Purchase = () => {
     const handleTabClick = (tabName: string) => {
         setActiveTab(tabName);
     }
-
+console.log(purchase)
     return <div className="profile-container">
         <div className="d-flex justify-content-between align-items-center">
             <span className="text-large">Đơn hàng đã mua</span>

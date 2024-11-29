@@ -7,6 +7,7 @@ import { RootState } from "../../rtk/store/store";
 import { clearNotify } from "../../rtk/slice/notify-slice";
 import NotificationButton from "../../components/notify/NotificationButton";
 import MessageView from "../../pages/user/message/MessageView";
+import AnimationComponent from "../../components/animation/AnimationComponent";
 type Props = {
     children: ReactNode;
 }
@@ -53,7 +54,7 @@ const UserLayout = ({ children }: Props) => {
         }}>{children}</div>
         <MessageView />
         <Footer />
-
+        <div className="border z-index-5">  ádgdsagsadgasdg  <AnimationComponent /></div>
         {notify.type && <NotificationButton type={notify.type} message={notify.message} />}
     </>
 
