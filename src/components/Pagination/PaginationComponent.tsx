@@ -10,16 +10,31 @@ interface PaginationComponentProps {
 
 const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, totalPages, handlePageChange }) => {
     const mobile = isMobile();
+
+    // Hàm nhảy lên đầu trang ngay lập tức, tùy thuộc vào smoothScroll
+    const jumpToTop = () => {
+        document.documentElement.style.scrollBehavior = 'auto';
+
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    };
+
+    // Cập nhật handlePageChange để nhảy lên top mỗi khi thay đổi trang
+    const handlePageChangeWithJump = (page: number) => {
+        handlePageChange(page);  // Gọi hàm handlePageChange để thay đổi trang
+        jumpToTop();  // Sau khi thay đổi trang, nhảy lên đầu trang ngay lập tức
+    };
+
     return (
-        <div className={`d-flex justify-content-center align-items-center  ${mobile ? '': ' mt-3'} `}>
+        <div className={`d-flex justify-content-center align-items-center ${mobile ? '' : ' mt-3'}`}>
             <Pagination>
-                <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-                <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                <Pagination.First onClick={() => handlePageChangeWithJump(1)} disabled={currentPage === 1} />
+                <Pagination.Prev onClick={() => handlePageChangeWithJump(currentPage - 1)} disabled={currentPage === 1} />
 
                 {/* Hiển thị các trang đầu tiên */}
                 {currentPage > 3 && (
                     <>
-                        <Pagination.Item onClick={() => handlePageChange(1)}>1</Pagination.Item>
+                        <Pagination.Item onClick={() => handlePageChangeWithJump(1)}>1</Pagination.Item>
                         <Pagination.Ellipsis />
                     </>
                 )}
@@ -32,7 +47,7 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, 
                             <Pagination.Item
                                 key={page}
                                 active={page === currentPage}
-                                onClick={() => handlePageChange(page)}
+                                onClick={() => handlePageChangeWithJump(page)}
                             >
                                 {page}
                             </Pagination.Item>
@@ -45,12 +60,12 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, 
                 {currentPage < totalPages - 2 && (
                     <>
                         <Pagination.Ellipsis />
-                        <Pagination.Item onClick={() => handlePageChange(totalPages)}>{totalPages}</Pagination.Item>
+                        <Pagination.Item onClick={() => handlePageChangeWithJump(totalPages)}>{totalPages}</Pagination.Item>
                     </>
                 )}
 
-                <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+                <Pagination.Next onClick={() => handlePageChangeWithJump(currentPage + 1)} disabled={currentPage === totalPages} />
+                <Pagination.Last onClick={() => handlePageChangeWithJump(totalPages)} disabled={currentPage === totalPages} />
             </Pagination>
         </div>
     );

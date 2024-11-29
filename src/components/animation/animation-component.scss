@@ -1,10 +1,11 @@
 .div-background {
-    height: 5px;
-    background-color: red;
+    height: 3px;
+    background-color: #86fd86;
     animation-timing-function: linear;
     animation-fill-mode: forwards;
     opacity: 1;
     visibility: visible;
+    border-radius: 5px;
   }
   
   /* Animation cho phần tử A */
@@ -58,4 +59,12 @@
   .div-background.hidden {
     visibility: hidden;
     opacity: 0;
+  }
+
+
+
+  .loading-cs{
+    position: fixed;
+    top: 0;
+    width: 100%;
   }

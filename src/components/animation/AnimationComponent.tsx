@@ -1,79 +1,64 @@
+// src/components/AnimationComponent.tsx
 import React, { useState, useEffect } from 'react';
-import './animation-component.scss'
+import { useSelector, useDispatch } from 'react-redux';
+import './animation-component.scss';
+import { RootState } from '../../rtk/store/store';
+import { setTriggerA, setTriggerB } from '../../rtk/slice/loading-slice';
 
-interface AnimationComponentProps {
-    triggerA: boolean;
-    triggerB: boolean;
-    onReset: () => void;
-}
-const AnimationComponent: React.FC<AnimationComponentProps> = ({ triggerA, triggerB, onReset }) => {
+const AnimationComponent: React.FC = () => {
+    const dispatch = useDispatch();
+    const triggerA = useSelector((state: RootState) => state.loading.triggerA);
+    const triggerB = useSelector((state: RootState) => state.loading.triggerB);
+    console.log(triggerA);
     const [animationA, setAnimationA] = useState(false);
     const [animationB, setAnimationB] = useState(false);
     const [animationComplete, setAnimationComplete] = useState(false);
 
-    // Hàm để bắt đầu animation A khi người dùng chọn A
-    const startAnimationA = () => {
-        setAnimationA(true);
-        setAnimationComplete(false); // Đặt lại trạng thái hoàn thành trước khi bắt đầu
-    };
     useEffect(() => {
-     if(triggerA){
-        setAnimationA(true);
-        setAnimationComplete(false);
-     }
-    }, [triggerA])
-    useEffect(() => {
-        if(triggerB){
-            if (animationA) { // Chỉ bắt đầu B nếu A đã chạy
-                setAnimationB(true);
-            }
+        if (triggerA) {
+            setAnimationA(true);
+            setAnimationComplete(false);
         }
-       }, [triggerB])
-    // Hàm để bắt đầu animation B khi người dùng chọn B và A đã hoàn thành
-    const startAnimationB = () => {
-        if (animationA) { // Chỉ bắt đầu B nếu A đã chạy
+    }, [triggerA]);
+
+    useEffect(() => {
+        if (triggerB && animationA) {
             setAnimationB(true);
         }
-    };
+    }, [triggerB, animationA]);
 
-    // Hàm để reset tất cả khi cả A và B hoàn thành
     useEffect(() => {
         if (animationA && animationB) {
-          
             setTimeout(() => {
-                setAnimationComplete(true); // Khi cả A và B hoàn thành, đánh dấu hoàn thành
-            }, 500); // Đợi đủ thời gian để B hoàn thành trước khi ẩn
+                setAnimationComplete(true);
+            }, 500); // Đợi đủ thời gian để B hoàn thành
         }
     }, [animationA, animationB]);
 
-    // Reset trạng thái sau khi cả A và B hoàn thành
     useEffect(() => {
         if (animationComplete) {
-
             setTimeout(() => {
                 setAnimationA(false);
                 setAnimationB(false);
-                onReset();
-                setAnimationComplete(false); // Reset trạng thái
-            }, 500); // Đặt lại sau 1 giây khi các phần tử đã ẩn đi
+                dispatch(setTriggerA(false));
+                dispatch(setTriggerB(false));
+                setAnimationComplete(false);
+            }, 500);
         }
-    }, [animationComplete]);
+    }, [animationComplete, dispatch]);
 
     return (
-        <div>
-            {/* <button onClick={startAnimationA}>Chạy A</button>
-            <button onClick={startAnimationB} disabled={!animationA}>Chạy B</button> Disable B nếu A chưa chạy */}
-
+        <div className='loading-cs'>
             <div className="d-flex">
                 <div
                     className={`div-background ${animationA ? 'animateA' : ''} ${animationComplete ? 'hidden' : ''}`}
                 >
-                    {/* Nội dung A */}
+       
                 </div>
                 <div
                     className={`div-background ${animationB ? 'animateB' : ''} ${animationComplete ? 'hidden' : ''}`}
                 >
-                    {/* Nội dung B */}
+
                 </div>
             </div>
         </div>

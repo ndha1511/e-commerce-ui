@@ -33,9 +33,9 @@ const productApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
-        getProductByCategory: build.query<BaseResponse<PageResponse<Product>>, { categoryUrl: string, param: string }>({
+        getProductByCategory: build.query<BaseResponse<PageResponse<Product>>, { categoryUrl: string, param?: string, rangeRegularPrice?:string, rangeRating?:string }>({
             query: (params) => ({
-                url: `/products/category/${params.categoryUrl}?` + params.param,
+                url: `/products/category/${params.categoryUrl}?${params.param ? params.param + '&': ''}rangeRegularPrice=${params.rangeRegularPrice}&rangeRating=${params.rangeRating}`,
                 method: 'get',
             }),
             keepUnusedDataFor: 180,

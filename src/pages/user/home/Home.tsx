@@ -17,7 +17,6 @@ const Home = () => {
 
         <CategoriesCarousel />
 
-        <Rating star={1.5} variant={'warning'} size='text-medium' />
 
         <ListProduct products={productRecommends?.data} title={"Đề xuất cho bạn"} />
 
