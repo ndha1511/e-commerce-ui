@@ -21,7 +21,6 @@ import ResetPassword from "../pages/user/auth/reset-password/ResetPassword";
 import AdminLayout from "../layout/admin/AdminLayout";
 import Product from "../pages/admin/product/Product";
 import ProductAttribute from "../pages/admin/product/ProductAttribute";
-import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
 import ProductStock from "../pages/admin/product/ProductStock";
 import ProductImport from "../pages/admin/product/ProductImport";
 import Category from "../pages/admin/category/Category";
@@ -37,6 +36,7 @@ import NotFound from "../pages/not-found/NotFound";
 import Message from "../pages/admin/message/Message";
 import PaymentSuccess from "../pages/user/payment/PaymentSuccess";
 import PuchaseDetail from "../pages/user/payment/PurchaseDetail";
+import Dashboard from "../pages/admin/dashboard/Dashboard";
 import CreateVoucher from "../pages/admin/voucher/CreateVoucher";
 
 export const router = createBrowserRouter([
@@ -130,7 +130,7 @@ export const router = createBrowserRouter([
     {
 
         path: "/admin",
-        element: <AdminLayout><CreatePromotion/></AdminLayout>
+        element: <AdminLayout><Dashboard/></AdminLayout>
     },
     {
 
