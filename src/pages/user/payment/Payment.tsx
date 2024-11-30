@@ -109,7 +109,6 @@ const Payment = () => {
             try {
                 const response = await createOrder(orderRequest).unwrap();
                 const newOrder = response.data;
-                console.log(newOrder);
                 cartRefetch();
                 if (newOrder.paymentMethod === PaymentMethod.ATM) {
                     const responsePayment = await getUrlPayment({

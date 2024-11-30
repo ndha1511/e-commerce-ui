@@ -17,8 +17,8 @@ const Cart: React.FC = () => {
     const { data, refetch, isLoading } = useGetCartByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
-    const [isFooterFixed, setIsFooterFixed] = useState(true);
-    const [isHeaderFixed, setIsHeaderFixed] = useState(false);
+    const [isFooterFixed, setIsFooterFixed] = useState<boolean>(true);
+    const [isHeaderFixed, setIsHeaderFixed] = useState<boolean>(false);
     const [selectVariant, setSelectVariant] = useState<string[]>([]);
     const [checked, setChecked] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -45,23 +45,24 @@ const Cart: React.FC = () => {
 
 
     const handleScroll = () => {
-        const cartItemsHeight = document.getElementById('cart-items')?.offsetHeight || 0;
-        const scrollPosition = window.scrollY + window.innerHeight;
-
         // Điều kiện để cố định header khi cuộn xuống
-        if (window.scrollY > 150) { // Giá trị 150 là tùy chỉnh, bạn có thể điều chỉnh để phù hợp với yêu cầu thực tế
+        if (window.scrollY >=0) { // Giá trị 150 là tùy chỉnh, bạn có thể điều chỉnh để phù hợp với yêu cầu thực tế
             setIsHeaderFixed(true);
         } else {
             setIsHeaderFixed(false);
         }
 
         // Điều kiện để di chuyển footer khi cuộn hết danh sách sản phẩm
-        if (scrollPosition >= cartItemsHeight + 150) {
-            setIsFooterFixed(false);
-        } else {
+        if (window.scrollY >=0  ) {
             setIsFooterFixed(true);
+        } else {
+            setIsFooterFixed(false);
         }
     };
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         if (checked) {
@@ -82,10 +83,7 @@ const Cart: React.FC = () => {
         setTotalPrice(total);
     }, [selectVariant, data]);
 
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+
     return (
         <Container className="bg-light p-3 border-radius-small">
             <div className={`cart-header border p-3 bg-white ${isHeaderFixed ? 'fixed-header container' : ''}`}>

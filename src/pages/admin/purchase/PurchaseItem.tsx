@@ -108,11 +108,11 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
                     item.paymentStatus === PaymentStatus.UNPAID ? <button onClick={handlerPayment}>Thanh toán</button> : "Đã thanh toán"}
             </td>
             <td>{convertPrice(item.finalAmount)}</td>
-            {item.orderStatus === OrderStatus.PENDING || item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION || item.orderStatus === OrderStatus.SHIPPING ?
+            {item.orderStatus === OrderStatus.AWAITING_PICKUP || item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION || item.orderStatus === OrderStatus.SHIPPING ?
                 <td>
-                    {(item.orderStatus === OrderStatus.PENDING) && <button className="inActiveProduct" onClick={() => handleConfirm('shipping')}>Xác nhận </button>}
+                    {(item.orderStatus === OrderStatus.AWAITING_PICKUP) && <button className="inActiveProduct" onClick={() => handleConfirm('shipping')}>Xác nhận </button>}
                     {(item.orderStatus === OrderStatus.SHIPPING) && <button className="inActiveProduct" onClick={() => handleConfirm('shipped-confirmation')}>Xác nhận </button>}
-                    {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button className="inActiveProduct" onClick={() => updatePurchase(OrderStatus.RECEIVED)}>Xác nhận</button>}
+                    {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button className="inActiveProduct">Đã giao</button>}
                 </td> : <></>
             }
 

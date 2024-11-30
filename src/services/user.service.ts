@@ -32,6 +32,13 @@ const userApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
+        getUsers: build.query<BaseResponse<PageResponse<User>>, string>({
+            query: (params) => ({
+                url: '/users?' + params,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
 
     })
 })
@@ -40,6 +47,7 @@ export const {
     useUpdateUserMutation,
     useCreateEmployeeMutation,
     useGetEmployeeQuery,
+    useGetUsersQuery
 } = userApi;
 
 export default userApi;

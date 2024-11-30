@@ -122,7 +122,20 @@ const menu: Menu[] = [
     {
         name: 'QL khuyến mãi',
         path: '/admin',
-        icon: <i className="bi bi-gift"></i>
+        icon: <i className="bi bi-gift"></i>,
+        children: [
+            {
+                name: 'Tạo khuyến mãi',
+                path: '/admin/create/promotion',
+                fontSize: 13
+            },
+            {
+                name: 'Tạo voucher',
+                path: '/admin/create/voucher',
+                fontSize: 13
+            },
+
+        ]
 
     },
     {
@@ -222,13 +235,13 @@ const Navbar = () => {
     };
     return (
         <div className="w-100 d-flex justify-content-center flex-column gap-2">
-            {!mobile && 
-              <div className='d-flex  align-items-center gap-4 p-2 title-navbar-top ' >
-              <i  style={{ fontSize: 30, color:'white' }} className="bi bi-list-ul"></i>
-              <span className='text-large text-white' style={{fontFamily:'Lobster'}}>SOSELL</span>
-          </div>}
-          
-            <div className={mobile ? '': 'w-100 mt-2'}>
+            {!mobile &&
+                <div className='d-flex  align-items-center gap-4 p-2 title-navbar-top ' >
+                    <i style={{ fontSize: 30, color: 'white' }} className="bi bi-list-ul"></i>
+                    <span className='text-large text-white' style={{ fontFamily: 'Lobster' }}>SOSELL</span>
+                </div>}
+
+            <div className={mobile ? '' : 'w-100 mt-2'}>
                 {menu.map((item, index) => (
                     <MenuItem
                         key={index}

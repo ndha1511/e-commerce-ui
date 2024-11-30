@@ -17,7 +17,7 @@ const CategoriesCarousel = () => {
     for (let i = 0; i < totalSlides; i++) {
       slides.push(
         <Carousel.Item key={i}>
-          <div className="d-flex  align-items-center flex-wrap items-categories">
+          <div className=" items-categories">
             {parentCategory?.data.items.slice(i * itemsPerSlide, (i + 1) * itemsPerSlide).map((category, idx) => (
               <div className="category-item text-center  " onClick={() => redirect('/' + category.urlPath)} key={idx}>
                 <img src={category.image} alt={category.categoryName} className="category-icon" />
@@ -38,10 +38,12 @@ const CategoriesCarousel = () => {
           <span >Danh mục</span>
         </div>
 
-        <Carousel interval={null} indicators={false} controls={true}>
-          {renderCarouselItems()}
-        </Carousel>
+        <div className="home-carousel"style={{padding:0}}>
+          <Carousel interval={null} indicators={false} controls={true}>
+            {renderCarouselItems()}
+          </Carousel>
 
+        </div>
       </div >
     </QueryWrapper>
 

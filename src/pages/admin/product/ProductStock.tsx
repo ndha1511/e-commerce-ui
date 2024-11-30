@@ -1,29 +1,32 @@
-import { Collapse, Pagination, Table } from "react-bootstrap";
+import { Collapse, Table } from "react-bootstrap";
 import './insert-product.scss'
-import { useGetAttributeByIdQuery, useGetProductsQuery } from "../../../services/product.service";
-import React, { useState } from "react";
+import { useGetAttributeByIdQuery, useGetProductsPageQuery } from "../../../services/product.service";
+import React, { ChangeEvent, useState } from "react";
 import { Product } from "../../../models/product";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import { useGetVariantsByProductIdQuery } from "../../../services/variant.service";
 import SimpleBar from "simplebar-react";
 import Select from 'react-select';
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
+import { pageQueryHanlder } from "../../../utils/query-handler";
+import useDebounce from "../../../hooks/useDebounce";
 function ProductStock() {
-    const { data } = useGetProductsQuery();
-    const products = data?.data.items;
-    const totalItems = data?.data.pageSize || 0; // Tổng số sản phẩm
-    const itemsPerPage = 10; // Số sản phẩm mỗi trang
-    const totalPages = Math.ceil(totalItems / itemsPerPage); // Tổng số trang
-    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+    const [searchKeyword, setSearchKeyword] = useState<string>('');
+    const debounce = useDebounce(searchKeyword, 200)
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 40;
+    const params = pageQueryHanlder(currentPage, itemsPerPage, [{ filed: 'searchNames', operator: ':', value: debounce }]);
+    const { data: pageResponse } = useGetProductsPageQuery(params);
+    const products = pageResponse?.data.items;
+    const totalPages = pageResponse?.data.totalPage || 0;
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        // Gọi lại API với trang mới nếu cần
-        // useGetProductsQuery({ page, limit: itemsPerPage });
     };
-
-    // Lấy các sản phẩm cho trang hiện tại
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const currentProducts = products?.slice(startIndex, startIndex + itemsPerPage);
+    console.log(params)
+    const handleSearchProduct = (e: ChangeEvent<HTMLInputElement>) => {
+        setSearchKeyword(e.target.value);
+    }
     return (
         <div className=" bg-light p-3 pe-3">
             <div className=" d-flex justify-content-between">
@@ -34,7 +37,9 @@ function ProductStock() {
             <div className="bg-white p-2 border-radius-small mt-3">
                 <div className=" mt-1 mb-3 d-flex justify-content-between">
                     <div className="search-list-product p-2 ">
-                        <input className="input-search-list-product" placeholder="Nhập từ khóa tìm kiếm" type="text" />
+                        <input className="input-search-list-product"
+                            value={searchKeyword} onChange={(e) => { handleSearchProduct(e) }}
+                            placeholder="Nhập từ khóa tìm kiếm" type="text" />
                         <i className="bi bi-search"></i>
                     </div>
                     <div className="">
@@ -57,26 +62,19 @@ function ProductStock() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentProducts?.map((product) => (
+                            {products?.map((product) => (
                                 <ProductStockItems key={product.id} product={product} />
                             ))}
 
                         </tbody>
                     </Table>
-                    <div className="d-flex justify-content-center align-items-center">
-                        <Pagination className="mt-3">
-                            <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-                            <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                            {[...Array(totalPages)].map((_, index) => (
-                                <Pagination.Item key={index + 1} active={index + 1 === currentPage} onClick={() => handlePageChange(index + 1)}>
-                                    {index + 1}
-                                </Pagination.Item>
-                            ))}
-                            <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                            <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
-                        </Pagination>
-                    </div>
+                 
                 </SimpleBar>
+                <PaginationComponent
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        handlePageChange={handlePageChange}
+                    />
             </div>
         </div>
     );
@@ -91,7 +89,6 @@ function ProductStockItems({ product }: ProductStockItems) {
     const [open, setOpen] = React.useState<boolean>(false);
     const { data } = useGetVariantsByProductIdQuery(product.id || '');
     const { data: attributes } = useGetAttributeByIdQuery(product.id || '');
-    console.log(attributes)
     const openCollapse = async () => {
         setOpen(!open);
 

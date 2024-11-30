@@ -51,6 +51,7 @@ const App = ({ children }: { children: ReactNode }) => {
         if (isConnected() && stompClient) {
             stompClient.subscribe("/user/" + data?.data?.email + "/queue/messages", onMessageReceived);
             stompClient.subscribe("/topic/notification/" + data?.data?.id , onNotification);
+            // stompClient.subscribe("/topic/order/" + data?.data?.id , onOrder);
         }
         setConnectFinish(true);
     }
@@ -66,6 +67,12 @@ const App = ({ children }: { children: ReactNode }) => {
         console.log(notificationResponse);
         notificationRefetch();
     }
+    const onNonOrdertification = (order: Message) => {
+        const orderResponse = JSON.parse(order.body);
+        console.log(orderResponse);
+        notificationRefetch();
+    }
+
 
 
     const onError = () => {

@@ -37,6 +37,7 @@ import Message from "../pages/admin/message/Message";
 import PaymentSuccess from "../pages/user/payment/PaymentSuccess";
 import PuchaseDetail from "../pages/user/payment/PurchaseDetail";
 import Dashboard from "../pages/admin/dashboard/Dashboard";
+import CreateVoucher from "../pages/admin/voucher/CreateVoucher";
 
 export const router = createBrowserRouter([
     {
@@ -114,7 +115,7 @@ export const router = createBrowserRouter([
         element: <UserLayout><PaymentSuccess/></UserLayout>
     },
     {
-        path: "/user/payment/purchase/detail",
+        path: "/user/purchase/:purchaseId",
         element: <UserLayout><PuchaseDetail/></UserLayout>
     }
     ,
@@ -130,6 +131,16 @@ export const router = createBrowserRouter([
 
         path: "/admin",
         element: <AdminLayout><Dashboard/></AdminLayout>
+    },
+    {
+
+        path: "/admin/create/promotion",
+        element: <AdminLayout><CreatePromotion/></AdminLayout>
+    },
+    {
+
+        path: "/admin/create/voucher",
+        element: <AdminLayout><CreateVoucher/></AdminLayout>
     },
     {
         path: "/admin/product/create",

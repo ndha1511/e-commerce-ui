@@ -27,7 +27,7 @@ const useValidText = (pattern?: Pattern) => {
         } 
     }, [value])
 
-    return {value, setValue, err};
+    return {value, setValue, err, setErr};
 }
 
 export default useValidText;

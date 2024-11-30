@@ -17,55 +17,69 @@ pre {
   -webkit-font-smoothing: antialiased;
   font-weight: 500;
 }
-span{
+
+span {
   color: #333;
 }
-.none-select{
+
+.none-select {
   user-select: none;
-} 
-.custom-tooltip .tooltip-inner{
-  background-color: red !important; /* Màu nền đỏ */
-  color: white; /* Màu chữ trắng */
-  border-radius: 4px; /* Tùy chọn: bo góc */
 }
+
+.custom-tooltip .tooltip-inner {
+  background-color: red !important;
+  /* Màu nền đỏ */
+  color: white;
+  /* Màu chữ trắng */
+  border-radius: 4px;
+  /* Tùy chọn: bo góc */
+}
+
 /* Để thêm hiệu ứng bo góc cho mũi tên */
 .custom-tooltip .tooltip-arrow::before {
   content: '';
   position: absolute;
-  border-width: 5px; /* Độ dày của mũi tên */
+  border-width: 5px;
+  /* Độ dày của mũi tên */
   border-style: solid;
-  border-color: transparent transparent red transparent; /* Màu mũi tên */
-  
+  border-color: transparent transparent red transparent;
+  /* Màu mũi tên */
+
 }
+
 .custom-tooltip1 .tooltip-arrow::before {
   content: '';
   position: absolute;
-  border-width: 5px; /* Độ dày của mũi tên */
+  border-width: 5px;
+  /* Độ dày của mũi tên */
   border-style: solid;
-  top:50%;
+  top: 50%;
   right: 1px;
   border-color: transparent red transparent transparent;
   transform: translateY(-50%);
 }
+
 .tooltip-inner {
   max-width: 1000px !important;
   background-color: $primary-color !important;
 }
+
 .no-shadow {
   box-shadow: none !important;
 }
 
 .simplebar-scrollbar::before {
-  background-color: #ff6347 !important; 
-  border-radius: 10px; 
-  width: 8px; 
-  transition: background-color 0.3s ease; 
+  background-color: #ff6347 !important;
+  border-radius: 10px;
+  width: 8px;
+  transition: background-color 0.3s ease;
 }
 
 // ======================== text ===============================
-.text-medium-cs{
+.text-medium-cs {
   font-size: 12px;
 }
+
 .primary {
   color: $primary-color;
 }
@@ -82,9 +96,11 @@ span{
 .muted {
   color: $muted-color;
 }
+
 .text-light-cs {
   color: rgb(129, 121, 121)
 }
+
 .success {
   color: $success-color;
 }
@@ -92,9 +108,11 @@ span{
 .text-blur {
   color: rgba(0, 0, 0, 0.5)
 }
-.text-orange{
+
+.text-orange {
   color: #f3a877;
 }
+
 .text-small {
   font-size: $font-small;
 }
@@ -166,9 +184,11 @@ span{
   border: 1px solid $primary-color;
   border-radius: $border-radius-small;
 }
-.bd-red{
+
+.bd-red {
   border: 0.5px solid red;
 }
+
 .border-radius-small {
   border-radius: $border-radius-small;
 }
@@ -292,42 +312,57 @@ pre {
 }
 
 .no-spinner {
-  -moz-appearance: textfield; /* Firefox */
+  -moz-appearance: textfield;
+  /* Firefox */
 }
 
-.no-spinner::-webkit-inner-spin-button, 
+.no-spinner::-webkit-inner-spin-button,
 .no-spinner::-webkit-outer-spin-button {
-  -webkit-appearance: none; /* Chrome, Safari, Edge */
-  margin: 0; 
+  -webkit-appearance: none;
+  /* Chrome, Safari, Edge */
+  margin: 0;
 }
+
 // ================================================================= page =================================================================
-.pagination{
+.pagination {
   margin-bottom: 0;
 }
-.pagination .active > .page-link {
+
+.pagination .active>.page-link {
   box-shadow: none !important;
-  background-color:  rgb(241, 124, 61); // Màu nền
+  background-color: rgb(241, 124, 61); // Màu nền
   color: white; // Màu chữ
-  border-color:  rgb(241, 122, 58); // Màu viền
+  border-color: rgb(241, 122, 58); // Màu viền
 
   &:hover {
-      background-color:  rgb(238, 111, 43); // Màu nền khi hover
-      color: white; // Màu chữ khi hover
+    background-color: rgb(238, 111, 43); // Màu nền khi hover
+    color: white; // Màu chữ khi hover
   }
 }
-.page-link{
-  color: rgb(241, 121, 56);
 
-  &:hover{
+.page-link {
+  color: rgb(241, 121, 56);
+  font-size: 14px !important;
+
+  &:hover {
     color: rgb(241, 121, 56);
   }
-  &:active{
+
+  &:active {
     box-shadow: none !important;
   }
 }
+
+@media(max-width:768px) {
+  .page-link {
+    font-size: 12px !important;
+  }
+}
+
 .page-item {
   margin-bottom: 0;
 }
+
 .pointer-events-none {
   pointer-events: none;
   user-select: none;
@@ -341,18 +376,28 @@ pre {
   column-gap: 10px;
   justify-items: center;
 }
-.shadow-container{
+
+.shadow-container {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
+
 @media (max-width: 768px) {
   .products {
-      grid-template-columns: repeat(2, minmax(180px, 1fr));
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
   }
 }
 
 .shadow-all {
-  box-shadow: 0px 4px 6px  rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
+.link-all {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
 
+  &:hover {
+    color: red;
+  }
+}

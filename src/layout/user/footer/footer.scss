@@ -1,21 +1,29 @@
+.footer{
+  background-color: #333; /* Footer màu tối */
+  color: #fff; /* Chữ trắng */
+  padding: 30px 0;
+}
 .footer-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
-
+  margin-bottom: 30px; /* Thêm khoảng cách dưới các section */
+  background-color: #333;
 }
-.footer-section {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch; 
-  // justify-content: space-between;
-  height: 100%; 
-  padding: 10px;
 
+.footer-section {
+
+  padding: 20px;
+  background-color: #333; /* Thêm nền để các section rõ ràng hơn */
+  border-radius: 8px;
+
+  text-align: left; /* Mặc định căn trái */
 }
 
 .h5-ft {
   margin-bottom: 15px;
+  font-size: 13px; /* Giảm kích thước chữ */
+  font-weight: 600;
 }
 
 ul {
@@ -23,26 +31,79 @@ ul {
   padding-left: 0;
   
   li {
-    font-size: 14px;
-    margin-bottom: 10px;
+    font-size: 13px; /* Giảm kích thước chữ của các mục */
+    margin-bottom: 8px;
+    color: #cfcdcd; /* Màu chữ dễ đọc hơn */
+    transition: color 0.3s ease; /* Thêm hiệu ứng hover */
+  }
+
+  li:hover {
+    color: white; /* Màu khi hover vào mục */
+    cursor: pointer;
   }
 }
 
 .img-ft {
-  width: 50px;
+  width: 60px;
+  height: auto;
   margin-bottom: 10px;
 }
 
 .footer-section .d-flex {
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 20px; /* Thêm khoảng cách giữa các logo */
 }
 
 .footer-bottom {
+  text-align: center; /* Căn giữa phần footer dưới */
   margin-top: 30px;
-  font-size: 14px;
-  text-align: center;
-  
-  p {
-    margin-bottom: 5px;
+  font-size: 13px; /* Giảm kích thước chữ cho footer dưới */
+  color: #ddd;
+}
+
+.footer-bottom p {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr; /* Khi màn hình nhỏ, footer sẽ chỉ có 1 cột */
+  }
+
+  .footer-section {
+    padding: 15px;
+    text-align: center; /* Căn giữa nội dung trong các section */
+  }
+
+  .footer-bottom p {
+    font-size: 12px; /* Thêm kích thước chữ nhỏ hơn cho phần footer dưới */
+  }
+
+  .img-ft {
+    width: 50px; /* Giảm kích thước các hình ảnh */
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-bottom {
+    font-size: 12px; /* Thêm kích thước chữ nhỏ hơn cho màn hình rất nhỏ */
+    margin-top: 20px;
+  }
+
+  .footer-section {
+    padding: 10px;
+    text-align: center; /* Căn giữa phần tử trong các section */
+  }
+
+  .h5-ft {
+    font-size: 14px; /* Giảm thêm kích thước tiêu đề */
+  }
+
+  ul li {
+    font-size: 12px; /* Giảm thêm kích thước chữ cho các mục */
+  }
+
+  .img-ft {
+    width: 40px; /* Giảm kích thước hình ảnh khi màn hình rất nhỏ */
   }
 }
