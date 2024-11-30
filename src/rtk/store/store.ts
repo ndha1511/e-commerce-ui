@@ -22,6 +22,7 @@ import promotionApi from '../../services/promotion.service'
 import voucherApi from '../../services/voucher.service'
 
 import { orderSlice } from '../slice/order-slice'
+import statisticsApi from '../../services/statistics.service'
 
 
 
@@ -47,7 +48,8 @@ export const store = configureStore({
     [roomApi.reducerPath]: roomApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [promotionApi.reducerPath]: promotionApi.reducer,
-    [voucherApi.reducerPath]: voucherApi.reducer
+    [voucherApi.reducerPath]: voucherApi.reducer,
+    [statisticsApi.reducerPath]: statisticsApi.reducer
 
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
@@ -69,6 +71,7 @@ export const store = configureStore({
     .concat(notificationApi.middleware)
     .concat(promotionApi.middleware)
     .concat(voucherApi.middleware)
+    .concat(statisticsApi.middleware)
 
 })
 

@@ -115,7 +115,7 @@ const Category = () => {
 
     return (
         <div className="d-flex flex-column  bg-light">
-            <div className="p-3 border">
+            <div className="p-3">
                 <SimpleBar style={{ height: 600 }}>
                     <div className="d-flex align-items-center justify-content-between loading-container">
                         <h5>Danh sách danh mục</h5>
