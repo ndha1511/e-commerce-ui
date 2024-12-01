@@ -26,6 +26,7 @@ const PurchaseAdmin = () => {
     const totalPages = Math.ceil(totalItems / itemsPerPage); // Tổng số trang
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
     const simplebarRef = useRef<HTMLDivElement | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedPurchase, setSelectedPurchase] = useState<any>(null);
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -39,7 +40,7 @@ const PurchaseAdmin = () => {
     const currentProducts = purchase?.data.items?.slice(startIndex, startIndex + itemsPerPage);
     // define tabs
     const tabs = [
-        "Đang chờ xử lý",
+        "Đang chờ xác nhận",
         "Đang giao hàng",
         "Đã giao hàng",
         "Đã nhận hàng",
@@ -47,7 +48,7 @@ const PurchaseAdmin = () => {
 
     ];
 
-    const [activeTab, setActiveTab] = React.useState("Đang chờ xử lý");
+    const [activeTab, setActiveTab] = React.useState("Đang chờ xác nhận");
 
     React.useEffect(() => {
         switch (activeTab) {
@@ -63,7 +64,7 @@ const PurchaseAdmin = () => {
             case "Đã hủy":
                 setOrderStatus(OrderStatus.CANCELLED);
                 break;
-            case "Đang chờ xử lý":
+            case "Đang chờ xác nhận":
             default:
                 setOrderStatus(OrderStatus.AWAITING_PICKUP);
                 break;

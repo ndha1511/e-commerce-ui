@@ -14,7 +14,7 @@ const SkeletonCustom: React.FC = () => {
 
 const ListProduct: React.FC<ListProductProps> = (props) => {
     const { products, title } = props;
-    return <SkeletonWrapper queriesStatus={[products ? true : false]} skeleton={SkeletonCustom}>
+    return <SkeletonWrapper queriesStatus={[(products) ? true : false]} skeleton={SkeletonCustom}>
         <div style={{
             display: 'flex',
             flexDirection: 'column',

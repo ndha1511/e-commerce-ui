@@ -78,7 +78,7 @@ const Dashboard = () => {
                         <tr>
                             <th>STT</th>
                             <th>Ảnh đại diện</th>
-                            <th>Tên khách hàng</th>
+                            <th>Email khách hàng</th>
                             <th>Doanh thu</th>
                         </tr>
                     </thead>
@@ -86,7 +86,7 @@ const Dashboard = () => {
                         {queryResultTopUser.data?.data?.map((item, index) => (
                             <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td>{item.user.avatar}</td>
+                                <td><img src={item.user.avatar} width={50} height={50}/></td>
                                 <td>{item.user.email}</td>
                                 <td>{convertPrice(item.amount)}</td>
                             </tr>

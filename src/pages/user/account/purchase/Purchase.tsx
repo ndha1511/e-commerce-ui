@@ -34,6 +34,7 @@ const Purchase = () => {
     // define tabs
     const tabs = [
         "Đang chờ xử lý",
+        "Đang chờ xác nhận",
         "Đang giao hàng",
         "Đã giao hàng",
         "Đã nhận hàng",
@@ -45,6 +46,9 @@ const Purchase = () => {
 
     React.useEffect(() => {
         switch (activeTab) {
+            case "Đang chờ xác nhận":
+                setOrderStatus(OrderStatus.AWAITING_PICKUP)
+                break;
             case "Đang giao hàng":
                 setOrderStatus(OrderStatus.SHIPPING);
                 break;

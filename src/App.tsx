@@ -5,12 +5,12 @@ import { Message } from "stompjs";
 import { pageQueryHanlder } from "./utils/query-handler";
 import { useGetRoomQuery } from "./services/room.service";
 import { useGetMessageQuery } from "./services/message.service";
-import { useGetCommentsQuery } from "./services/comment.service";
 import { useGetNotificationsQuery } from "./services/notification.service";
 
 const App = ({ children }: { children: ReactNode }) => {
     const {data, isSuccess} = useCheckLoginQuery();
     const [connectFinish, setConnectFinish] = useState<boolean>(false);
+    
     ///////////// message
     
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
@@ -20,7 +20,7 @@ const App = ({ children }: { children: ReactNode }) => {
         param: paramsRoom,
     }, { skip: !loginSuccess || !user?.data?.id })
     const paramsMessage = pageQueryHanlder(1, 1000);
-    const { data: messagesData, refetch } = useGetMessageQuery({
+    const { refetch } = useGetMessageQuery({
         roomId: room?.data?.items?.[0]?.conversationId || '',
         params: paramsMessage,
     }, { skip: !roomSuccess });
@@ -29,7 +29,7 @@ const App = ({ children }: { children: ReactNode }) => {
 
     //////Notification
     const paramNotification = pageQueryHanlder(1,40);
-    const { data: dataNotification,refetch:notificationRefetch } = useGetNotificationsQuery({
+    const { refetch:notificationRefetch } = useGetNotificationsQuery({
         id: user?.data?.id || '',
         param: paramNotification,
     },{skip: !loginSuccess});
@@ -67,12 +67,11 @@ const App = ({ children }: { children: ReactNode }) => {
         console.log(notificationResponse);
         notificationRefetch();
     }
-    const onNonOrdertification = (order: Message) => {
-        const orderResponse = JSON.parse(order.body);
-        console.log(orderResponse);
-        notificationRefetch();
-    }
-
+    // const onNonOrdertification = (order: Message) => {
+    //     const orderResponse = JSON.parse(order.body);
+    //     console.log(orderResponse);
+    //     notificationRefetch();
+    // }
 
 
     const onError = () => {
