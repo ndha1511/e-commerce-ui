@@ -1,7 +1,6 @@
 import CarouselHome from '../../../components/carousel/CarouselHome';
 import CategoriesCarousel from '../../../components/categories/CategoriesCarousel ';
 import ListProduct from '../../../components/products/ListProduct';
-import Rating from '../../../components/rating/Rating';
 import { useGetProductsRecommendQuery } from '../../../services/product.service';
 import './home.scss';
 

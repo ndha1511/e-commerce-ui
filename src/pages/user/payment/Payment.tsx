@@ -87,6 +87,7 @@ const Payment = () => {
             }
         }
         getPrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [address, shopAddress, cart])
 
     const handlerOrder = async () => {

@@ -92,6 +92,7 @@ function ProductDetail() {
                 }
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stompClient, getProductSuccess]);
 
     const onConnected = () => {
@@ -261,10 +262,13 @@ function ProductDetail() {
                 }).unwrap();
                 handleAdd();
                 dispatch(setNotify({
-                    type: 'success', message: 'Thao tác không thành công'
+                    type: 'success', message: 'Đã thêm sản phẩm vào giỏ hàng'
                 }))
                 refetch();
             } catch (error) {
+                dispatch(setNotify({
+                    type: 'error', message: 'Thêm sản phẩm vào giỏ hàng thất bại'
+                }))
                 console.log(error);
             }
         }

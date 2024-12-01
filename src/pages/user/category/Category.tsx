@@ -1,7 +1,5 @@
-
-
 import { Link, useParams } from "react-router-dom";
-import Select, { ActionMeta, SingleValue } from 'react-select'
+import Select, { SingleValue } from 'react-select'
 import MenuCategory from "./MenuCategory";
 import { useGetCategoryByUrlQuery } from "../../../services/category.service";
 import { Col, Row } from "react-bootstrap";
@@ -17,6 +15,9 @@ import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { SelectProps } from "../../admin/types";
+import { ratingOptions, regularPriceOptions } from "../utils";
+
+
 
 
 function Category() {
@@ -45,21 +46,7 @@ function Category() {
             title: "Third Slide",
         },
     ]
-    const options = [
-        { value: '0', label: 'Tất cả' },
-        { value: '0-100000', label: '0 - 100.000đ' },
-        { value: '100000-500000', label: '100.000 - 500.000đ' },
-        { value: '500000-1000000', label: '500.000 - 1tr' },
-        { value: '1000000-1000000000', label: '> 1tr' },
-    ];
-
-    const optionRating = [
-        { value: '1-2', label: '⭐' },
-        { value: '2-3', label: '⭐⭐' },
-        { value: '3-4', label: '⭐⭐⭐' },
-        { value: '4-5', label: '⭐⭐⭐⭐' },
-        { value: '5-5', label: '⭐⭐⭐⭐⭐' },
-    ];
+   
     const handleSubmit = (buttonName: string) => {
         setActiveButton(buttonName);
         if (buttonName === 'best-seller') {
@@ -174,10 +161,10 @@ function Category() {
                                 <button className={`${activeButton === 'popular' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('popular')}>Phổ biến</button>
                                 <button className={`${activeButton === 'latest' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('latest')}>Mới nhất</button>
                                 <button className={`${activeButton === 'best-seller' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('best-seller')}>Bán chạy</button>
-                                <div style={{ minWidth: 200 }}><Select options={options} placeholder="Giá"
+                                <div style={{ minWidth: 200 }}><Select options={regularPriceOptions} placeholder="Giá"
                                     value={price}
                                     onChange={handlePrice} /></div>
-                                <div style={{ minWidth: 200 }}><Select options={optionRating}
+                                <div style={{ minWidth: 200 }}><Select options={ratingOptions}
                                     value={rating}
                                     onChange={handleRating}
                                     placeholder="Đánh giá" /></div>
@@ -192,12 +179,6 @@ function Category() {
                                 totalPages={totalPages}
                                 handlePageChange={handlePageChange}
                             />}
-
-
-
-
-
-
                     </Col>
                 </Row>
             </div>

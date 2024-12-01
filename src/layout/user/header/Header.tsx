@@ -4,6 +4,7 @@ import "./header.scss";
 import useDebounce from "../../../hooks/useDebounce";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import PopoverSearch from "./PopoverSearch";
+import useRedirect from "../../../hooks/useRedirect";
 
 type Props = {
     fixedSearch: boolean;
@@ -17,6 +18,7 @@ const Header = ({ fixedSearch }: Props) => {
     const { data: userData } = useCheckLoginQuery();
     const popoverRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const redirect = useRedirect();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -42,6 +44,10 @@ const Header = ({ fixedSearch }: Props) => {
         };
     }, [isOpenPopover]);
 
+    const handleSearch = () => {
+        redirect("/products?keyword=" + textSearch);
+    }
+
 
     return <>
         <SideBar />
@@ -59,7 +65,7 @@ const Header = ({ fixedSearch }: Props) => {
                         className="search-input col-8"
                         placeholder="Tìm kiếm sản phẩm"
                     />
-                    <button className="search-button background-primary col-2 col-md-1 button-hover" data-toggle="tooltip" title="Tìm kiếm">
+                    <button onClick={handleSearch}  className="search-button background-primary col-2 col-md-1 button-hover" data-toggle="tooltip" title="Tìm kiếm">
                         <i className="bi bi-search"></i>
                     </button>
                 </label>

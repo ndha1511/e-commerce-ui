@@ -38,25 +38,19 @@ import PaymentSuccess from "../pages/user/payment/PaymentSuccess";
 import PuchaseDetail from "../pages/user/payment/PurchaseDetail";
 import Dashboard from "../pages/admin/dashboard/Dashboard";
 import CreateVoucher from "../pages/admin/voucher/CreateVoucher";
+import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
+import ProtectedRouter from "./ProtectedRouter";
+import { Role } from "../models/user";
+import ProductKeyword from "../pages/user/product/ProductKeyword";
 
-export const router = createBrowserRouter([
-    {
-        path: "*",
-        element: <App><UserLayout><NotFound /></UserLayout></App>
-    },
-    {
-        path: "/",
-        element: <App><UserLayout><Home/></UserLayout></App>
-    },
-    {
-        path: "/cart",
-        element: <UserLayout><Cart/></UserLayout>
-    },
-    {
 
-        path: "/payment",
-        element: <UserLayout><Payment/></UserLayout>
-    }, 
+interface RouterRole {
+    path: string;
+    element: React.ReactNode;
+    role?: Role[];
+}
+
+const authRouters = [
     {
         path: "/auth/login",
         element: <AuthLayout><Login/></AuthLayout>
@@ -77,6 +71,43 @@ export const router = createBrowserRouter([
         path: "/auth/create-new-password",
         element: <AuthLayout><ResetPassword/></AuthLayout>
     },
+
+]
+
+const publicUserRouters: RouterRole[] = [
+    {
+        path: "*",
+        element: <NotFound />
+    },
+    {
+        path: "/",
+        element: <Home/>
+    },
+    {
+        path: "/product/:key",
+        element: <ProductDetail/>
+    },
+    {
+        path: "/:categoryPath",
+        element: <CategoryUser/>
+    },
+    {
+        path: "/products",
+        element: <ProductKeyword/>
+    }
+   
+]
+
+const privateUserRouters: RouterRole[] = [
+    {
+        path: "/cart",
+        element: <Cart/>
+    },
+    {
+
+        path: "/payment",
+        element: <Payment/>
+    }, 
     {
         path: "/user",
         element: <Navigate to={"account"}/>
@@ -87,113 +118,139 @@ export const router = createBrowserRouter([
     },
     {
         path: "/user/account/profile",
-        element: <UserLayout><Account><Profile/></Account></UserLayout>
+        element: <Account><Profile/></Account>
     },
     {
         path: "/user/account/address",
-        element: <UserLayout><Account><Address/></Account></UserLayout>
+        element: <Account><Address/></Account>
     },
     {
         path: "/user/account/password",
-        element: <UserLayout><Account><Password/></Account></UserLayout>
+        element: <Account><Password/></Account>
     },
     {
         path: "/user/purchase",
-        element: <App><UserLayout><Account><Purchase/></Account></UserLayout></App>
+        element: <Account><Purchase/></Account>
         
     },
     {
         path: "/user/notifications",
-        element: <UserLayout><Account><Notification/></Account></UserLayout>
+        element: <Account><Notification/></Account>
     },
     {
         path: "/user/vouchers",
-        element: <UserLayout><Account><Voucher/></Account></UserLayout>
+        element: <Account><Voucher/></Account>
     },
     {
         path: "/user/payment/success",
-        element: <UserLayout><PaymentSuccess/></UserLayout>
+        element: <PaymentSuccess/>
     },
     {
         path: "/user/purchase/:purchaseId",
-        element: <UserLayout><PuchaseDetail/></UserLayout>
+        element: <PuchaseDetail/>
     }
-    ,
-    {
-        path: "/product/:key",
-        element: <App><UserLayout><ProductDetail/></UserLayout></App>
-    },
-    {
-        path: "/:categoryPath",
-        element: <UserLayout><CategoryUser/></UserLayout>
-    },
-    {
 
+]
+
+const privateAdminRouters: RouterRole[] = [
+
+    {
         path: "/admin",
-        element: <AdminLayout><Dashboard/></AdminLayout>
+        element: <Dashboard/>
     },
     {
 
         path: "/admin/create/promotion",
-        element: <AdminLayout><CreatePromotion/></AdminLayout>
+        element: <CreatePromotion/>
     },
     {
 
         path: "/admin/create/voucher",
-        element: <AdminLayout><CreateVoucher/></AdminLayout>
+        element: <CreateVoucher/>
     },
     {
         path: "/admin/product/create",
-        element: <AdminLayout><InsertProduct/></AdminLayout>
+        element: <InsertProduct/>
     },
     {
         path: "/admin/products",
-        element: <AdminLayout><Product/></AdminLayout>
+        element: <Product/>
     },
     {
         path: "/admin/products/attribute",
-        element: <AdminLayout><ProductAttribute/></AdminLayout>
+        element: <ProductAttribute/>
     },
     {
         path: "/admin/product/stock",
-        element: <AdminLayout><ProductStock/></AdminLayout>
+        element: <ProductStock/>
     },
     {
         path: "/admin/product/import",
-        element: <AdminLayout><ProductImport/></AdminLayout>
+        element: <ProductImport/>
     },
     {
         path: "/admin/product/batch",
-        element: <AdminLayout><Batch/></AdminLayout>
+        element: <Batch/>
     },
     {
         path: "/admin/categories",
-        element: <AdminLayout><Category/></AdminLayout>
+        element: <Category/>
     },
     {
         path: "/admin/purchase",
-        element: <App><AdminLayout><PurchaseAdmin/></AdminLayout></App>
+        element: <PurchaseAdmin/>
     },
     {
         path: "/admin/brand",
-        element: <AdminLayout><Brand/></AdminLayout>
+        element: <Brand/>
     },
     {
         path: "/admin/brands",
-        element: <AdminLayout><BrandList/></AdminLayout>
+        element: <BrandList/>
     },
     {
         path: "/admin/employee/create",
-        element: <AdminLayout><CreateEmployee/></AdminLayout>
+        element: <CreateEmployee/>,
+        role: [Role.ROLE_ADMIN]
     },
     {
         path: "/admin/employees",
-        element: <AdminLayout><EmployeeList/></AdminLayout>
+        element: <EmployeeList/>,
+        role: [Role.ROLE_ADMIN]
     },
     {
         path: "/admin/messages",
-        element: <App><AdminLayout><Message/></AdminLayout> </App>
+        element: <Message/>
     },
 
+];
 
-]);
+export const getRouters = () => {
+
+    const routerUsers = publicUserRouters.map((router) => {
+        return {
+            path: router.path,
+            element: <App><UserLayout>{router.element}</UserLayout></App>
+        }
+    });
+
+    const privateRouterUsers = privateUserRouters.map((router) => {
+        return {
+            path: router.path,
+            element: <ProtectedRouter roles={[Role.ROLE_USER]}><UserLayout>{router.element}</UserLayout></ProtectedRouter>
+        }
+    });
+
+    const routerAdmins = privateAdminRouters.map((router) => {
+        return {
+            path: router.path,
+            element: <ProtectedRouter roles={[Role.ROLE_ADMIN]}><AdminLayout>{router.element}</AdminLayout></ProtectedRouter>
+        }
+    });
+
+    const result = [...authRouters, ...routerUsers, ...privateRouterUsers, ...routerAdmins];
+
+    return result;
+};
+
+export const router = createBrowserRouter(getRouters());
