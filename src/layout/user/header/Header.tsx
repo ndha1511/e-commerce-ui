@@ -5,6 +5,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import PopoverSearch from "./PopoverSearch";
 import useRedirect from "../../../hooks/useRedirect";
+
 import { useGetCartByUserIdQuery } from "../../../services/cart.service";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetNotificationsQuery } from "../../../services/notification.service";
@@ -36,6 +37,7 @@ const Header = ({ fixedSearch }: Props) => {
     const [showNotification, setShowNotification] = useState<boolean>(false);
     const popoverRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const redirect = useRedirect();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -60,8 +62,12 @@ const Header = ({ fixedSearch }: Props) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isOpenPopover]);
+    const handleSearch = () => {
+        redirect("/products?keyword=" + textSearch);
+    }
 
-    console.log(data)
+
+
     return <>
         {/* <SideBar /> */}
 
@@ -80,7 +86,7 @@ const Header = ({ fixedSearch }: Props) => {
                         className="search-input col-8"
                         placeholder="Tìm kiếm sản phẩm"
                     />
-                    <button className="search-button background-primary col-2 col-md-1 button-hover" data-toggle="tooltip" title="Tìm kiếm">
+                    <button onClick={handleSearch}  className="search-button background-primary col-2 col-md-1 button-hover" data-toggle="tooltip" title="Tìm kiếm">
                         <i className="bi bi-search"></i>
                     </button>
                 </label>

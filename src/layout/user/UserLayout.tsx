@@ -51,6 +51,8 @@ const UserLayout = ({ children }: Props) => {
         <Header fixedSearch={fixedSearch} />
         <div style={{
             marginTop: fixedSearch ? '100px' : 0,
+            paddingBottom: 20,
+            paddingTop: 20
         }}>{children}</div>
         <MessageView />
         <Footer />

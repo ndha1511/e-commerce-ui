@@ -26,6 +26,7 @@ const PurchaseAdmin = () => {
     const totalPages = Math.ceil(totalItems / itemsPerPage); // Tổng số trang
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
     const simplebarRef = useRef<HTMLDivElement | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedPurchase, setSelectedPurchase] = useState<any>(null);
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -63,7 +64,7 @@ const PurchaseAdmin = () => {
             case "Đã hủy":
                 setOrderStatus(OrderStatus.CANCELLED);
                 break;
-            case "Đang chờ xử lý":
+            case "Đang chờ xác nhận":
             default:
                 setOrderStatus(OrderStatus.AWAITING_PICKUP);
                 break;

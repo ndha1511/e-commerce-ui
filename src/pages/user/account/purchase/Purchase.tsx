@@ -47,7 +47,7 @@ const Purchase = () => {
     React.useEffect(() => {
         switch (activeTab) {
             case "Đang chờ xác nhận":
-                setOrderStatus(OrderStatus.AWAITING_PICKUP);
+                setOrderStatus(OrderStatus.AWAITING_PICKUP)
                 break;
             case "Đang giao hàng":
                 setOrderStatus(OrderStatus.SHIPPING);

@@ -1,10 +1,10 @@
 import SockJS from "sockjs-client";
 import { Client, over } from "stompjs";
 
-export var stompClient : Client | null = null;
+export let stompClient : Client | null = null;
 
 export const connect = (onConnected: () => void, onError: () => void)  => {
-    let sock = new SockJS(`${import.meta.env.VITE_BASE_WS_URL}`);
+    const sock = new SockJS(`${import.meta.env.VITE_BASE_WS_URL}`);
     stompClient = over(sock);
     stompClient.connect({}, onConnected, onError);
 }

@@ -6,10 +6,10 @@ import useRedirect from "../../../hooks/useRedirect";
 import './insert-product.scss'
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import SimpleBar from "simplebar-react";
-import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { isMobile } from "../../../utils/responsive";
 import useDebounce from "../../../hooks/useDebounce";
 import SkeltetonWrapper from "../../../components/query-wrapper/SkeletonWrapper";
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
 
 function Product() {
     const mobile = isMobile();
@@ -42,7 +42,7 @@ function Product() {
                             <i className="bi bi-search"></i>
                         </div>
                         <div className=" d-flex justify-content-start gap-3    ">
-                            <button onClick={() => redirect('/admin/product/insert')} className="btn-save-all-products "  >Tạo sản phẩm</button>
+                            <button onClick={() => redirect('/admin/product/create')} className="btn-save-all-products "  >Thêm sản phẩm</button>
                             <button onClick={() => redirect('/admin/product/import')} className="btn-save-all-products " >Nhập hàng</button>
                         </div>
                     </div>

@@ -79,6 +79,13 @@ const productApi = createApi({
                 method: 'get',
             }),
             keepUnusedDataFor: 180,
+        }),
+        getProductByKeyword: build.query<BaseResponse<PageResponse<Product>>, {keyWord: string, param?: string, rangeRegularPrice?: string, rangeRating?: string}>({
+            query: (params) => ({
+                url: `/products/key-word/${params.keyWord}?${params.param ? params.param + '&': ''}rangeRegularPrice=${params.rangeRegularPrice}&rangeRating=${params.rangeRating}`,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
         })
     }),
 });
@@ -92,7 +99,8 @@ export const {
     useGetAttributeByIdQuery,
     useGetAttributeByProductIdQuery,
     useGetProductsPageQuery,
-    useGetProductsRecommendQuery
+    useGetProductsRecommendQuery,
+    useGetProductByKeywordQuery
 } = productApi;
 
 export default productApi;

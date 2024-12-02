@@ -1,5 +1,3 @@
-
-
 import { Link, useParams } from "react-router-dom";
 import Select, { SingleValue } from 'react-select'
 import MenuCategory from "./MenuCategory";
@@ -17,7 +15,12 @@ import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { SelectProps } from "../../admin/types";
+
 import { isMobile } from "../../../utils/responsive";
+
+import { ratingOptions, regularPriceOptions } from "../utils";
+
+
 
 
 function Category() {
@@ -47,6 +50,7 @@ function Category() {
             title: "Third Slide",
         },
     ]
+
     const options = [
         { value: '0', label: 'Tất cả' },
         { value: '0-100000', label: '0 - 100.000đ' },
@@ -63,6 +67,7 @@ function Category() {
         { value: '4-5', label: '⭐⭐⭐⭐' },
         { value: '5-5', label: '⭐⭐⭐⭐⭐' },
     ];
+
     const handleSubmit = (buttonName: string) => {
         setActiveButton(buttonName);
         if (buttonName === 'best-seller') {
@@ -172,6 +177,7 @@ function Category() {
                             </SkeletonWrapper>
                         </div>
                         <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={50}>
+
                             <div className={`mt-3 option-filter-user p-3 ${mobile ? 'd-flex flex-column' : 'd-flex gap-3 align-items-center'} `}>
                                 <div className="d-flex gap-3 ">
                                     <div className="text-muted">Sắp xếp theo</div>
@@ -197,6 +203,7 @@ function Category() {
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </SkeletonWrapper>
 
@@ -208,12 +215,6 @@ function Category() {
                                 totalPages={totalPages}
                                 handlePageChange={handlePageChange}
                             />}
-
-
-
-
-
-
                     </Col>
                 </Row>
             </div>
