@@ -26,7 +26,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
     const { data: dataNotification } = useGetNotificationsQuery({
         id: user?.data?.id || '',
         param: paramNotification,
-    },{skip: !loginSuccess});
+    }, { skip: !loginSuccess });
     const unseenCount = dataNotification?.data.items?.filter(item => item.seen === false).length || 0;
     useEffect(() => {
         const container1: HTMLElement | null = document.querySelector('.menu-container');
@@ -79,7 +79,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                     height: "30px",
                     borderRadius: "50%",
                     objectFit: "cover",
-                }}/> :<i className="bi bi-person-circle"></i>}
+                }} /> : <i className="bi bi-person-circle"></i>}
                 <span className="text-small">Tài khoản</span>
             </div>}
             {!isLocation('/cart') && <div className="menu-item" id="cart-motion-id" onClick={() => redirect('/cart')}>
@@ -114,12 +114,12 @@ const MenuFixed = ({ fixedSearch }: Props) => {
             </button>
         </div>
         {showNotification && (
-                <NotificationItems
-                    notifications={dataNotification?.data.items || []}
-                    isVisible={showNotification}
-                    setIsVisible={setShowNotification}
-                />
-            )}
+            <NotificationItems
+                notifications={dataNotification?.data.items || []}
+                isVisible={showNotification}
+                setIsVisible={setShowNotification}
+            />
+        )}
     </>
 }
 

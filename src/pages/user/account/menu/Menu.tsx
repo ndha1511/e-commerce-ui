@@ -67,7 +67,7 @@ const Menu = () => {
                     {menuItem.children && <ul className='disable-dot' style={{paddingLeft: '32px'}}>
                         {menuItem.children.map((child, index) => {
                             return <li key={index} className='text-medium item-hover'>
-                                <Link to={child.path ? child.path : "#"} className={`a-disable-default d-flex gap-2 color-item ${isAbsoluteLocation(child.path) && 'item-active'}`}>
+                                <Link to={child.path ? child.path : "#"} className={`link-all d-flex gap-2${isAbsoluteLocation(child.path) && 'item-active'}`}>
                                     {child.text}
                                 </Link>
                             </li>

@@ -23,6 +23,16 @@ const brandAPi = createApi({
                 method: 'get',
             }),
         }),
+        updateBrands: build.mutation<BaseResponse<PageResponse<Brand>>, {id:string, formData:FormData}>({
+            query: (brandUpdate) => ({
+                url: '/brands/'+brandUpdate.id,
+                method: 'put',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                data: brandUpdate.formData,
+            }),
+        }),
 
     })
 })
@@ -30,6 +40,7 @@ const brandAPi = createApi({
 export const {
     useCreateBrandMutation,
     useGetBrandsQuery,
+    useUpdateBrandsMutation
 } = brandAPi;
 
 export default brandAPi;

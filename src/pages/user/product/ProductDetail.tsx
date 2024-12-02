@@ -277,9 +277,9 @@ function ProductDetail() {
 
             <div className="p-1 text-meidum d-flex gap-2 text-muted">
                 <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skHeight={20} skWidth={300}>
-                    <> <Link to={"/"}>Trang chủ <FontAwesomeIcon icon={faChevronRight} /></Link>
+                    <> <Link to={"/"} className="link-all">Trang chủ <FontAwesomeIcon icon={faChevronRight} /></Link>
                         {categories?.data?.map((category) => {
-                            return <Link key={category.id} to={"/" + category.urlPath}>{category.categoryName} <FontAwesomeIcon icon={faChevronRight} /></Link>
+                            return <Link className="link-all" key={category.id} to={"/" + category.urlPath}>{category.categoryName} <FontAwesomeIcon icon={faChevronRight} /></Link>
                         })}</>
                 </SkeletonWrapper>
             </div>

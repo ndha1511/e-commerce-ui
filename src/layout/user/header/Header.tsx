@@ -4,17 +4,36 @@ import "./header.scss";
 import useDebounce from "../../../hooks/useDebounce";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import PopoverSearch from "./PopoverSearch";
+import useRedirect from "../../../hooks/useRedirect";
+import { useGetCartByUserIdQuery } from "../../../services/cart.service";
+import { pageQueryHanlder } from "../../../utils/query-handler";
+import { useGetNotificationsQuery } from "../../../services/notification.service";
+import NotificationItems from "../../../pages/user/notification/NotificationItems";
+import Account from "../side-bar/SideBar";
+import { isMobile } from "../../../utils/responsive";
+
 
 type Props = {
     fixedSearch: boolean;
 }
 
 const Header = ({ fixedSearch }: Props) => {
-
+    const mobile = isMobile();
+    const redirect = useRedirect();
     const [isOpenPopover, setIsOpenPopover] = useState(false);
     const [textSearch, setTextSearch] = useState("");
     const debouncedSearch = useDebounce(textSearch, 500);
-    const { data: userData } = useCheckLoginQuery();
+    const { data: userData, isSuccess: loginSuccess } = useCheckLoginQuery();
+    const { data } = useGetCartByUserIdQuery(userData?.data?.id || "", {
+        skip: !loginSuccess || !userData?.data?.id,
+    });
+    const paramNotification = pageQueryHanlder(1, 40);
+    const { data: dataNotification, refetch } = useGetNotificationsQuery({
+        id: userData?.data?.id || '',
+        param: paramNotification,
+    }, { skip: !loginSuccess });
+    const unseenCount = dataNotification?.data.items?.filter(item => item.seen === false).length || 0;
+    const [showNotification, setShowNotification] = useState<boolean>(false);
     const popoverRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -42,12 +61,14 @@ const Header = ({ fixedSearch }: Props) => {
         };
     }, [isOpenPopover]);
 
-
+    console.log(data)
     return <>
-        <SideBar />
-        
+        {/* <SideBar /> */}
+
         <div className={fixedSearch ? `search fixed-search` : `search`}>
-            <div className="search-arround"></div>
+            <div className="search-arround">
+                <span className="cursor-pointer " onClick={() => redirect("/")}>OSON</span >
+            </div>
             <div className="search-center">
                 <label htmlFor="search-input" className="search-wrapper">
                     <input
@@ -82,8 +103,37 @@ const Header = ({ fixedSearch }: Props) => {
 
 
             </div>
-            <div className="search-arround">
+            <div className="search-arround1">
+
+                <div className="menu-header" id="cart-motion--header-id" onClick={() => redirect('/cart')}>
+                    <i className="bi bi-cart" style={{ color: 'white', fontSize: mobile ? 16 : 20 }}></i>
+                    {data && data?.data.length > 0 &&
+                        <span className="badge-item-header background-primary text-small text-white">{data?.data.length}</span>}
+                </div>
+                <div className="menu-header" onClick={() => setShowNotification(!showNotification)}>
+                    <i className="bi bi-bell" style={{ color: 'white', fontSize: mobile ? 16 : 20 }}></i>
+                    {unseenCount !== 0 && <span className="badge-item-header background-primary text-small">{unseenCount}</span>}
+                </div>
+                <div className="">
+
+                    {userData?.data ? <Account username={userData.data.username} /> : <>
+                        {mobile ? <i className="bi bi-person-circle" style={{ color: 'white', fontSize: mobile ? 15 : 20 }}
+                            onClick={() => redirect('/auth/login')}></i> :
+                            <span className='text-white text-meidum cursor-pointer' onClick={() => redirect('/auth/login')}>Đăng nhập</span>
+                        }
+
+                        {/* <span className='side-bar-item' onClick={() => redirect('/auth/register')}>Đăng ký</span> */}
+                    </>}
+                </div>
+
             </div>
+            {showNotification && (
+                <NotificationItems
+                    notifications={dataNotification?.data.items || []}
+                    isVisible={showNotification}
+                    setIsVisible={setShowNotification}
+                />
+            )}
         </div>
     </>
 }

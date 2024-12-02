@@ -1,7 +1,7 @@
 
 
 import { Link, useParams } from "react-router-dom";
-import Select, { ActionMeta, SingleValue } from 'react-select'
+import Select, { SingleValue } from 'react-select'
 import MenuCategory from "./MenuCategory";
 import { useGetCategoryByUrlQuery } from "../../../services/category.service";
 import { Col, Row } from "react-bootstrap";
@@ -17,9 +17,11 @@ import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { SelectProps } from "../../admin/types";
+import { isMobile } from "../../../utils/responsive";
 
 
 function Category() {
+    const mobile = isMobile();
     const { categoryPath } = useParams();
     const { data: parentCategory, isSuccess: getCategoriesSuccess, isError: getCategoriesError, error: categoriesError } = useGetCategoryByUrlQuery(categoryPath || '');
     const [activeButton, setActiveButton] = useState<string | null>(null);
@@ -54,6 +56,7 @@ function Category() {
     ];
 
     const optionRating = [
+        { value: '0', label: 'Tất cả' },
         { value: '1-2', label: '⭐' },
         { value: '2-3', label: '⭐⭐' },
         { value: '3-4', label: '⭐⭐⭐' },
@@ -169,18 +172,31 @@ function Category() {
                             </SkeletonWrapper>
                         </div>
                         <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={50}>
-                            <div className='mt-3 option-filter-user p-3  d-flex gap-3 align-items-center'>
-                                <div className="text-muted">Sắp xếp theo</div>
-                                <button className={`${activeButton === 'popular' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('popular')}>Phổ biến</button>
-                                <button className={`${activeButton === 'latest' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('latest')}>Mới nhất</button>
-                                <button className={`${activeButton === 'best-seller' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('best-seller')}>Bán chạy</button>
-                                <div style={{ minWidth: 200 }}><Select options={options} placeholder="Giá"
-                                    value={price}
-                                    onChange={handlePrice} /></div>
-                                <div style={{ minWidth: 200 }}><Select options={optionRating}
-                                    value={rating}
-                                    onChange={handleRating}
-                                    placeholder="Đánh giá" /></div>
+                            <div className={`mt-3 option-filter-user p-3 ${mobile ? 'd-flex flex-column' : 'd-flex gap-3 align-items-center'} `}>
+                                <div className="d-flex gap-3 ">
+                                    <div className="text-muted">Sắp xếp theo</div>
+                                    <button className={`${activeButton === 'latest' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('latest')}>Mới nhất</button>
+                                    <button className={`${activeButton === 'best-seller' ? 'btn-filter-cate-user-active' : 'btn-filter-cate-user'}`} onClick={() => handleSubmit('best-seller')}>Bán chạy</button>
+                                </div>
+                                <div className={`d-flex gap-3 ${mobile?'mt-2':''}`}>
+                                    <div className={` ${mobile ? 'd-flex flex-column ':'d-flex gap-2 align-items-center'}`}>
+                                        <span>Phân loại theo giá:</span>
+                                        <div style={{ minWidth: mobile ? 150 : 200 }}>
+                                            <Select options={options} placeholder="Giá"
+                                                value={price}
+                                                onChange={handlePrice} />
+                                        </div>
+                                    </div>
+                                    <div className={` ${mobile ? 'd-flex flex-column ':'d-flex gap-2 align-items-center'}`}>
+                                        <span>Phân loại theo đánh giá:</span>
+                                        <div style={{ minWidth: mobile ? 150 : 200 }}>
+                                            <Select options={optionRating}
+                                                value={rating}
+                                                onChange={handleRating}
+                                                placeholder="Đánh giá" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </SkeletonWrapper>
 

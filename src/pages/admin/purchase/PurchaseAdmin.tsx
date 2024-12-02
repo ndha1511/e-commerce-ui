@@ -39,7 +39,7 @@ const PurchaseAdmin = () => {
     const currentProducts = purchase?.data.items?.slice(startIndex, startIndex + itemsPerPage);
     // define tabs
     const tabs = [
-        "Đang chờ xử lý",
+        "Đang chờ xác nhận",
         "Đang giao hàng",
         "Đã giao hàng",
         "Đã nhận hàng",
@@ -47,7 +47,7 @@ const PurchaseAdmin = () => {
 
     ];
 
-    const [activeTab, setActiveTab] = React.useState("Đang chờ xử lý");
+    const [activeTab, setActiveTab] = React.useState("Đang chờ xác nhận");
 
     React.useEffect(() => {
         switch (activeTab) {

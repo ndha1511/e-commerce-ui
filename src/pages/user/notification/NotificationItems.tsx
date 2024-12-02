@@ -4,10 +4,14 @@ import { NotificationModel } from "../../../models/notification";
 import SimpleBar from "simplebar-react";
 import moment from 'moment';
 import { useCheckSeenMutation } from "../../../services/notification.service";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
-function NotificationItems({ notifications,isVisible, setIsVisible }: { notifications: NotificationModel[], isVisible:boolean ,setIsVisible: (visible: boolean) => void}) {
+function NotificationItems({ notifications, isVisible, setIsVisible,refetch }: { notifications: NotificationModel[], 
+    isVisible: boolean,
+     setIsVisible: (visible: boolean) => void
+     refetch: () => void
+    }) {
     const [checkSeen] = useCheckSeenMutation();
     const notificationRef = useRef<HTMLDivElement>(null);
     const calculateElapsedTime = (notificationTime: Date): string => {
@@ -20,11 +24,12 @@ function NotificationItems({ notifications,isVisible, setIsVisible }: { notifica
 
     };
     const handleSeen = async (notificationId: string) => {
-       try {
-        await checkSeen(notificationId);
-       } catch (error) {
-        console.log(error);
-       }
+        try {
+            await checkSeen(notificationId);
+            refetch();
+        } catch (error) {
+            console.log(error);
+        }
     };
     const handleOutsideClick = (event: MouseEvent) => {
         if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
@@ -40,10 +45,10 @@ function NotificationItems({ notifications,isVisible, setIsVisible }: { notifica
 
     if (!isVisible) return null;
     return (
-        <div  ref={notificationRef} className="d-flex flex-column gap-3 justify-content-end" style={{
+        <div ref={notificationRef} className="d-flex flex-column gap-3 justify-content-end" style={{
             position: 'fixed',
-            bottom: 200,
-            right: 60,
+            top: 70,
+            right: 360,
             zIndex: 1000
         }}>
             <AnimatePresence>
@@ -55,22 +60,22 @@ function NotificationItems({ notifications,isVisible, setIsVisible }: { notifica
                     className="motion-notification"
                 >
                     <div className="border-bottom p-2 mb-1">Thông báo</div>
-                    <SimpleBar style={{ height: 300 }}>
+                    <SimpleBar style={{ height: 400 }}>
                         {notifications.slice().reverse().map((notification) => {
                             const timestamp = calculateElapsedTime(notification.time)
                             return (
                                 <div key={notification.id} className="content-notificaton" style={{
                                     backgroundColor: notification.seen === true ? '' : 'rgba(225, 220, 220, 0.3)'
-                                }} onClick={()=>handleSeen(notification.id)}>
+                                }} onClick={() => handleSeen(notification.id)}>
                                     <img src={notification.image} alt="" width={30} height={30} style={{ marginTop: 4 }} />
                                     <div>
                                         <span>{notification.title}</span>
                                         <div className="d-flex flex-column gap-1">
                                             <span className="text-light-cs">{notification.content}</span>
-                                            <span className="text-light-cs" style={{fontSize:10}}>{timestamp}</span>
+                                            <span className="text-light-cs" style={{ fontSize: 10 }}>{timestamp}</span>
                                         </div>
                                     </div>
-                                    {notification.seen === false && <div className="dot-notifi"><FontAwesomeIcon fontSize={8} color="red" icon={faCircle } /></div>}
+                                    {notification.seen === false && <div className="dot-notifi"><FontAwesomeIcon fontSize={8} color="red" icon={faCircle} /></div>}
                                 </div>
                             )
                         })}

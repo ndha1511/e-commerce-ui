@@ -1,48 +1,69 @@
-
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal, OverlayTrigger, } from "react-bootstrap";
+import { pageQueryHanlder } from "../../../utils/query-handler";
 import PromotionRow from "../../../components/promotion/PromotionRow";
-import { useEffect, useRef, useState } from "react";
+import useValidText from "../../../hooks/useValidText";
+import CustomTooltip from "../../../components/tooltip/CustomTooltipProps";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { pageQueryHanlder } from "../../../utils/query-handler";
-import { useGetCategoriesQuery } from "../../../services/category.service";
+import { Brand } from "../../../models/brand";
 import ModalCategoryBrand, { CategoryItems, DeleteCategoryItems } from "./ModalCategoryBrand";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../rtk/store/store";
-import { useCreateBrandMutation } from "../../../services/brand.service";
+import { useGetCategoriesQuery } from "../../../services/category.service";
+import { useUpdateBrandsMutation } from "../../../services/brand.service";
+import { useDispatch } from "react-redux";
 import { setNotify } from "../../../rtk/slice/notify-slice";
-import { clearCategories, removeAll } from "../../../rtk/slice/product-slice";
-import { OverlayTrigger } from "react-bootstrap";
-import CustomTooltip from "../../../components/tooltip/CustomTooltipProps";
+interface ProductApplyProps {
+    show: boolean;
+    handleClose: () => void;
+    brand: Brand;
+    refetch: () => void;
 
-function Brand() {
+}
+const UpdateBrand: React.FC<ProductApplyProps> = ({ show, handleClose, brand, refetch }) => {
+
     const [avt, setAvt] = useState<File>();
-    const [url, setUrl] = useState<string>("");
-    const [brandName, setBrandName] = useState<string>("");
-    const [descriptionBrand, setDescriptionBrand] = useState<string>("");
-    const [showCategoryModal, setShowCategoryModal] = useState(false);
-    const [categories, setCategories] = useState<CategoryItems[]>([]);
-    const params: string = pageQueryHanlder(1, 40, [{ filed: 'parentId', operator: '=', value: 'null' }]);
-    const { data } = useGetCategoriesQuery(params);
-    const product = useSelector((state: RootState) => state.product);
-    console.log(product);
-    const chilRef = useRef<DeleteCategoryItems>(null)
+    const [url, setUrl] = useState<string>(brand.image || "");
+    const { value: brandName, setValue: setBrandName, err: errBrandName } = useValidText();
     const [btnSubmit, setBtnSubmit] = useState<boolean>(false);
+    const [descriptionBrand, setDescriptionBrand] = useState<string | null>(null);
+    const [categories, setCategories] = useState<CategoryItems[]>([]);
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const chilRef = useRef<DeleteCategoryItems>(null);
+    const params: string = pageQueryHanlder(1, 40);
+    const { data } = useGetCategoriesQuery(params);
+    const [updateBrand] = useUpdateBrandsMutation();
     const dispatch = useDispatch();
-    const [createBrand] = useCreateBrandMutation();
-console.log(categories)
     const handleOpenCategoryModal = () => {
         setShowCategoryModal(true);
     }
+    const filteredCategories = data?.data.items.filter((category: any) =>
+        brand.categories.includes(category.id)
 
-    const handleCloseCategoryModal = () => {
-        setShowCategoryModal(false);
-    }
+    );
+    useEffect(() => {
+        // Kiểm tra xem filteredCategories có thay đổi và khác với categories hiện tại không
+        if (filteredCategories && filteredCategories.length > 0) {
+            const newCategories = filteredCategories.map(category => ({
+                id: category.id,
+                name: category.categoryName,
+            }));
+    
+            // So sánh sự thay đổi của categories mới với categories hiện tại
+            const hasChanges = !categories.length || !filteredCategories.every((category, index) => category.id === categories[index]?.id);
+    
+            // Cập nhật categories chỉ khi filteredCategories khác với categories hiện tại
+            if (hasChanges) {
+                setCategories(newCategories);
+            }
+        }
+    }, [filteredCategories]); // Chỉ theo dõi filteredCategories
+    
 
     const handleCategory = (selectedCategories?: CategoryItems[]) => {
 
         setCategories(selectedCategories || []);
     };
-
+    console.log(categories)
     const handleChangeImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length > 0) {
@@ -50,13 +71,6 @@ console.log(categories)
             setAvt(files[0]);
         }
     };
-
-    useEffect(() => {
-        return () => {
-            URL.revokeObjectURL(url);
-        };
-    }, [url]);
-
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
         if (name === 'brandName') {
@@ -65,52 +79,59 @@ console.log(categories)
             setDescriptionBrand(value);
         }
     };
-
-    const handleAdd = async () => {
-        setBtnSubmit(true);
-        const newFormData = new FormData();
-        if (avt) {
-            newFormData.append('image', avt);
-        }
-        newFormData.append('brandName', brandName);
-        newFormData.append('description', descriptionBrand);
-        product.categories.forEach(category => {
-            newFormData.append('categories', category);
-        });
-        try {
-            await createBrand(newFormData).unwrap();
-            dispatch(setNotify({
-                type: 'success', message: 'Thao tác thành công'
-            }));
-            setBrandName('');
-            setDescriptionBrand('');
-            setUrl('');
-            setCategories([]); // Reset categories khi hoàn tất
-            dispatch(removeAll());
-            dispatch(clearCategories());
-            if (chilRef.current) {
-                chilRef.current.handleClear();
-            }
-            setBtnSubmit(false);
-        } catch (error) {
-            console.error("Failed to update user:", error);
-            dispatch(setNotify({
-                type: 'error', message: 'Thao tác không thành công'
-            }));
-        }
-    }
     const handleRemoveCategory = (id: string) => {
         setCategories((prev) => prev.filter(item => item.id !== id));
         if (chilRef.current) {
             chilRef.current.handleRemoveCategory(id);
         }
     };
+    const handleCloseCategoryModal = () => {
+        setShowCategoryModal(false);
+    }
+    const handleUpdate = async () => {
+        setBtnSubmit(true);
+        const resquets = {
+            image: avt ? avt : brand.image,
+            name: brandName ? brandName : brand.brandName,
+            description: descriptionBrand ? descriptionBrand : brand.description,
+            categories: brand.categories.map(category => category),
+        }
+        console.log(resquets);
+        const formData = new FormData();
+        if (avt) {
+            formData.append('img', avt);
+        }
+        if (brandName || brand.brandName) {
+            formData.append('brandName', brandName ? brandName : brand.brandName);
+        }
+        formData.append('description', descriptionBrand ? descriptionBrand : brand.description);
+        brand.categories.forEach((category) => {
+            formData.append('categories', category);
+        })
+        try {
+            await updateBrand({
+                id: brand.id,
+                formData: formData
+            })
+            handleClose();
+            refetch();
+            dispatch(setNotify({
+                type: 'success', message: 'Cập nhật thành công'
+            }))
+        } catch (error) {
+            dispatch(setNotify({
+                type: 'error', message: 'Cập nhật không thành công'
+            }))
+        }
+    }
 
     return (
-        <div>
-            <div className="bg-light p-3 border-radius-small mb-3 mt-3">
-                <h6>Thông tin thương hiệu</h6>
-                <div className="p-3 bg-white border-raidus-small">
+        <Modal show={show} onHide={handleClose} centered>
+            <Modal.Header closeButton>
+                <div className="text-medium">Cập nhật thương hiệu </div>
+            </Modal.Header>
+            <Modal.Body>
+                <div>
                     <PromotionRow label="Hình ảnh thương hiệu:">
                         <div className="d-flex align-items-center gap-3">
                             <div>
@@ -119,8 +140,8 @@ console.log(categories)
                                         src={url}
                                         alt='User Avatar'
                                         className=''
-                                        width={600}
-                                        height={200}
+                                        width={280}
+                                        height={100}
                                     />
                                 ) : null}
                             </div>
@@ -168,15 +189,14 @@ console.log(categories)
                     <PromotionRow label="Tên thương hiệu:">
                         <OverlayTrigger
                             placement="bottom"
-                            overlay={brandName.trim() === '' && btnSubmit ? CustomTooltip("Không được để trống!") : <></>}
-                            show={brandName.trim() === ''}
+                            overlay={(errBrandName.trim() !== '' || (brandName === null && btnSubmit)) ? CustomTooltip(brandName ? brandName : 'Vui lòng không để trống') : <></>}
+                            show={(errBrandName.trim() !== '' && btnSubmit || (brandName === null && brand.brandName === ""))}
                         >
                             <input
                                 className="input-basic-information-seller"
-                                name="brandName"
-                                value={brandName}
-                                placeholder="adidas"
-                                onChange={handleChange}
+                                value={brandName !== null ? brandName || '' : brand.brandName}
+                                onChange={(e) => setBrandName(e.target.value)}
+                                placeholder="Tên thương hiệu"
                                 type="text"
                             />
                         </OverlayTrigger>
@@ -185,13 +205,13 @@ console.log(categories)
                         <OverlayTrigger
                             placement="bottom"
                             overlay={categories.length === 0 && btnSubmit ? CustomTooltip("Không được để trống!") : <></>}
-                            show={categories.length === 0}
+                            show={(categories.length === 0 && brand.categories.length === 0)}
                         >
                             <div className="border p-3 border-radius-small d-flex justify-content-between align-items-center">
 
                                 <div className="d-flex flex-wrap justify-content-start col-11 ">
 
-                                    {categories.map((category, index) => (
+                                    {categories?.map((category, index) => (
 
 
                                         <div key={index} className="border me-3 p-1 mb-2">
@@ -222,18 +242,23 @@ console.log(categories)
                             </div>
                         </OverlayTrigger>
                     </PromotionRow>
-                    <PromotionRow label="Mô tả chi tiết:">
-                        <textarea rows={8} cols={50} value={descriptionBrand} onChange={handleChange} name="description" className="textarea-basic-information-seller" />
+                    <PromotionRow label="Mô tả chi tiết:" obligatory={false}>
+                        <textarea rows={8} cols={50} value={descriptionBrand !== null ? (descriptionBrand || '') : brand.description} onChange={handleChange} name="description" className="textarea-basic-information-seller" />
                     </PromotionRow>
-                    <div className="mt-3 w-100 d-flex justify-content-end">
-                        <button className="btn-save-all-category-1" style={{ width: 150 }} onClick={handleAdd}>Hoàn tất</button>
-                    </div>
+                    <ModalCategoryBrand show={showCategoryModal} handleClose={handleCloseCategoryModal} brand={brand} categories={data?.data.items} handleCategory={handleCategory}
+                        ref={chilRef} />
                 </div>
-            </div>
-            <ModalCategoryBrand show={showCategoryModal} handleClose={handleCloseCategoryModal} categories={data?.data.items} handleCategory={handleCategory}
-                ref={chilRef} />
-        </div>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="light" onClick={handleClose}>
+                    Close
+                </Button>
+                <Button variant="danger" onClick={handleUpdate}>
+                    Save Changes
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
-}
+};
 
-export default Brand;
+export default UpdateBrand;

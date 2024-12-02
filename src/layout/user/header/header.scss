@@ -3,11 +3,12 @@
 .search {
     display: flex;
     height: 80px;
-    background-color: #fff;
+    background-color: $primary-color;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     transition: all 0.3s ease;
     padding: 0 10px 0 10px;
+    gap: 15px;
 }
 
 .fixed-search {
@@ -23,7 +24,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 3px solid $primary-color;
+    border: 3px solid white;
+    background-color: white;
     border-radius: $border-radius-medium;
     padding: 0 5px 0 15px;
 }
@@ -32,10 +34,11 @@
     display: flex;
     flex: 1;
     position: relative;
+
 }
 
 .search-input {
-    width: 80%;
+    width: 85%;
     height: 40px;
     border: none;
     border-radius: $border-radius-medium;
@@ -44,11 +47,34 @@
 }
 
 .search-arround {
+    width: 22%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    color: white;
+    font-size: 40px;
+    
+    span{
+        color: white;
+    }
+    // padding-left: 200px;
+}
+
+.search-arround1 {
     width: 25%;
     display: flex;
+    justify-content: start;
     align-items: center;
-    color: $primary-color;
+    color: white;
     font-size: $font-large;
+
+    // padding-right: 200px;
+    gap: 15px;
+
+    i {
+        cursor: pointer;
+    }
+  
 }
 
 .search-button {
@@ -62,16 +88,63 @@
 .search-content {
     &:hover {
         background-color: rgb(220, 220, 220);
-    };
+    }
+
+    ;
 }
 
+.menu-header {
+    position: relative;
+
+}
+.badge-item-header {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    outline: 0.2px solid white;
+}
 @media (max-width: 768px) {
-    .search-arround {
-        display: none;
+   .search-arround{
+    width: auto;
+    font-size: 20px;
+    h1{
+        font-size: 20px;
     }
-
+   }
+   .search-arround1{
+    width: auto;
+   }
     .search {
-        padding: 0 30px 0 30px;
+        padding: 0 10px 0 10px;
+        height: 60px;
     }
-
+    .search-button{
+        height: 70%;
+        border-radius: $border-radius-medium;
+        border: none;
+        font-size: $font-medium;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        i{
+            font-size: 11px;
+            margin-top: 2.5px;
+        }
+    }
+    .search-input{
+        height: 30px;
+    }
+    .badge-item-header{
+        top: -1px;
+        right: -4px;
+        width: 13px;
+        height: 13px;
+    }
 }

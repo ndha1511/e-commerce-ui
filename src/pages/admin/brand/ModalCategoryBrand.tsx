@@ -10,12 +10,14 @@ import { Category as CategoryModel } from "../../../models/category";
 import { useLazyGetCategoriesQuery } from "../../../services/category.service";
 import { useDispatch } from "react-redux";
 import { setCategories } from "../../../rtk/slice/product-slice";
+import { Brand } from "../../../models/brand";
 
 type CategoryModalProps = {
     show: boolean;
     handleClose: () => void;
     categories?: Category[];
     handleCategory: (category?: CategoryItems[]) => void;
+    brand?: Brand;
 }
 
 export interface CategoryItems {
@@ -29,7 +31,7 @@ export interface DeleteCategoryItems {
 }
 
 const ModalCategoryBrand = forwardRef<DeleteCategoryItems, CategoryModalProps>(
-    ({ show, handleClose, categories, handleCategory }, ref) => {
+    ({ show, handleClose, categories, handleCategory, brand }, ref) => {
         const [isConfirm, setIsConfirm] = useState<boolean>(true);
         const [categoryId, setCategoryId] = useState<string[]>([]);
         const [categoryId1, setCategoryId1] = useState<string[]>([]);
@@ -43,6 +45,33 @@ const ModalCategoryBrand = forwardRef<DeleteCategoryItems, CategoryModalProps>(
             ? [{ filed: 'parentId', operator: '=', value: categoryId[categoryId.length - 1] }]
             : []
         );
+        useEffect(() => {
+            if (show && brand?.categories) {
+              // Lấy danh sách các category đã chọn từ brand.categories
+              const selectedCategories = categories?.filter(category =>
+                brand.categories.includes(category.id)
+              ) || [];
+          
+              // Chuyển thành CategoryItems[] và chỉ cập nhật nếu có sự thay đổi
+              const updatedCategories = selectedCategories.map((category) => ({
+                id: category.id,
+                name: category.categoryName,
+              }));
+          
+              // Kiểm tra nếu có sự thay đổi giữa categories cũ và categories mới
+              const hasChanges = updatedCategories.length !== category.length || 
+                                 updatedCategories.some((category, index) => category.id !== updatedCategories[index]?.id);
+          
+              if (hasChanges) {
+                setCategory(updatedCategories); // Cập nhật danh sách category đã chọn
+              }
+            }
+          }, [show, brand?.categories, categories]); // Chạy lại khi show, brand.categories hoặc categories thay đổi
+          
+
+
+
+        console.log(category)
         const paramsParent1 = pageQueryHanlder(1, 100,
             categoryId1.length > 0
                 ? [{ filed: 'parentId', operator: '=', value: categoryId1[categoryId1.length - 1] }]

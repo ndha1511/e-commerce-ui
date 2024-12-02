@@ -7,9 +7,11 @@ import { Brand } from '../../../models/brand';
 import useRedirect from '../../../hooks/useRedirect';
 import { BsGear, BsTrash } from 'react-icons/bs';
 import { isMobile } from '../../../utils/responsive';
+import UpdateBrand from './UpdateBrand';
 
 interface BrandProps {
     brand: Brand;
+    refetch: ()=>void;
 }
 
 function BrandList() {
@@ -18,29 +20,33 @@ function BrandList() {
     const { data, refetch } = useGetBrandsQuery(params);
     const brands = data?.data.items;
     const redirect = useRedirect();
+
     useEffect(() => {
-        refetch(); 
-     }, [data])
+        refetch();
+    }, [data])
     return (
-        <div className={`${mobile ? "w-50": "p-3  bg-light w-100"}`}>
+        <div className={`${mobile ? "w-50" : "p-3  bg-light w-100"}`}>
             <div className='d-flex w-100 justify-content-between'>
                 <span className="text-large">Danh sách thương hiệu</span>
-                <div className= {`${mobile ?"p-2  d-flex justify-content-start mt-5": "p-2  d-flex justify-content-start"}`}>
+                <div className={`${mobile ? "p-2  d-flex justify-content-start mt-5" : "p-2  d-flex justify-content-start"}`}>
                     <button className="btn-save-all-category p-2" onClick={() => redirect('/admin/brand')} >Thêm thương hiệu</button>
                 </div>
             </div>
             <div className="p-3 bg-light border-radius-small row border ">
                 {brands?.map((brand) => (
-                    <BrandCard key={brand.brandName} brand={brand} />
+                    <BrandCard key={brand.brandName} brand={brand} refetch={refetch} />
                 ))}
             </div>
+
         </div>
     );
 }
 
-function BrandCard({ brand }: BrandProps) {
+function BrandCard({ brand, refetch}: BrandProps) {
     const [isExpanded, setIsExpanded] = useState(false);
-
+    const [showModal, setShowModal] = useState(false);
+    const handleOpenModal = () => setShowModal(true);
+    const handleCloseModal = () => setShowModal(false);
     // Hàm chuyển đổi giữa mở rộng và thu gọn
     const toggleExpand = () => setIsExpanded(!isExpanded);
 
@@ -66,7 +72,7 @@ function BrandCard({ brand }: BrandProps) {
                     )}
                 </span>
                 <div style={{ position: 'absolute', bottom: 13, right: 13, display: 'flex', gap: 13 }}>
-                    <BsGear style={{ fontSize: '18px', color: 'orange', cursor: 'pointer' }} />
+                    <BsGear style={{ fontSize: '18px', color: 'orange', cursor: 'pointer' }} onClick={() => handleOpenModal()} />
                     <BsTrash style={{ fontSize: '18px', color: 'red', cursor: 'pointer' }} />
                 </div>
 
@@ -82,7 +88,7 @@ function BrandCard({ brand }: BrandProps) {
                     </div>
                 </Collapse>
             </div>
-
+            {showModal && <UpdateBrand show={showModal} handleClose={handleCloseModal} brand={brand} refetch={refetch} />}
         </div>
     );
 }

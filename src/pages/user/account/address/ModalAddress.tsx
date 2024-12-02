@@ -4,10 +4,9 @@ import { setNotify } from "../../../../rtk/slice/notify-slice";
 import { UserAddressDto } from "../../../../dtos/request/address/user-address-dto";
 import { useEffect, useState } from "react";
 import { useDeleteUserAddressMutation, useGetAddressByUserIdQuery, useUpdateUserAddressMutation } from "../../../../services/address.service";
-import { Action } from "../../../../components/address/ModalAddress";
+import ModalAddressUpdate, { Action } from "../../../../components/address/ModalAddress";
 import { useDispatch } from "react-redux";
 import { useCheckLoginQuery } from "../../../../services/auth.service";
-import CreateAddressModal from "../../../../components/address/CreateAddressModal";
 interface ModalAddressProps {
     show: boolean;
     handleClose: () => void;
@@ -135,7 +134,7 @@ function ModalAddress({ show, handleClose, refetch }: ModalAddressProps) {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            {modalAdd && <CreateAddressModal  show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch} />}
+            {modalAdd && <ModalAddressUpdate  addressId={addressId || ''} action={action} show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch} />}
         </div>
     );
 }

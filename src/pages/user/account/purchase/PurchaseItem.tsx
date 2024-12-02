@@ -88,7 +88,7 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
             {item.orderStatus === OrderStatus.PENDING || item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION  ?
                 <td>
                     {(item.orderStatus === OrderStatus.PENDING) && <button className="inActiveProduct">Hủy đơn hàng</button>}
-                    {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button onClick={() => updatePurchase(OrderStatus.RECEIVED)}>Đã nhận được hàng</button>}
+                    {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button className="inActiveProduct" onClick={() => updatePurchase(OrderStatus.RECEIVED)}>Đã nhận được hàng</button>}
                 </td> : <></>
             }
 

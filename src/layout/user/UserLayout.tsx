@@ -54,7 +54,7 @@ const UserLayout = ({ children }: Props) => {
         }}>{children}</div>
         <MessageView />
         <Footer />
-        <div className="border z-index-5">  ádgdsagsadgasdg  <AnimationComponent /></div>
+        <AnimationComponent />
         {notify.type && <NotificationButton type={notify.type} message={notify.message} />}
     </>
 

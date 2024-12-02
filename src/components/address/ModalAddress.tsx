@@ -16,7 +16,7 @@ interface Props {
   addressId?: string;
 }
 
-const ModalAddress = ({ show, handleClose, refetch, action, addressId }: Props) => {
+const ModalAddressUpdate = ({ show, handleClose, refetch, action, addressId }: Props) => {
   const [provinceID, setProvinceId] = useState<number>(0);
   const [districtID, setDistrictId] = useState<number>(0);
   const [wardID, setWardId] = useState<number>(0);
@@ -147,7 +147,7 @@ const ModalAddress = ({ show, handleClose, refetch, action, addressId }: Props) 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <h6>Thêm địa chỉ</h6>
+        <h6>Cập nhật địa chỉ</h6>
       </Modal.Header>
       <Modal.Body>
         <div className="d-flex w-100 flex-column gap-3">
@@ -213,4 +213,4 @@ const ModalAddress = ({ show, handleClose, refetch, action, addressId }: Props) 
   );
 }
 
-export default ModalAddress;
+export default ModalAddressUpdate;
