@@ -1,10 +1,11 @@
-import React, { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import './navbar.scss';
 import { Col, Collapse, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useRedirect from '../../../hooks/useRedirect';
 import { isMobile } from '../../../utils/responsive';
+import { isAbsoluteLocation } from '../../../utils/location';
 
 interface Menu {
     name: string;
@@ -140,14 +141,15 @@ const menu: Menu[] = [
     },
     {
         name: 'Thống kê',
-        path: '/admin',
+        path: '/admin/statistics',
         icon: <i className="bi bi-graph-up"></i>
     },
 ]
 
 
-const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selectedPath, setSelectedPath, selectedName, openMenu, setOpenMenu }: Menu & { isChild?: boolean; selectedPath?: string; setSelectedPath?: (path: string | undefined) => void, selectedName?: string; setSelectedName?: (path: string | undefined) => void, openMenu: string | undefined; setOpenMenu: (name: string | undefined, path?: string | undefined) => void }) => {
-    const [open, setOpen] = React.useState(false);
+const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selectedName, openMenu, setOpenMenu }: 
+    Menu & { isChild?: boolean; selectedName?: string; setSelectedName?: (path: string | undefined) => void, openMenu: string | undefined; setOpenMenu: (name: string | undefined, path?: string | undefined) => void }) => {
+    const [open, setOpen] = useState(false);
     const redirect = useRedirect();
 
     // Xác định nếu menu cha được chọn (kể cả khi có menu con)
@@ -163,13 +165,12 @@ const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selec
             }
         } else {
             event.stopPropagation();
-            setSelectedPath && setSelectedPath(path); // Cập nhật selectedPath khi là menu con
             redirect(path || '');
         }
     }
 
     // Mở menu con nếu menu cha đang được chọn
-    React.useEffect(() => {
+    useEffect(() => {
         setOpen(openMenu === name);
     }, [openMenu, name]);
 
@@ -182,7 +183,7 @@ const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selec
                     </Col>
                     <Col md={10} xs={10}>
                         <div className='d-flex justify-content-between align-items-center w-100 pe-1'>
-                            <span style={{ fontSize: fontSize || 14, color: isChild && selectedPath === path ? 'rgb(235, 105, 35)' : '' }}>
+                            <span style={{ fontSize: fontSize || 14, color: isChild && isAbsoluteLocation(path) ? 'rgb(235, 105, 35)' : '' }}>
                                 {name}
                             </span>
                             <span>
@@ -201,8 +202,6 @@ const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selec
                                 key={index}
                                 {...item}
                                 isChild={true}
-                                selectedPath={selectedPath}
-                                setSelectedPath={setSelectedPath}
                                 openMenu={openMenu}
                                 setOpenMenu={setOpenMenu} // Thêm setOpenMenu để quản lý trạng thái
                             />
@@ -217,11 +216,10 @@ const MenuItem = ({ name, path, icon, children, fontSize, isChild = false, selec
 
 const Navbar = () => {
     const mobile = isMobile();
-    const [selectedPath, setSelectedPath] = React.useState<string | undefined>(undefined);
-    const [selectedName, setSelectedName] = React.useState<string | undefined>(undefined);
-    const [openMenu, setOpenMenu] = React.useState<string | undefined>(undefined); // Trạng thái menu cha đang mở
+    const [selectedName, setSelectedName] = useState<string | undefined>(undefined);
+    const [openMenu, setOpenMenu] = useState<string | undefined>(undefined); // Trạng thái menu cha đang mở
 
-    const handleMenuClick = (name: string | undefined, path: string | undefined) => {
+    const handleMenuClick = (name: string | undefined) => {
         if (openMenu === name) {
             // Nếu menu đang mở thì đóng lại
             setOpenMenu(undefined);
@@ -230,7 +228,6 @@ const Navbar = () => {
             // Mở menu mới và đóng menu trước đó
             setOpenMenu(name);
             setSelectedName(name);
-            setSelectedPath(path);
         }
     };
     return (
@@ -246,8 +243,6 @@ const Navbar = () => {
                     <MenuItem
                         key={index}
                         {...item}
-                        selectedPath={selectedPath}
-                        setSelectedPath={setSelectedPath}
                         selectedName={selectedName}
                         setSelectedName={setSelectedName}
                         openMenu={openMenu}

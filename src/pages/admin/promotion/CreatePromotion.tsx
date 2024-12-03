@@ -120,6 +120,7 @@ const CreatePromotion = () => {
                 type: 'success', message: 'Thao tác thành công'
             }))
         } catch (error) {
+            console.log(error);
             dispatch(setNotify({
                 type: 'error', message: 'Thao tác không thành công'
             }))
@@ -135,6 +136,7 @@ const CreatePromotion = () => {
 
         const min = findMinPrice();
         setMinPrice(min);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProducts]);
     const discountValueString = discountValue ?? '';
     const validateDiscountValue = (
@@ -187,6 +189,7 @@ const CreatePromotion = () => {
         if (startDate && (!endDate || endDate <= startDate)) {
             setEndDate(new Date(startDate.getTime() + 24 * 60 * 60 * 1000));
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startDate]);
     const handleClear = ()=>{
         setSelectedProducts([]);

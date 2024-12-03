@@ -42,6 +42,7 @@ import CreatePromotion from "../pages/admin/promotion/CreatePromotion";
 import ProtectedRouter from "./ProtectedRouter";
 import { Role } from "../models/user";
 import ProductKeyword from "../pages/user/product/ProductKeyword";
+import Statistics from "../pages/admin/statistics/Statistics";
 
 
 interface RouterRole {
@@ -222,6 +223,10 @@ const privateAdminRouters: RouterRole[] = [
         path: "/admin/messages",
         element: <Message/>
     },
+    {
+        path: "/admin/statistics",
+        element: <Statistics/>
+    }
 
 ];
 
