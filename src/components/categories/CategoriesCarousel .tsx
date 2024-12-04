@@ -5,12 +5,14 @@ import { useGetCategoriesQuery } from '../../services/category.service';
 import { pageQueryHanlder } from '../../utils/query-handler';
 import useRedirect from '../../hooks/useRedirect';
 import QueryWrapper from '../query-wrapper/SkeletonWrapper';
+import { isMobile } from '../../utils/responsive';
 
 const CategoriesCarousel = () => {
+  const mobile = isMobile();
   const redirect = useRedirect();
   const params: string = pageQueryHanlder(1, 1000, [{ filed: 'parentId', operator: '=', value: 'null' }]);
   const { data: parentCategory, isSuccess: getCategoriesSuccess } = useGetCategoriesQuery(params);
-  const itemsPerSlide = 20; // Number of items per slide
+  const itemsPerSlide = mobile ?10:20; // Number of items per slide
   const totalSlides = Math.ceil((parentCategory?.data.items.length || 0) / itemsPerSlide);
   const renderCarouselItems = () => {
     const slides = [];

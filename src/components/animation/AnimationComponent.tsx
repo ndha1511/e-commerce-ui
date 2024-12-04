@@ -9,7 +9,6 @@ const AnimationComponent: React.FC = () => {
     const dispatch = useDispatch();
     const triggerA = useSelector((state: RootState) => state.loading.triggerA);
     const triggerB = useSelector((state: RootState) => state.loading.triggerB);
-    console.log(triggerA);
     const [animationA, setAnimationA] = useState(false);
     const [animationB, setAnimationB] = useState(false);
     const [animationComplete, setAnimationComplete] = useState(false);

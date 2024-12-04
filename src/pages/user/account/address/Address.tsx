@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import ModalAddress, { Action } from "../../../../components/address/ModalAddress";
+import  { Action } from "../../../../components/address/ModalAddress";
 import { useDeleteUserAddressMutation, useGetAddressByUserIdQuery, useUpdateUserAddressMutation } from "../../../../services/address.service";
 import { useCheckLoginQuery } from "../../../../services/auth.service";
 import './address.scss';
 import { UserAddressDto } from "../../../../dtos/request/address/user-address-dto";
 import { useDispatch } from "react-redux";
 import { setNotify } from "../../../../rtk/slice/notify-slice";
+import ModalAddressUpdate from "../../../../components/address/ModalAddress";
 
 
 
@@ -114,7 +115,7 @@ const Address = () => {
                         </div>
                     </div>
                 ))}
-            {modalAdd && <ModalAddress addressId={addressId || ''} action={action} show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch} />}
+            {modalAdd && <ModalAddressUpdate addressId={addressId || ''} action={action} show={modalAdd} handleClose={() => setModalAdd(false)} refetch={addressRefetch} />}
         </div>
     );
 }

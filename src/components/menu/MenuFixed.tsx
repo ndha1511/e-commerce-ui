@@ -7,7 +7,6 @@ import { useGetCartByUserIdQuery } from "../../services/cart.service";
 import { useCheckLoginQuery } from "../../services/auth.service";
 import { pageQueryHanlder } from "../../utils/query-handler";
 import { useGetNotificationsQuery } from "../../services/notification.service";
-import NotificationItems from "../../pages/user/notification/NotificationItems";
 
 type Props = {
     fixedSearch: boolean;
@@ -16,7 +15,6 @@ type Props = {
 const MenuFixed = ({ fixedSearch }: Props) => {
 
     const [showMenu, setShowMenu] = useState<boolean>(true);
-    const [showNotification, setShowNotification] = useState<boolean>(false);
     const redirect = useRedirect();
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
     const { data } = useGetCartByUserIdQuery(user?.data?.id || "", {
@@ -26,7 +24,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
     const { data: dataNotification } = useGetNotificationsQuery({
         id: user?.data?.id || '',
         param: paramNotification,
-    },{skip: !loginSuccess});
+    }, { skip: !loginSuccess });
     const unseenCount = dataNotification?.data.items?.filter(item => item.seen === false).length || 0;
     useEffect(() => {
         const container1: HTMLElement | null = document.querySelector('.menu-container');
@@ -79,7 +77,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                     height: "30px",
                     borderRadius: "50%",
                     objectFit: "cover",
-                }}/> :<i className="bi bi-person-circle"></i>}
+                }} /> : <i className="bi bi-person-circle"></i>}
                 <span className="text-small">Tài khoản</span>
             </div>}
             {!isLocation('/cart') && <div className="menu-item" id="cart-motion-id" onClick={() => redirect('/cart')}>
@@ -93,7 +91,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                 <span className="text-small">Tin nhắn</span>
                 <span className="badge-item background-primary text-small">2</span>
             </div>
-            <div className="menu-item" onClick={() => setShowNotification(!showNotification)}>
+            <div className="menu-item" >
                 <i className="bi bi-bell"></i>
                 <span className="text-small">Thông báo</span>
                 {unseenCount !== 0 && <span className="badge-item background-primary text-small">{unseenCount}</span>}
@@ -105,21 +103,14 @@ const MenuFixed = ({ fixedSearch }: Props) => {
             </div>}
 
             {isMobile() && <button className="show-menu border text-medium" onClick={() => setShowMenu(false)}>
-                <span aria-hidden="true" className="carousel-control-next-icon"></span>
+            <i className="bi bi-chevron-right"></i>
             </button>}
         </div>
         <div className="menu-container-2">
             <button className="show-menu border text-medium" onClick={() => setShowMenu(true)}>
-                <span aria-hidden="true" className="carousel-control-prev-icon"></span>
+            <i className="bi bi-chevron-left"></i>
             </button>
         </div>
-        {showNotification && (
-                <NotificationItems
-                    notifications={dataNotification?.data.items || []}
-                    isVisible={showNotification}
-                    setIsVisible={setShowNotification}
-                />
-            )}
     </>
 }
 
