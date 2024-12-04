@@ -84,7 +84,22 @@
     }
 }
 .btn-reply{
-    background-color: white;
+    background-color: rgb(235, 229, 229);
+    color: black;
+    font-weight: 500;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-left: 10px;
+    cursor: pointer;
+    &:hover{
+        background-color: #efeaea;
+    }
+}
+.btn-reply1{
+    position: absolute;
+    background-color:  rgb(235, 229, 229);
     color: black;
     font-weight: 500;
     border: none;
@@ -92,6 +107,8 @@
     border-radius: 10px;
     font-size: 12px;
     cursor: pointer;
+    bottom: 0;
+    right: -100px;
     &:hover{
         background-color: #efeaea;
     }

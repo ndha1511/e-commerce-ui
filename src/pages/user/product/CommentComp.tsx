@@ -5,26 +5,31 @@ import Rating from '../../../components/rating/Rating';
 import { Comment, MediaType } from '../../../models/comment';
 import Avatar from '../../../components/avatar/Avatar';
 import { useReplyCommentMutation } from '../../../services/comment.service';
+import { Product } from '../../../models/product';
+import PaginationComponent from '../../../components/pagination/PaginationComponent';
+import { User } from '../../../models/user';
 
 
-const CommentComp = ({ comments }: { comments: Comment[] }) => {
-    const totalReviews = 16;
+const CommentComp = ({ user,comments, product, handleFilterCommnet,currentPageComment,totalPages,handlePageChange }: 
+    { user: string,comments: Comment[], product: Product, handleFilterCommnet: (field: string, value: string) => void
+        currentPageComment:number,totalPages:number
+        handlePageChange: (page:number)=>void
+     }) => {
+    const totalReviews = comments.length;
     const [isReply, setIsReply] = useState<string | null>(null);
     const [textReply, setTextReply] = useState<string>('');
     const handleOpenReply = (commentId: string) => {
-        setIsReply(isReply === commentId ? null : commentId); 
+        setIsReply(isReply === commentId ? null : commentId);
     };
     const [reply] = useReplyCommentMutation();
 
-    const handleChangeReply = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeReply = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTextReply(e.target.value);
-    }   
+    }
 
     const handleReply = async (commentId: string) => {
-        console.log(commentId);
-        console.log(textReply);
         const newFormData = new FormData();
-        newFormData.append('content',textReply);
+        newFormData.append('content', textReply);
         try {
             await reply({
                 commentId: commentId,
@@ -36,26 +41,25 @@ const CommentComp = ({ comments }: { comments: Comment[] }) => {
         }
     }
     const ratings = [
-        { stars: 5, count: 13 },
-        { stars: 4, count: 2 },
-        { stars: 3, count: 0 },
-        { stars: 2, count: 1 },
-        { stars: 1, count: 0 },
+        { stars: 5, count: comments.filter(comment => comment.rating === 5).length },
+        { stars: 4, count: comments.filter(comment => comment.rating === 4).length },
+        { stars: 3, count: comments.filter(comment => comment.rating === 3).length },
+        { stars: 2, count: comments.filter(comment => comment.rating === 2).length },
+        { stars: 1, count: comments.filter(comment => comment.rating === 1).length },
     ];
 
-    const averageRating = 4.7;
+
 
     const [selectedFilter, setSelectedFilter] = useState('Tất Cả');
-
     const filters = [
-        { label: 'Tất Cả', count: null },
-        { label: '5 Sao', count: '8,9k' },
-        { label: '4 Sao', count: 653 },
-        { label: '3 Sao', count: 263 },
-        { label: '2 Sao', count: 94 },
-        { label: '1 Sao', count: 196 },
-        { label: 'Có Bình Luận', count: '3,6k' },
-        { label: 'Có Hình Ảnh / Video', count: '1,3k' }
+        { field: '', value: '', label: 'Tất Cả', count: null },
+        { field: 'rating', value: '5', label: '5 Sao', count: null },
+        { field: 'rating', value: '4', label: '4 Sao', count: null },
+        { field: 'rating', value: '3', label: '3 Sao', count: null },
+        { field: 'rating', value: '2', label: '2 Sao', count: null },
+        { field: 'rating', value: '1', label: '1 Sao', count: null },
+        { field: 'commentMedia', value: 'null', label: 'Có Bình Luận', count: null },
+        { field: '', value: '321', label: 'Có Hình Ảnh / Video', count: null }
     ];
 
     const handleFilterClick = (filterLabel: string) => {
@@ -71,6 +75,39 @@ const CommentComp = ({ comments }: { comments: Comment[] }) => {
             </Pagination.Item>,
         );
     }
+    // Tạo function renderRatingStars để xử lý việc hiển thị sao
+    const renderRatingStars = (rating: number) => {
+        const fullStars = Math.floor(rating);
+        const decimalPart = rating % 1;
+        const stars = [];
+
+        // Render full stars
+        for (let i = 0; i < fullStars; i++) {
+            stars.push(<span key={i} style={{ fontSize: 30 }} className="text-warning">&#9733;</span>);
+        }
+
+        // Render half star if part decimal >= 0.5
+        if (decimalPart >= 0.5) {
+            stars.push(<span key={fullStars} style={{ fontSize: 30 }} className="text-warning">&#9733;</span>);
+        } else if (decimalPart > 0) {
+            // Render partial star if part decimal > 0 but less than 0.5
+            stars.push(<span key={fullStars} style={{ fontSize: 30 }} className="text-warning">&#9734;</span>);
+        }
+
+        // Render empty stars
+        for (let i = stars.length; i < 5; i++) {
+            stars.push(<span key={i} style={{ fontSize: 30 }} className="text-secondary">&#9734;</span>);
+        }
+
+        return stars;
+    };
+
+    // Cập nhật giá trị averageRating
+    const averageRating = parseFloat(product.rating.toFixed(1)); // Chuyển đổi thành kiểu number
+
+
+
+
 
     return (
         <div className='bg-white p-3  border-radius-medium mt-3'>
@@ -82,12 +119,11 @@ const CommentComp = ({ comments }: { comments: Comment[] }) => {
                             <div className="d-flex align-items-center">
                                 <h2 className="mb-0">{averageRating}</h2>
                                 <div className="ms-2">
-                                    {[...Array(5)].map((_, index) => (
-                                        <span style={{ fontSize: 30 }} key={index} className="text-warning">&#9733;</span>
-                                    ))}
+                                    {renderRatingStars(averageRating)}
                                 </div>
+
                             </div>
-                            <p className="mb-2 text-muted">({totalReviews} đánh giá)</p>
+                            <p className="mb-2 text-muted">({totalReviews > 0 ? totalReviews : 'Chưa có'} đánh giá)</p>
                             {ratings.map((rating, index) => (
                                 <div key={index} className="d-flex align-items-center mb-1">
                                     <div className="me-2" style={{ width: '20%' }}>
@@ -115,7 +151,10 @@ const CommentComp = ({ comments }: { comments: Comment[] }) => {
                             {filters.map((filter, index) => (
                                 <Col key={index} xs={6} md={3} className="mb-2 ">
                                     <button
-                                        onClick={() => handleFilterClick(filter.label)}
+                                        onClick={() => {
+                                            handleFilterClick(filter.label);
+                                            handleFilterCommnet(filter.field, filter.value);
+                                        }}
                                         className={`w-100 btn-comment border-radius-small bg-white p-1 d-flex align-items-center justify-content-center ${selectedFilter === filter.label ? 'selected' : ''}`}
                                     >
                                         {filter.label} {filter.count && `(${filter.count})`}
@@ -149,37 +188,39 @@ const CommentComp = ({ comments }: { comments: Comment[] }) => {
                                 </Col>
                             </Row>
                             <Card.Text className="mt-2">
-                           
+
                             </Card.Text>
                             <div className='d-flex align-items-center gap-1'>
-                                    <div className="d-flex gap-3">
-                                        {value.content}
-                                        {value.commentMedia?.map((img, imgIndex) => (
-                                            <div key={imgIndex} className="">
-                                                {img.mediaType === MediaType.IMAGE ?
-                                                    <Image className='img-cm' src={img.path} thumbnail /> :
-                                                    <video src={img.path}></video>
-                                                }
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <button className='btn-reply' onClick={()=>handleOpenReply(value.id)}>Phản hồi</button>
+                                <div className="d-flex flex-column gap-3">
+                                    {value.content}
+                                    {value.commentMedia?.map((img, imgIndex) => (
+                                        <div key={imgIndex} style={{ position: 'relative' }}>
+                                            {img.mediaType === MediaType.IMAGE ?
+                                                <Image className='img-cm' src={img.path} thumbnail /> :
+                                                <video src={img.path}></video>
+                                            }
+                                            {(value.commentMedia !== null && user === 'admin@gmail.com') && <button className={`${value.commentMedia === null ? 'btn-reply' : 'btn-reply1'}`} onClick={() => handleOpenReply(value.id)}>Phản hồi</button>}
+
+                                        </div>
+                                    ))}
                                 </div>
+                                {(value.commentMedia === null && user === 'admin@gmail.com') && <button className={`${value.commentMedia === null ? 'btn-reply' : 'btn-reply1'}`} onClick={() => handleOpenReply(value.id)}>Phản hồi</button>}
+                            </div>
                             {isReply === value.id &&
-                                <div className=' d-flex flex-column'>
+                                <div className=' d-flex flex-column mt-4'>
                                     <div className='d-flex align-items-end'>
                                         <Avatar name={value?.user?.name || ""} url={value?.user?.avatar} />
-                                        <input onChange={(e)=>handleChangeReply(e)} type="text" placeholder='Phản hồi' className='input-reply' />
+                                        <input onChange={(e) => handleChangeReply(e)} type="text" placeholder='Phản hồi' className='input-reply' />
                                     </div>
-                                    <div className='d-flex justify-content-end gap-2 mt-1'>
+                                    <div className='d-flex justify-content-end gap-2 mt-3'>
                                         <button className='btn-cancel' onClick={() => setIsReply(null)}>Hủy</button>
-                                        <button className='btn-send' onClick={()=>handleReply(value.id)}>Phản hồi</button>
+                                        <button className='btn-send' onClick={() => handleReply(value.id)}>Phản hồi</button>
                                     </div>
                                 </div>
                             }
                             {value.replyComment ? <div className="bg-light p-3 mt-3 custom-background">
                                 <span>Phản Hồi Của Shop
-                                    
+
                                 </span>
                                 <Card.Text className='text-muted'>
                                     {value.replyComment}
@@ -189,9 +230,9 @@ const CommentComp = ({ comments }: { comments: Comment[] }) => {
                         <hr />
                     </Card>)
             })}
-            <div className='w-100 d-flex justify-content-end '>
-                <Pagination>{items}</Pagination>
-            </div>
+            {comments.length > 0 && <div className='w-100 d-flex justify-content-center '>
+                <PaginationComponent currentPage={currentPageComment} totalPages={totalPages} handlePageChange={handlePageChange} />
+            </div>}
 
         </div>
     );
