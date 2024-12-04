@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Collapse, Container, Form, Row } from "react-bootstrap";
 import { BsChatDots } from "react-icons/bs";
 import ImageDetails from "../../../components/image-details/ImageDetails";
 import Rating from "../../../components/rating/Rating";
@@ -33,6 +33,7 @@ import { Message } from "stompjs";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetCommentsQuery } from "../../../services/comment.service";
 import ListProduct from "../../../components/products/ListProduct";
+import { useGetBrandsQuery } from "../../../services/brand.service";
 
 
 
@@ -48,6 +49,9 @@ function ProductDetail() {
 
 
     const product = resProduct?.data;
+    console.log(product)
+    const paramsBrand = pageQueryHanlder(1, 40, [{ filed: 'id', operator: '=', value: product?.brandId || '' }]);
+    const { data: brandData } = useGetBrandsQuery(paramsBrand);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [images, setIamges] = useState<any[]>([]);
     const [startIndex, setStartIndex] = useState(0);
@@ -61,23 +65,39 @@ function ProductDetail() {
     const { refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+
+    const toggleCollapse = () => {
+        setIsCollapsed(!isCollapsed);
+    };
     const [addToCart] = useAddToCartMutation();
     const dispatch = useDispatch();
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
     const [rotate, setRotate] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
-    const param = pageQueryHanlder(1, 100);
+    const [rating, setRanting] = useState<string>('');
+    const [ratingSearch, setRantingSearch] = useState<string>('');
+    const param = pageQueryHanlder(1, 10, [{filed: ratingSearch, operator:'=', value:rating}]);
     const { data: dataComment, refetch: refetchComment } = useGetCommentsQuery({
         productId: product?.id || '',
         params: param
     }, { skip: !getProductSuccess || !product?.id });
-
-    const {data: queryRecommendResult} = useGetProductsRecommendQuery({
+    const [currentPageComment, setCurrentPageComment] = useState(1);
+    const totalPages = dataComment?.data.totalPage || 0;
+    const handlePageChange = (page: number) => {
+        setCurrentPageComment(page);
+    };
+    const { data: queryRecommendResult } = useGetProductsRecommendQuery({
         productId: product?.numId,
         type: "content-filtering"
-    }, { skip: !getProductSuccess || !product?.id});
+    }, { skip: !getProductSuccess || !product?.id });
 
+    const handleFilterCommnet=(field: string, value: string)=>{
+        setRantingSearch(field);
+        setRanting(value);
+    }
+    console.log(rating);
     useEffect(() => {
         if (getProductSuccess) {
             if (!isConnected()) {
@@ -92,7 +112,7 @@ function ProductDetail() {
                 }
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stompClient, getProductSuccess]);
 
     const onConnected = () => {
@@ -214,7 +234,7 @@ function ProductDetail() {
                 }
                 imgs.push(...imgAttr);
             }
-            if(attrValues1) {
+            if (attrValues1) {
                 const imgAttr1 = [];
                 for (let i = 0; i < attrValues1.length; i++) {
                     if (attrValues1[i].image) {
@@ -273,7 +293,8 @@ function ProductDetail() {
             }
         }
     }
-
+    // Cắt ngắn phần mô tả ban đầu (100 ký tự)
+    const truncatedDescription = product?.description?.slice(0, 1000) + (product && product?.description?.length > 1000 ? "..." : "");
     return (
         <Container className="mt-4 bg-light  border-radius-small">
 
@@ -305,7 +326,7 @@ function ProductDetail() {
                             )}
                             <div className={`bg-white border-radius-medium p-3 ${product?.totalQuantity === 0 ? 'blurred' : ''}`}>
                                 <div className="d-flex align-items-center mb-2 ">
-                                    {product?.brandId && <span className="text-muted">Thương hiệu: LADOS</span>}
+                                    {product?.brandId && <span className="text-muted">Thương hiệu: {brandData?.data.items?.[0]?.brandName}</span>}
                                 </div>
                                 <h5 className="mb-1">{product?.productName}</h5>
 
@@ -358,14 +379,14 @@ function ProductDetail() {
                                                     className="img-fluid img-ft"
                                                 />
                                                 <div className="pe-4">
-                                                    <span className="fw bold">SOMINAM</span> <br />
+                                                    <span className="fw bold">OSOOS</span> <br />
                                                     4.4  <i className="bi bi-star-fill primary"></i>  <small>(720 đánh giá)</small>
                                                 </div>
                                             </div>
                                             <div >
-                                                <div className="border p-2 border-radius-small">
+                                                {/* <div className="border p-2 border-radius-small">
                                                     <BsChatDots style={{ fontSize: 20 }} color="#f05d23" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </Col>
@@ -444,24 +465,24 @@ function ProductDetail() {
 
                                                     </div>
                                                 </Col>
-                                            </Row> : 
-                                            <Row className="mt-3 border ">
-                                                 <Col>
-                                                    <div className="d-flex  ">
-                                                        <img
-                                                            src={product?.thumbnail}
-                                                            alt="variant"
-                                                            className="img-fluid img-ft"
-                                                        />
-                                                    </div>
-                                                </Col>
-                                                <Col>
-                                                    <div className="ps-1">
-                                                        <span>Kho hàng: {product?.totalQuantity}</span> <br />
+                                            </Row> :
+                                                <Row className="mt-3 border ">
+                                                    <Col>
+                                                        <div className="d-flex  ">
+                                                            <img
+                                                                src={product?.thumbnail}
+                                                                alt="variant"
+                                                                className="img-fluid img-ft"
+                                                            />
+                                                        </div>
+                                                    </Col>
+                                                    <Col>
+                                                        <div className="ps-1">
+                                                            <span>Kho hàng: {product?.totalQuantity}</span> <br />
 
-                                                    </div>
-                                                </Col>
-                                            </Row>}
+                                                        </div>
+                                                    </Col>
+                                                </Row>}
                                         </motion.div>
                                     )}
                                 </div>
@@ -541,10 +562,30 @@ function ProductDetail() {
                             <div style={{ border: 'none' }} className="card border-radius-medium ">
                                 <div className="card-body border-radius-medium product-detail">
                                     <h5 className="card-title">Mô tả sản phẩm</h5>
-                                    {product?.description.trimStart().startsWith("<") ? <div dangerouslySetInnerHTML={{ __html: product?.description || "" }} />
-                                        : <pre className="text-align-start">
-                                            {product?.description}
-                                        </pre>}
+                                    <Collapse in={!isCollapsed}>
+                                        <div >
+                                            {product?.description.trimStart().startsWith("<") ? (
+                                                <div dangerouslySetInnerHTML={{ __html: product?.description || "" }} />
+                                            ) : (
+                                                <pre className="text-align-start">{product?.description}</pre>
+                                            )}
+                                        </div>
+                                    </Collapse>
+                                    {isCollapsed && (
+                                        <div >
+                                            {product?.description.trimStart().startsWith("<") ? (
+                                                <div dangerouslySetInnerHTML={{ __html: truncatedDescription }} />
+                                            ) : (
+                                                <pre className="text-align-start">{truncatedDescription}</pre>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    <div className=" d-flex justify-content-end">
+                                        <button className="toggle-btn" onClick={toggleCollapse}>
+                                            {isCollapsed ? "Xem thêm" : "Thu gọn"}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -555,11 +596,17 @@ function ProductDetail() {
 
             <Row>
                 <Col md={9}>
-                    {product && <Comment comments={dataComment?.data.items || []} />}
+                    {product && <Comment user={user?.data?.email || ''} comments={dataComment?.data.items || []}
+                     product={product} 
+                     handleFilterCommnet={handleFilterCommnet}
+                     currentPageComment={currentPageComment}
+                     totalPages={totalPages}
+                     handlePageChange={handlePageChange}
+                     />}
                 </Col>
             </Row>
             <Row>
-                <ListProduct products={queryRecommendResult?.data} title="Sản phẩm tương tự"/>
+                <ListProduct products={queryRecommendResult?.data} title="Sản phẩm tương tự" />
             </Row>
         </Container>
     );
