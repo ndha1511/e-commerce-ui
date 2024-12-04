@@ -7,7 +7,6 @@ import Avatar from '../../../components/avatar/Avatar';
 import { useReplyCommentMutation } from '../../../services/comment.service';
 import { Product } from '../../../models/product';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
-import { User } from '../../../models/user';
 
 
 const CommentComp = ({ user,comments, product, handleFilterCommnet,currentPageComment,totalPages,handlePageChange }: 
@@ -15,7 +14,7 @@ const CommentComp = ({ user,comments, product, handleFilterCommnet,currentPageCo
         currentPageComment:number,totalPages:number
         handlePageChange: (page:number)=>void
      }) => {
-    const totalReviews = comments.length;
+    const totalReviews = product.reviews;
     const [isReply, setIsReply] = useState<string | null>(null);
     const [textReply, setTextReply] = useState<string>('');
     const handleOpenReply = (commentId: string) => {

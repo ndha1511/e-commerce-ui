@@ -74,7 +74,6 @@ const Purchase = () => {
     const handleTabClick = (tabName: string) => {
         setActiveTab(tabName);
     }
-console.log(purchase)
     return <div className="profile-container">
         <div className="d-flex justify-content-between align-items-center">
             <span className="text-large">Đơn hàng đã mua</span>
@@ -84,7 +83,7 @@ console.log(purchase)
         </div>
         <div className="d-flex justify-content-center align-items-center flex-1" style={{width: mobile?'45%':'100%'}}>
             {(purchase?.data?.items && purchase?.data?.items.length > 0) ?
-                <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.PENDING ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
+                <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.AWAITING_PICKUP ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
                     <thead>
                         <tr>
                             <th>Mã đơn hàng</th>

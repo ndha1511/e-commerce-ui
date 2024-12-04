@@ -118,7 +118,7 @@ const Header = ({ fixedSearch }: Props) => {
             </div>
             <div className="search-arround1">
 
-                <div className="menu-header" id="cart-motion--header-id" onClick={() => redirect('/cart')}>
+                <div className="menu-header" id="cart-motion-id" onClick={() => redirect('/cart')}>
                     <i className="bi bi-cart" style={{ color: 'white', fontSize: mobile ? 16 : 20 }}></i>
                     {data && data?.data.length > 0 &&
                         <span className="badge-item-header background-primary text-small text-white">{data?.data.length}</span>}

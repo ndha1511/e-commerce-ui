@@ -15,6 +15,7 @@ interface Props {
     product: ProductOrder;
     orderId: string;
     attributes: string[];
+    refetch: () => void;
 }
 
 enum FileType {
@@ -28,7 +29,7 @@ interface FileView {
     type: FileType;
 }
 
-const FormComment = ({ show, handleClose, product, orderId, attributes }: Props) => {
+const FormComment = ({ show, handleClose, product, orderId, attributes,refetch }: Props) => {
     const [star, setStar] = React.useState(0);
 
     const {data: user} = useCheckLoginQuery();
@@ -84,6 +85,7 @@ const FormComment = ({ show, handleClose, product, orderId, attributes }: Props)
             dispatch(setNotify({
                 type:'success', message: 'Thao tác thành công'
             }))
+            refetch();
         } catch (error) {
             console.log(error);
             dispatch(setNotify({

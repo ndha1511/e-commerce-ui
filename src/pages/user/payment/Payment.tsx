@@ -119,12 +119,12 @@ const Payment = () => {
                     location.href = responsePayment.data;
                 } else {
                     dispatch(setOrderId(newOrder.id));
-                    redirect("/user/payment/success", newOrder);
+                    redirect("/payment/result?success=true", newOrder);
                 }
 
             } catch (error) {
                 console.log(error);
-
+                redirect("/payment/result?success=false");
             }
         }
 

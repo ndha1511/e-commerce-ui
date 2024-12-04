@@ -49,7 +49,6 @@ function ProductDetail() {
 
 
     const product = resProduct?.data;
-    console.log(product)
     const paramsBrand = pageQueryHanlder(1, 40, [{ filed: 'id', operator: '=', value: product?.brandId || '' }]);
     const { data: brandData } = useGetBrandsQuery(paramsBrand);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +59,7 @@ function ProductDetail() {
     const [getVariant] = useLazyGetVariantsQuery();
     const [variant, setVariant] = useState<VariantResponse | null>();
     const [productPrice, setProductPrice] = useState(0);
-    const [disabledBtn, setDisabledBtn] = useState(true);
+    const [disabledBtn, setDisabledBtn] = useState<boolean>(true);
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
     const { refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
@@ -78,7 +77,7 @@ function ProductDetail() {
     const [isVisible, setIsVisible] = useState(false);
     const [rating, setRanting] = useState<string>('');
     const [ratingSearch, setRantingSearch] = useState<string>('');
-    const param = pageQueryHanlder(1, 10, [{filed: ratingSearch, operator:'=', value:rating}]);
+    const param = pageQueryHanlder(1, 10, [{ filed: ratingSearch, operator: '=', value: rating }]);
     const { data: dataComment, refetch: refetchComment } = useGetCommentsQuery({
         productId: product?.id || '',
         params: param
@@ -93,11 +92,11 @@ function ProductDetail() {
         type: "content-filtering"
     }, { skip: !getProductSuccess || !product?.id });
 
-    const handleFilterCommnet=(field: string, value: string)=>{
+    const handleFilterCommnet = (field: string, value: string) => {
         setRantingSearch(field);
         setRanting(value);
     }
-    console.log(rating);
+
     useEffect(() => {
         if (getProductSuccess) {
             if (!isConnected()) {
@@ -135,9 +134,9 @@ function ProductDetail() {
         const cartElement = document.getElementById("cart-motion-id");
         if (cartElement) {
             const iconRect = cartElement.getBoundingClientRect();
-            setX(iconRect.left + window.scrollX - 1225);
-            setY(iconRect.top + window.scrollY - 260);
-            setRotate(360);
+            setX(iconRect.left + window.scrollX - 1400);
+            setY(iconRect.top + window.scrollY - 270);
+            setRotate(0);
         }
     };
     const { data: address } = useGetAddressByUserIdQuery(user?.data?.id || "", {
@@ -269,6 +268,7 @@ function ProductDetail() {
     };
 
     const handleAddToCart = async () => {
+        setDisabledBtn(true);
         if (!user?.data) {
             window.location.href = '/auth/login?redirect-url=' + encodeURIComponent('product/' + key);
         } else {
@@ -280,16 +280,19 @@ function ProductDetail() {
                         quantity: quantity
                     }
                 }).unwrap();
+
                 handleAdd();
                 dispatch(setNotify({
                     type: 'success', message: 'Đã thêm sản phẩm vào giỏ hàng'
                 }))
-                refetch();
+                await refetch();
             } catch (error) {
                 dispatch(setNotify({
                     type: 'error', message: 'Thêm sản phẩm vào giỏ hàng thất bại'
                 }))
                 console.log(error);
+            } finally {
+                setDisabledBtn(false);  // Đảm bảo nút được bật lại dù có lỗi hay không
             }
         }
     }
@@ -436,7 +439,7 @@ function ProductDetail() {
                                                 scale: [1.5, 0.1],
                                                 opacity: [1, 0.5],
                                             }}
-                                            transition={{ type: "spring", stiffness: 100, damping: 50, duration: 25 }}
+                                            transition={{ type: "spring", stiffness: 700, damping: 100, duration: 0.2 }}
                                             style={{
                                                 opacity: "50%",
                                                 position: "absolute",
@@ -597,12 +600,12 @@ function ProductDetail() {
             <Row>
                 <Col md={9}>
                     {product && <Comment user={user?.data?.email || ''} comments={dataComment?.data.items || []}
-                     product={product} 
-                     handleFilterCommnet={handleFilterCommnet}
-                     currentPageComment={currentPageComment}
-                     totalPages={totalPages}
-                     handlePageChange={handlePageChange}
-                     />}
+                        product={product}
+                        handleFilterCommnet={handleFilterCommnet}
+                        currentPageComment={currentPageComment}
+                        totalPages={totalPages}
+                        handlePageChange={handlePageChange}
+                    />}
                 </Col>
             </Row>
             <Row>
