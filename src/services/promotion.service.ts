@@ -2,6 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "./base-query";
 import { BaseResponse } from "../dtos/response/base-response";
 import { Promotion } from "../models/promotion";
+import { Product } from "../models/product";
 
 const promotionApi = createApi({
     reducerPath: 'promotionApi',
@@ -22,13 +23,25 @@ const promotionApi = createApi({
                 data: newPromotion,
             })
         }),
+        getPromotion: build.query<BaseResponse<Promotion>, string>({
+            query: (url) => ({
+                url: `/promotions/`+ url,
+            })
+        }),
+        getProductByPromotionId: build.query<BaseResponse<Product[]>, string>({
+            query: (id) => ({
+                url: `/promotions/products/`+ id,
+            })
+        }),
     })
 
 })
 
 export const { 
     useGetPromotionCarouselQuery,
-    useCreatePromotionMutation
+    useCreatePromotionMutation,
+    useGetPromotionQuery,
+    useGetProductByPromotionIdQuery
 } = promotionApi;
 
 export default promotionApi;

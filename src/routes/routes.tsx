@@ -43,6 +43,7 @@ import ProtectedRouter from "./ProtectedRouter";
 import { Role } from "../models/user";
 import ProductKeyword from "../pages/user/product/ProductKeyword";
 import Statistics from "../pages/admin/statistics/Statistics";
+import Promotion from "../pages/user/promotion/Promotion";
 
 
 interface RouterRole {
@@ -95,6 +96,10 @@ const publicUserRouters: RouterRole[] = [
     {
         path: "/products",
         element: <ProductKeyword/>
+    },
+    {
+        path: "/promotion/:url",
+        element: <Promotion/>
     }
    
 ]
@@ -143,7 +148,7 @@ const privateUserRouters: RouterRole[] = [
         element: <Account><Voucher/></Account>
     },
     {
-        path: "/user/payment/success",
+        path: "/payment/result",
         element: <PaymentSuccess/>
     },
     {

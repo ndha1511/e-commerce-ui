@@ -80,7 +80,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                 }} /> : <i className="bi bi-person-circle"></i>}
                 <span className="text-small">Tài khoản</span>
             </div>}
-            {!isLocation('/cart') && <div className="menu-item" id="cart-motion-id" onClick={() => redirect('/cart')}>
+            {!isLocation('/cart') && <div className="menu-item"  onClick={() => redirect('/cart')}>
                 <i className="bi bi-bag"></i>
                 <span className="text-small">Giỏ hàng</span>
                 {data && data?.data.length > 0 &&

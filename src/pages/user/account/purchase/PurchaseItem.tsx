@@ -5,16 +5,18 @@ import React from "react";
 import { ProductOrder } from "../../../../models/product-order";
 import { PaymentMethod } from "../../../../dtos/request/payment/order-request";
 import { useLazyGetPaymentQuery } from "../../../../services/payment.service";
-import { useConfirmReceivedMutation } from "../../../../services/order.service";
+import { useConfirmActionMutation, useConfirmReceivedMutation } from "../../../../services/order.service";
 import ModalLoading from "../../../../components/loading/ModalLoading";
 import FormComment from "./FormComment";
 import './purchase.scss'
 
-const ProductItem = ({ product, orderId, attributes }: { 
-    product: ProductOrder, 
+const ProductItem = ({ product, orderId, attributes,refetch }: {
+    product: ProductOrder,
     orderId: string,
-    attributes: string[]
- }) => {
+    attributes: string[],
+    refetch: ()=>void
+    
+}) => {
     const [showFormComment, setShowFormComment] = React.useState(false);
     const handleClose = () => {
         setShowFormComment(false);
@@ -41,7 +43,7 @@ const ProductItem = ({ product, orderId, attributes }: {
             {(product.allowComment && !product.commented) && <td><button className="inActiveProduct" onClick={() => setShowFormComment(true)}>Đánh giá sản phẩm</button></td>}
         </tr>
 
-        {showFormComment && <FormComment attributes={attributes} orderId={orderId} show={showFormComment} handleClose={handleClose}  product={product}/>}
+        {showFormComment && <FormComment attributes={attributes} orderId={orderId} show={showFormComment} handleClose={handleClose} product={product} refetch={refetch} />}
     </>
 
 
@@ -49,6 +51,7 @@ const ProductItem = ({ product, orderId, attributes }: {
 
 const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) => {
     const [getUrlPayment] = useLazyGetPaymentQuery();
+    const [trigger, { isLoading: cancelLoading }] = useConfirmActionMutation();
     const [open, setOpen] = React.useState(false);
     const [confirmReceived, { isLoading: confirmLoading }] = useConfirmReceivedMutation();
     const handlerPayment = async () => {
@@ -69,6 +72,13 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
                     await confirmReceived(item.id);
                     refetch();
                     break;
+                case OrderStatus.AWAITING_PICKUP:
+                    await trigger({
+                        orderId: item.id,
+                        action: 'cancel'
+                    });
+                    refetch();
+                    break;
                 default:
                     break;
             }
@@ -85,9 +95,9 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
                     item.paymentStatus === PaymentStatus.UNPAID ? <button onClick={handlerPayment}>Thanh toán</button> : "Đã thanh toán"}
             </td>
             <td>{convertPrice(item.finalAmount)}</td>
-            {item.orderStatus === OrderStatus.PENDING || item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION  ?
-                <td>
-                    {(item.orderStatus === OrderStatus.PENDING) && <button className="inActiveProduct">Hủy đơn hàng</button>}
+            {item.orderStatus === OrderStatus.AWAITING_PICKUP || item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION ?
+                <td >
+                    {(item.orderStatus === OrderStatus.AWAITING_PICKUP) && <button className="inActiveProduct" onClick={() => updatePurchase(OrderStatus.AWAITING_PICKUP)}>Hủy đơn hàng</button>}
                     {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button className="inActiveProduct" onClick={() => updatePurchase(OrderStatus.RECEIVED)}>Đã nhận được hàng</button>}
                 </td> : <></>
             }
@@ -120,7 +130,7 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
                             </thead>
                             <tbody>
                                 {item.productOrders.map((p, idx) => (
-                                    <ProductItem attributes={p.attributes} orderId={item.id} product={p} key={idx} />
+                                    <ProductItem attributes={p.attributes} orderId={item.id} product={p} key={idx} refetch={refetch} />
                                 ))}
                                 <tr >
                                     <td colSpan={item.orderStatus !== OrderStatus.RECEIVED ? 5 : 6} style={{ border: 'none' }}></td>
@@ -151,7 +161,7 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
             </td>
         </tr>
 
-        {confirmLoading && <ModalLoading loading={confirmLoading} />}
+        {confirmLoading || cancelLoading  && <ModalLoading loading={confirmLoading || cancelLoading} />}
     </>
 }
 
