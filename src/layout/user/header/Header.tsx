@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import SideBar from "../side-bar/SideBar";
 import "./header.scss";
 import useDebounce from "../../../hooks/useDebounce";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import PopoverSearch from "./PopoverSearch";
 import useRedirect from "../../../hooks/useRedirect";
-
 import { useGetCartByUserIdQuery } from "../../../services/cart.service";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetNotificationsQuery } from "../../../services/notification.service";
@@ -37,8 +36,7 @@ const Header = ({ fixedSearch }: Props) => {
     const [showNotification, setShowNotification] = useState<boolean>(false);
     const popoverRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const redirect = useRedirect();
-
+    const notificationHeaderRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -62,12 +60,18 @@ const Header = ({ fixedSearch }: Props) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isOpenPopover]);
-    const handleSearch = () => {
+
+    const handleSearch = ()=>{
         redirect("/products?keyword=" + textSearch);
     }
-
-
-
+    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
+        if (event.key === 'Enter') {
+            handleSearch();
+            setIsOpenPopover(false);
+            (event.target as HTMLInputElement).blur();
+        
+        }
+    };
     return <>
         {/* <SideBar /> */}
 
@@ -82,11 +86,14 @@ const Header = ({ fixedSearch }: Props) => {
                         value={textSearch}
                         onFocus={() => setIsOpenPopover(true)}
                         onChange={(e) => setTextSearch(e.target.value)}
+                        onKeyDown={handleKeyDown} 
                         id="search-input"
                         className="search-input col-8"
                         placeholder="Tìm kiếm sản phẩm"
                     />
-                    <button onClick={handleSearch}  className="search-button background-primary col-2 col-md-1 button-hover" data-toggle="tooltip" title="Tìm kiếm">
+                    <button
+                        onClick={handleSearch}
+                        className="search-button background-primary col-2 col-md-1 button-hover" data-toggle="tooltip" title="Tìm kiếm">
                         <i className="bi bi-search"></i>
                     </button>
                 </label>
@@ -116,9 +123,19 @@ const Header = ({ fixedSearch }: Props) => {
                     {data && data?.data.length > 0 &&
                         <span className="badge-item-header background-primary text-small text-white">{data?.data.length}</span>}
                 </div>
-                <div className="menu-header" onClick={() => setShowNotification(!showNotification)}>
+                <div className="menu-header" ref={notificationHeaderRef} onClick={() => setShowNotification(!showNotification)} style={{ position: 'relative' }}>
+
                     <i className="bi bi-bell" style={{ color: 'white', fontSize: mobile ? 16 : 20 }}></i>
                     {unseenCount !== 0 && <span className="badge-item-header background-primary text-small">{unseenCount}</span>}
+                    {showNotification && (
+                        <NotificationItems
+                            notifications={dataNotification?.data.items || []}
+                            isVisible={showNotification}
+                            setIsVisible={setShowNotification}
+                            refetch={refetch}
+                            notificationHeaderRef={notificationHeaderRef}
+                        />
+                    )}
                 </div>
                 <div className="">
 
@@ -133,13 +150,7 @@ const Header = ({ fixedSearch }: Props) => {
                 </div>
 
             </div>
-            {showNotification && (
-                <NotificationItems
-                    notifications={dataNotification?.data.items || []}
-                    isVisible={showNotification}
-                    setIsVisible={setShowNotification}
-                />
-            )}
+
         </div>
     </>
 }

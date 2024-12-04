@@ -10,6 +10,13 @@ const historySearchApi = createApi({
         getHistorySearch: build.query<BaseResponse<HistorySearch[]>, { userId?: string; content?: string }>({
             query: ({ userId, content }) => ({
                 url: `/history-search${userId ? content ? "?userId=" + userId + "&content=" + content : "?userId=" + userId : content ? "?content=" + content : ""}`,
+            }),
+            keepUnusedDataFor:0
+        }),
+        deleteHistorySearch: build.mutation<BaseResponse<null>, string>({
+            query: (id) => ({
+                url: `/history-search/`+id,
+                method:'delete'
             })
         }),
     })
@@ -17,7 +24,8 @@ const historySearchApi = createApi({
 })
 
 export const { 
-    useGetHistorySearchQuery
+    useGetHistorySearchQuery,
+    useDeleteHistorySearchMutation
 } = historySearchApi;
 
 export default historySearchApi;

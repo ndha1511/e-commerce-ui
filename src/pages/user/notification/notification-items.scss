@@ -25,3 +25,9 @@
     right: 10px;
     top: 5px;
 }
+@media(max-width:768px){
+    .motion-notification{
+        width: 300px;
+        height: 300px;
+    }
+}

@@ -1,12 +1,11 @@
 import Avatar from '../../../components/avatar/Avatar';
 import Dropdown from '../../../components/dropdown/Dropdown';
 import useRedirect from '../../../hooks/useRedirect';
-import { useCheckLoginQuery, useLazyLogoutQuery } from '../../../services/auth.service';
-import { isAbsoluteLocation } from '../../../utils/location';
+import { useLazyLogoutQuery } from '../../../services/auth.service';
 import './side-bar.scss';
 
 
-const Account = ({username, avatar} : {username: string, avatar?: string}) => {
+const Account = ({ username, avatar }: { username: string, avatar?: string }) => {
     const redirect = useRedirect();
     const [logoutHandler] = useLazyLogoutQuery();
 
@@ -32,48 +31,13 @@ const Account = ({username, avatar} : {username: string, avatar?: string}) => {
         }
     ]
     return <>
-        <Dropdown dropDownItem={dropDownItems}>
-            <div className='side-bar-item'>
-                <Avatar name={username} url={avatar}/>
-            </div>
-        </Dropdown>
+        <div  >
+            <Dropdown dropDownItem={dropDownItems}>
+                <div className='side-bar-item'>
+                    <Avatar name={username} url={avatar} />
+                </div>
+            </Dropdown>
+        </div>
     </>
 }
 export default Account;
-// const SideBar = () => {
-//     const redirect = useRedirect();
-//     const { data } = useCheckLoginQuery();
-//     return <div className='side-bar-container'>
-//         <div className='container side-bar-container'>
-//             <div className={`side-bar-content`}>
-//                 <span className={`side-bar-item ${isAbsoluteLocation('/') ? 'primary' : ''}`}
-//                     onClick={() => redirect('/')}
-//                 >
-//                     <i className="bi bi-house-fill"></i>
-//                     Trang chủ
-//                 </span>
-//                 <span className='side-bar-item'>
-//                     Kênh người bán
-//                 </span>
-//             </div>
-//             <div className='side-bar-content'>
-//                 <span className='side-bar-item'>
-//                     <i className="bi bi-bell-fill"></i>
-//                     Thông báo
-//                 </span>
-//                 <span className={`side-bar-item ${isAbsoluteLocation('/cart') ? 'primary' : ''}`}
-//                     onClick={() => redirect('/cart')}
-//                 >
-//                     <i className="bi bi-cart-fill"></i>
-//                     Giỏ hàng
-//                 </span>
-//                 {data?.data ? <Account username={data.data.email}/> : <>
-//                     <span className='side-bar-item' onClick={() => redirect('/auth/login')}>Đăng nhập</span>
-//                     <span className='side-bar-item' onClick={() => redirect('/auth/register')}>Đăng ký</span>
-//                 </>}
-//             </div>
-//         </div>
-//     </div>
-// }
-
-// export default SideBar;

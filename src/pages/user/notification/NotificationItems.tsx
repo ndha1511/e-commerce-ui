@@ -7,11 +7,15 @@ import { useCheckSeenMutation } from "../../../services/notification.service";
 import { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
-function NotificationItems({ notifications, isVisible, setIsVisible,refetch }: { notifications: NotificationModel[], 
+import { isMobile } from "../../../utils/responsive";
+function NotificationItems({ notifications, isVisible, setIsVisible, refetch,notificationHeaderRef }: {
+    notifications: NotificationModel[],
     isVisible: boolean,
-     setIsVisible: (visible: boolean) => void
-     refetch: () => void
-    }) {
+    setIsVisible: (visible: boolean) => void
+    refetch: () => void
+    notificationHeaderRef : React.RefObject<HTMLDivElement>
+}) {
+    const mobile = isMobile();
     const [checkSeen] = useCheckSeenMutation();
     const notificationRef = useRef<HTMLDivElement>(null);
     const calculateElapsedTime = (notificationTime: Date): string => {
@@ -31,60 +35,64 @@ function NotificationItems({ notifications, isVisible, setIsVisible,refetch }: {
             console.log(error);
         }
     };
-    const handleOutsideClick = (event: MouseEvent) => {
-        if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-            setIsVisible(false); // Đóng khi click ra ngoài
+    const handleClickOutside = (event: MouseEvent) => {
+        if (notificationRef.current && notificationHeaderRef.current && !notificationRef.current.contains(event.target as Node)
+        && !notificationHeaderRef.current.contains(event.target as Node)) {
+            setIsVisible(false);
         }
     };
+
     useEffect(() => {
-        document.addEventListener('mousedown', handleOutsideClick);
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-
-    if (!isVisible) return null;
     return (
-        <div ref={notificationRef} className="d-flex flex-column gap-3 justify-content-end" style={{
-            position: 'fixed',
-            top: 70,
-            right: 360,
-            zIndex: 1000
-        }}>
-            <AnimatePresence>
-                <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1, }}
-                    exit={{ scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="motion-notification"
-                >
-                    <div className="border-bottom p-2 mb-1">Thông báo</div>
-                    <SimpleBar style={{ height: 400 }}>
-                        {notifications.slice().reverse().map((notification) => {
-                            const timestamp = calculateElapsedTime(notification.time)
-                            return (
-                                <div key={notification.id} className="content-notificaton" style={{
-                                    backgroundColor: notification.seen === true ? '' : 'rgba(225, 220, 220, 0.3)'
-                                }} onClick={() => handleSeen(notification.id)}>
-                                    <img src={notification.image} alt="" width={30} height={30} style={{ marginTop: 4 }} />
-                                    <div>
-                                        <span>{notification.title}</span>
-                                        <div className="d-flex flex-column gap-1">
-                                            <span className="text-light-cs">{notification.content}</span>
-                                            <span className="text-light-cs" style={{ fontSize: 10 }}>{timestamp}</span>
+        <>
+            {isVisible &&
+                <div ref={notificationRef} className="d-flex flex-column gap-3 justify-content-end" style={{
+                    position: 'absolute',
+                    top: 45,
+                    right: 0,
+                    zIndex: 1000
+                }}>
+                    <AnimatePresence>
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1, }}
+                            exit={{ scale: 1 }}
+                            transition={{ duration: 0.5 }}
+                            className="motion-notification"
+                        >
+                            <div className="border-bottom p-2 mb-1 text-black " style={{fontSize:12}}>Thông báo</div>
+                            <SimpleBar style={{ height:mobile?250: 400 }}>
+                                {notifications.slice().reverse().map((notification) => {
+                                    const timestamp = calculateElapsedTime(notification.time)
+                                    return (
+                                        <div key={notification.id} className="content-notificaton" style={{
+                                            backgroundColor: notification.seen === true ? '' : 'rgba(225, 220, 220, 0.3)'
+                                        }} onClick={() => handleSeen(notification.id)}>
+                                            <img src={notification.image} alt="" width={30} height={30} style={{ marginTop: 4 }} />
+                                            <div>
+                                                <span>{notification.title}</span>
+                                                <div className="d-flex flex-column gap-1">
+                                                    <span className="text-light-cs">{notification.content}</span>
+                                                    <span className="text-light-cs" style={{ fontSize: 10 }}>{timestamp}</span>
+                                                </div>
+                                            </div>
+                                            {notification.seen === false && <div className="dot-notifi"><FontAwesomeIcon fontSize={8} color="red" icon={faCircle} /></div>}
                                         </div>
-                                    </div>
-                                    {notification.seen === false && <div className="dot-notifi"><FontAwesomeIcon fontSize={8} color="red" icon={faCircle} /></div>}
-                                </div>
-                            )
-                        })}
-                    </SimpleBar>
-                </motion.div>
-            </AnimatePresence>
+                                    )
+                                })}
+                            </SimpleBar>
+                        </motion.div>
+                    </AnimatePresence>
 
 
-        </div>
+                </div>
+            }
+        </>
     );
 }
 

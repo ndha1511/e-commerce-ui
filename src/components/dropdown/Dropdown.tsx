@@ -11,7 +11,7 @@ interface Props {
 
 const Dropdown = ({dropDownItem, children} : Props) => {
 
-    return <div className="dropdown-wrapper">
+    return <div className="dropdown-wrapper" style={{zIndex:999999}}>
         {children}
         <div className="menu-dropdown border-radius-small">
             <div className="triangle-up"></div>
