@@ -134,7 +134,7 @@ function ProductDetail() {
         const cartElement = document.getElementById("cart-motion-id");
         if (cartElement) {
             const iconRect = cartElement.getBoundingClientRect();
-            setX(iconRect.left + window.scrollX - 1400);
+            setX(iconRect.left + window.scrollX - 1250);
             setY(iconRect.top + window.scrollY - 270);
             setRotate(0);
         }

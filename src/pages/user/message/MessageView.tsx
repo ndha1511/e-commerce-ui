@@ -209,7 +209,7 @@ const MessageView: React.FC = () => {
                             </div>
                             <i className="bi bi-x" onClick={toggleVisibility}></i>
                         </div>
-                        <SimpleBar style={{ height: 290, marginTop: 5 }}  >
+                        <SimpleBar style={{ height: 290, marginTop: 5, }}  >
                             <div className="message-list" onScroll={handleScroll} ref={messageListRef} >
                                 {messages.map((message) => (
                                     <motion.div

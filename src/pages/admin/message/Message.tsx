@@ -74,7 +74,8 @@ function Message() {
     }, [messagesData, isSuccess]);
     return (
         <div className=" bg-light p-4 " style={{ height: '100%', }}>
-            <div className="row bg-white " style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+            <h6>Danh sách tin nhắn</h6>
+            <div className="row bg-white " style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', }}>
                 {(!mobile || !hiddenMobile) && (
                     <div className={`${mobile ? 'col-12' : 'col-3'} border-end`}>
                         <RoomList

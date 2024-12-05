@@ -31,7 +31,7 @@ const DatePickerCustom: React.FC<DatePickerCustomProps> = (props) => {
                     setDate(formatDate2(formatDate(date), format[mode]));
                 }
             }}
-            className="date-promotion"
+            className="date-custom"
             dateFormat={format[mode]}
             showMonthYearPicker={mode === "monthYear"}
             showYearPicker={mode === "year"} />

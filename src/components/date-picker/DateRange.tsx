@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import DatePicker from "react-datepicker";
 import { formatDate, formatDate2 } from "../../utils/datetime";
-
+import './DateRangeStyle.scss'
 
 export interface DateRangeProps {
     startDate?: string;
@@ -39,7 +39,7 @@ const DateRange: React.FC<DateRangeProps> = (props) => {
                     setStartDate(formatDate(date))
                 }
             }}
-            className="date-promotion"
+            className="date-custom"
             dateFormat={format[mode]}
             showMonthYearPicker={mode === "monthYear"}
             showYearPicker={mode === "year"}
@@ -53,7 +53,7 @@ const DateRange: React.FC<DateRangeProps> = (props) => {
                     setEndDate(formatDate(date))
                 }
             }}
-            className="date-promotion"
+            className="date-custom"
             dateFormat={format[mode]}
             placeholderText="Chọn ngày"
             showMonthYearPicker={mode === "monthYear"}

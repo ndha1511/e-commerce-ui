@@ -1,0 +1,17 @@
+.date-custom {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    color: #373333;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    &:focus {
+        border: 0.1px solid rgb(239, 94, 27);
+        outline: none;
+    }
+}
+@media(max-width:768px){
+    .date-custom{
+        width: 100px;
+    }
+}

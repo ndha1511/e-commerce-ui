@@ -92,13 +92,13 @@ const PurchaseItem = ({ item, refetch }: { item: Order, refetch: () => void }) =
             <td>{new Date(item.createdAt).toLocaleString()}</td>
             <td>
                 {item.paymentMethod === PaymentMethod.COD ? "Thanh toán khi nhận hàng" :
-                    item.paymentStatus === PaymentStatus.UNPAID ? <button onClick={handlerPayment}>Thanh toán</button> : "Đã thanh toán"}
+                    item.paymentStatus === PaymentStatus.UNPAID ? <button className="inActiveProduct" onClick={handlerPayment}>Thanh toán</button> : "Đã thanh toán"}
             </td>
             <td>{convertPrice(item.finalAmount)}</td>
             {item.orderStatus === OrderStatus.AWAITING_PICKUP || item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION ?
                 <td >
                     {(item.orderStatus === OrderStatus.AWAITING_PICKUP) && <button className="inActiveProduct" onClick={() => updatePurchase(OrderStatus.AWAITING_PICKUP)}>Hủy đơn hàng</button>}
-                    {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button className="inActiveProduct" onClick={() => updatePurchase(OrderStatus.RECEIVED)}>Đã nhận được hàng</button>}
+                    {(item.orderStatus === OrderStatus.SHIPPED_CONFIRMATION) && <button className="inActiveProduct " onClick={() => updatePurchase(OrderStatus.RECEIVED)}>Đã nhận được hàng</button>}
                 </td> : <></>
             }
 
