@@ -65,7 +65,7 @@ const FormComment = ({ show, handleClose, product, orderId, attributes,refetch }
         if(star <= 0) return;
         if(content === '') return;
        
-        const productNumId =100;
+
         const formData: FormData = new FormData();
         for (const f of file) {
             formData.append('files', f);
@@ -73,8 +73,9 @@ const FormComment = ({ show, handleClose, product, orderId, attributes,refetch }
         formData.append('content', content);
         formData.append('productId', product.productId);
         formData.append('orderId', orderId);
+        formData.append('productNumId', product.productNumId.toString())
         formData.append('rating', star.toString());
-        formData.append('productNumId', productNumId.toString());
+
         for (const attr of attributes) {
             formData.append('attributes', attr);
         }

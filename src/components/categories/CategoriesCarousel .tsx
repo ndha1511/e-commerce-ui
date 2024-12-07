@@ -4,7 +4,7 @@ import './CategoriesCarousel .scss'; // Optional: Create a separate CSS file for
 import { useGetCategoriesQuery } from '../../services/category.service';
 import { pageQueryHanlder } from '../../utils/query-handler';
 import useRedirect from '../../hooks/useRedirect';
-import QueryWrapper from '../query-wrapper/SkeletonWrapper';
+import SkeletonWrapper from '../query-wrapper/SkeletonWrapper';
 import { isMobile } from '../../utils/responsive';
 
 const CategoriesCarousel = () => {
@@ -34,7 +34,7 @@ const CategoriesCarousel = () => {
   };
 
   return (
-    <QueryWrapper queriesStatus={[getCategoriesSuccess]}>
+    <SkeletonWrapper queriesStatus={[getCategoriesSuccess]} skHeight={150}>
       <div className="categories-carousel">
         <div className='title-categories'>
           <span >Danh mục</span>
@@ -47,7 +47,7 @@ const CategoriesCarousel = () => {
 
         </div>
       </div >
-    </QueryWrapper>
+    </SkeletonWrapper>
 
   );
 };

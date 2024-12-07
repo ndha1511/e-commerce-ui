@@ -3,6 +3,7 @@ export interface ProductOrder {
     productName: string;
     attributes: string[];
     price: number;
+    productNumId: number;
     quantity: number;
     amount: number;
     image: string;

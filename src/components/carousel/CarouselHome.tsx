@@ -1,13 +1,15 @@
 import { Carousel } from "react-bootstrap";
 import { useGetPromotionCarouselQuery } from "../../services/promotion.service";
 import useRedirect from "../../hooks/useRedirect";
+import SkeltetonWrapper from "../query-wrapper/SkeletonWrapper";
 
 const CarouselHome = () => {
 
-  const {data: promotionQueryResult} = useGetPromotionCarouselQuery();
+  const {data: promotionQueryResult, isSuccess} = useGetPromotionCarouselQuery();
   const redirect = useRedirect();
 
   return (
+    <SkeltetonWrapper queriesStatus={[isSuccess]} skHeight={100}>
     <div className="home-carousel">
       <Carousel fade>
         {promotionQueryResult?.data.map((promotion) => (
@@ -29,6 +31,7 @@ const CarouselHome = () => {
         ))}
       </Carousel>
     </div>
+    </SkeltetonWrapper>
   );
 };
 

@@ -32,7 +32,7 @@ const MessageView: React.FC = () => {
     const { data: messagesData, refetch } = useGetMessageQuery({
         roomId: room?.data?.items?.[0]?.conversationId || '',
         params: paramsMessage,
-    }, { skip: !roomSuccess });
+    }, { skip: !roomSuccess || !room.data.items || !(room.data.items.length > 0) });
     const [createMessage] = useCreateMessageMutation();
     const [file, setFile] = useState<File>();
     const [url, setUrl] = useState<string>("");
@@ -81,10 +81,7 @@ const MessageView: React.FC = () => {
     const handleSendMessage = async (file?: File) => {
 
         if (newMessage || file) {
-            let imageUrl = "";
-            if (file) {
-                imageUrl = URL.createObjectURL(file);
-            }
+            
             const newMsg: MessageProps = {
                 id: messages.length + 1,
                 text: newMessage || url || '',
@@ -143,6 +140,7 @@ const MessageView: React.FC = () => {
     };
     useEffect(() => {
         handleSendMessage(file);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url, file])
     function getFileType(file?: File): MessageType {
         // Kiểm tra nếu file là kiểu MIME (như khi upload qua input)
