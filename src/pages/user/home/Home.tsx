@@ -7,7 +7,8 @@ import './home.scss';
 const Home = () => {
 
     const { data: productRecommends } = useGetProductsRecommendQuery({
-        type: "hybrid-filltering"
+        type: "hybrid-filltering",
+        nRecommend: 40
     });
 
     return <div className='container home-container'>

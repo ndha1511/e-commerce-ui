@@ -1,5 +1,4 @@
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import SideBar from "../side-bar/SideBar";
 import "./header.scss";
 import useDebounce from "../../../hooks/useDebounce";
 import { useCheckLoginQuery } from "../../../services/auth.service";
@@ -9,7 +8,7 @@ import { useGetCartByUserIdQuery } from "../../../services/cart.service";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetNotificationsQuery } from "../../../services/notification.service";
 import NotificationItems from "../../../pages/user/notification/NotificationItems";
-import Account from "../side-bar/SideBar";
+import Account from "../account/Account";
 import { isMobile } from "../../../utils/responsive";
 
 
@@ -139,7 +138,7 @@ const Header = ({ fixedSearch }: Props) => {
                 </div>
                 <div className="">
 
-                    {userData?.data ? <Account username={userData.data.username} /> : <>
+                    {userData?.data ? <Account username={userData.data.email} /> : <>
                         {mobile ? <i className="bi bi-person-circle" style={{ color: 'white', fontSize: mobile ? 15 : 20 }}
                             onClick={() => redirect('/auth/login')}></i> :
                             <span className='text-white text-meidum cursor-pointer' onClick={() => redirect('/auth/login')}>Đăng nhập</span>
