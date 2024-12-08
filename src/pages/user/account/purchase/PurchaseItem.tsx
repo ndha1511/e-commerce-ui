@@ -27,7 +27,7 @@ const ProductItem = ({ product, orderId, attributes,refetch }: {
                 <img src={product.image} width={100} height={100} />
             </td>
             <td>
-                <span>{product.productName}</span>
+                <a href={"/product/"+product.url} className="link-all">{product.productName}</a>
             </td>
             <td>
                 <div>{product.attributes.map((attr, idx) =>

@@ -24,7 +24,7 @@ const MenuFixed = ({ fixedSearch }: Props) => {
     const { data: dataNotification } = useGetNotificationsQuery({
         id: user?.data?.id || '',
         param: paramNotification,
-    }, { skip: !loginSuccess });
+    }, { skip: !user?.data });
     const unseenCount = dataNotification?.data.items?.filter(item => item.seen === false).length || 0;
     useEffect(() => {
         const container1: HTMLElement | null = document.querySelector('.menu-container');

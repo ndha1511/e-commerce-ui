@@ -9,4 +9,5 @@ export interface ProductOrder {
     image: string;
     allowComment: boolean;
     commented: boolean;
+    url: string;
 }

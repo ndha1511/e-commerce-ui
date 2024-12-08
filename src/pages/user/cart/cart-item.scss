@@ -9,6 +9,21 @@
 .checkbox-cart {
   font-size: 18px;
 }
+/* CSS để thay đổi màu border cho checkbox */
+.custom-checkbox .form-check-input:checked {
+  border-color: #eb6207;  /* Màu border khi checkbox được chọn */
+  background-color: #eb6207;  /* Màu nền khi checkbox được chọn */
+}
+
+.custom-checkbox .form-check-input {
+  border-color: #eb6207; /* Màu border mặc định */
+  transition: border-color 0.3s ease; /* Hiệu ứng chuyển màu mượt mà */
+}
+
+.custom-checkbox .form-check-input:focus {
+  border-color: #eb6207;  /* Màu border khi focus */
+  box-shadow: none !important;
+}
 
 .btn-buy {
   width: 200px;
@@ -39,7 +54,6 @@
   padding: 0;
 }
 
-
 .cart-item .dropdown-toggle::after {
   display: none;
 }
@@ -56,20 +70,17 @@
   /* Nhạt hơn một chút */
   font-size: 10px;
   border: none;
-
 }
 
 .attr1-update {
   display: flex;
   flex-wrap: wrap;
-
 }
 
 .btn-check-variant {
   display: flex;
   min-width: 10px;
   margin: 5px;
-
 }
 
 .fixed-footer {
@@ -89,7 +100,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
   .variant-options {
     left: -90%;
     width: 195%;
