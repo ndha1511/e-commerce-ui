@@ -90,7 +90,7 @@ const Cart: React.FC = () => {
                 <Row className="align-items-center">
                     <Col md={4} >
                         <div className='d-flex  align-items-center'>
-                            <Form.Check type="checkbox" className='checkbox-cart me-4'
+                            <Form.Check type="checkbox" className='checkbox-cart me-4 custom-checkbox'
                                 checked={checked}
                                 onChange={() => setChecked(prev => !prev)} />
                             <span style={{ fontSize: 16 }} >Sản Phẩm</span>
@@ -137,7 +137,7 @@ const Cart: React.FC = () => {
             <div className={`p-3 pt-2 border-top bg-white ${isFooterFixed ? 'fixed-footer container' : ''}`}>
                 <Row className="align-items-center p-3">
                     <Col xs={6} md={6} className="d-flex align-items-center">
-                        <Form.Check type="checkbox" className="checkbox-cart me-4"
+                        <Form.Check type="checkbox" className="checkbox-cart me-4 custom-checkbox"
                             checked={checked}
                             onChange={() => setChecked(prev => !prev)}
                         />

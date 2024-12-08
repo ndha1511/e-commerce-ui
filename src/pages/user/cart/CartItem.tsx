@@ -126,7 +126,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
             <div className="cart-item border-bottom p-3 pl-3 pt-5 pr-3 pb-5 bg-white">
                 <Row className="align-items-center">
                     <Col xs={12} md={4} className="d-flex align-items-center mb-3 mb-md-0">
-                        <Form.Check type="checkbox" className="checkbox-cart me-3" checked={checked}
+                        <Form.Check type="checkbox" className="checkbox-cart me-3 custom-checkbox" checked={checked}
                             onChange={handleCheck}
                         />
                         <div className="d-flex align-items-center">

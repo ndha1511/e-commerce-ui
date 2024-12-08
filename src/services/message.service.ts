@@ -29,7 +29,7 @@ const messageApi = createApi({
 })
 
 export const {
-    useGetMessageQuery,
+    useLazyGetMessageQuery,
     useCreateMessageMutation
 } = messageApi;
 

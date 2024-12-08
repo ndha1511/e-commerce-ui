@@ -26,11 +26,12 @@ const Header = ({ fixedSearch }: Props) => {
     const { data } = useGetCartByUserIdQuery(userData?.data?.id || "", {
         skip: !loginSuccess || !userData?.data?.id,
     });
+    
     const paramNotification = pageQueryHanlder(1, 40);
     const { data: dataNotification, refetch } = useGetNotificationsQuery({
         id: userData?.data?.id || '',
         param: paramNotification,
-    }, { skip: !loginSuccess });
+    }, { skip: !userData?.data });
     const unseenCount = dataNotification?.data.items?.filter(item => item.seen === false).length || 0;
     const [showNotification, setShowNotification] = useState<boolean>(false);
     const popoverRef = useRef<HTMLDivElement | null>(null);
