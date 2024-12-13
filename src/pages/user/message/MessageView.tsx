@@ -232,7 +232,7 @@ const MessageView: React.FC = () => {
             <div className="title-motion-ms">
               <div className="d-flex gap-2 align-items-center">
                 <img
-                  src="https://images2.thanhnien.vn/528068263637045248/2023/4/23/edit-truc-anh-16822518118551137084698.png"
+                  src="https://media.istockphoto.com/id/1445912539/vi/anh/t%E1%BB%9D-gi%E1%BA%A5y-tr%E1%BA%AFng.jpg?s=612x612&w=0&k=20&c=muPneG29Gp-hIEsAovlr0kQP1RXzKXUlJX5haaRnYhc="
                   width={40}
                   height={40}
                   style={{ borderRadius: "50%", border: "1px solid white" }}

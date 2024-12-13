@@ -235,7 +235,7 @@ const Navbar = () => {
             {!mobile &&
                 <div className='d-flex  align-items-center gap-4 p-2 title-navbar-top ' >
                     <i style={{ fontSize: 30, color: 'white' }} className="bi bi-list-ul"></i>
-                    <span className='text-large text-white' style={{ fontFamily: 'Lobster' }}>SOSELL</span>
+                    <span className='text-large text-white' style={{ fontFamily: 'Lobster' }}>OSON</span>
                 </div>}
 
             <div className={mobile ? '' : 'w-100 mt-2'}>

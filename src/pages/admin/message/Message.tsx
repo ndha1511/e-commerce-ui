@@ -54,11 +54,12 @@ function Message() {
   const paramsMessage = pageQueryHanlder(1, 1000);
   const [trigger, { isSuccess }] = useLazyGetMessageQuery();
   const [msg, setMsg] = useState<MessageModel[]>([]);
+
   useEffect(() => {
    const fetch = async()=>{
     if (room && room?.data.items?.length > 0) {
         const dataMessages = await trigger({
-          roomId: room?.data?.items?.[0]?.conversationId || "",
+          roomId: roomActive || "",
           params: paramsMessage,
         }).unwrap();
         setMsg(dataMessages.data.items || []);
