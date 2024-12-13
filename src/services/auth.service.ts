@@ -89,6 +89,7 @@ export const {
     useLazySendOtpQuery,
     useLoginMutation,
     useCheckLoginQuery,
+    useLazyCheckLoginQuery,
     useLazyResetPasswordQuery,
     useLazyVerifyEmailResetPasswordQuery,
     useCreateNewPasswordMutation,

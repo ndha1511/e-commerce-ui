@@ -1,6 +1,13 @@
 import { Button, Modal } from "react-bootstrap";
-import { useAddUserAddressMutation, useGetDistrictsQuery, useGetProvincesQuery, useGetUserAddressQuery, useGetWardsQuery, useUpdateUserAddressMutation } from "../../services/address.service";
-import Select from 'react-select'
+import {
+  useAddUserAddressMutation,
+  useGetDistrictsQuery,
+  useGetProvincesQuery,
+  useGetUserAddressQuery,
+  useGetWardsQuery,
+  useUpdateUserAddressMutation,
+} from "../../services/address.service";
+import Select from "react-select";
 import { useEffect, useState } from "react";
 import { useCheckLoginQuery } from "../../services/auth.service";
 import { UserAddressDto } from "../../dtos/request/address/user-address-dto";
@@ -16,71 +23,107 @@ interface Props {
   addressId?: string;
 }
 
-const ModalAddressUpdate = ({ show, handleClose, refetch, action, addressId }: Props) => {
+const ModalAddressUpdate = ({
+  show,
+  handleClose,
+  refetch,
+  action,
+  addressId,
+}: Props) => {
   const [provinceID, setProvinceId] = useState<number>(0);
   const [districtID, setDistrictId] = useState<number>(0);
   const [wardID, setWardId] = useState<number>(0);
   const [addAddress] = useAddUserAddressMutation();
-  const [name, setName] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [detail, setDetail] = useState<string>('');
+  const [name, setName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [detail, setDetail] = useState<string>("");
   const [trigger] = useUpdateUserAddressMutation();
-  const { data: provinces, isSuccess: provinceSuccess } = useGetProvincesQuery();
+  const { data: provinces, isSuccess: provinceSuccess } =
+    useGetProvincesQuery();
   const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
   const [fetchAllSuccess, setFetchAllSuccess] = useState(false);
-  const { data: districts, refetch: districtRefetch, isSuccess: districtsSuccess } = useGetDistrictsQuery(provinceID, {
+  const {
+    data: districts,
+    refetch: districtRefetch,
+    isSuccess: districtsSuccess,
+  } = useGetDistrictsQuery(provinceID, {
     skip: provinceID === 0,
   });
-  const { data: wards, refetch: wardRefetch, isSuccess: wardsSuccess } = useGetWardsQuery(districtID, {
+  const {
+    data: wards,
+    refetch: wardRefetch,
+    isSuccess: wardsSuccess,
+  } = useGetWardsQuery(districtID, {
     skip: districtID === 0,
   });
-  const { data: dataUserAddress, isSuccess: addressSuccess, refetch: refetchAddress } = useGetUserAddressQuery(user?.data?.id || "", {
-    skip: !loginSuccess || !user?.data?.id || !provinceSuccess
+  const {
+    data: dataUserAddress,
+    isSuccess: addressSuccess,
+    refetch: refetchAddress,
+  } = useGetUserAddressQuery(user?.data?.id || "", {
+    skip: !loginSuccess || !user?.data?.id || !provinceSuccess,
   });
-  const address = dataUserAddress?.data.find((addr: UserAddressDto) => addr.id === addressId);
+  const address = dataUserAddress?.data.find(
+    (addr: UserAddressDto) => addr.id === addressId
+  );
   const dispatch = useDispatch();
   useEffect(() => {
-
     if (!fetchAllSuccess) {
       if (provinceSuccess) {
-
-        setProvinceId(provinces?.data.find(p => p.ProvinceName === address?.province)?.ProvinceID || 0);
+        setProvinceId(
+          provinces?.data.find((p) => p.ProvinceName === address?.province)
+            ?.ProvinceID || 0
+        );
       }
       if (provinceSuccess && districtsSuccess) {
-
-        setDistrictId(districts?.data?.find(d => d.DistrictName === address?.district)?.DistrictID ?? 0);
+        setDistrictId(
+          districts?.data?.find((d) => d.DistrictName === address?.district)
+            ?.DistrictID ?? 0
+        );
       }
       if (provinceSuccess && districtsSuccess && wardsSuccess) {
-
-        setWardId(wards?.data.find(w => w.WardName === address?.ward)?.WardCode || 0);
-        setName(address?.receiverName || '');
-        setPhone(address?.phoneNumber || '');
-        setDetail(address?.addressDetail || '');
+        setWardId(
+          wards?.data.find((w) => w.WardName === address?.ward)?.WardCode || 0
+        );
+        setName(address?.receiverName || "");
+        setPhone(address?.phoneNumber || "");
+        setDetail(address?.addressDetail || "");
         setFetchAllSuccess(true);
-
       }
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    provinceSuccess,
+    addressSuccess,
+    districtsSuccess,
+    wardsSuccess,
+    fetchAllSuccess,
+  ]);
 
-  }, [provinceSuccess, addressSuccess, districtsSuccess, wardsSuccess, fetchAllSuccess])
+  const provinceOptions =
+    provinces?.data.map((p) => ({
+      value: p.ProvinceID,
+      label: p.ProvinceName,
+    })) || [];
 
-  const provinceOptions = provinces?.data.map(p => ({
-    value: p.ProvinceID,
-    label: p.ProvinceName,
-  })) || [];
+  const districtOptions =
+    districts?.data.map((d) => ({
+      value: d.DistrictID,
+      label: d.DistrictName,
+    })) || [];
 
-  const districtOptions = districts?.data.map(d => ({
-    value: d.DistrictID,
-    label: d.DistrictName,
-  })) || [];
-
-  const [wardOptions, setWardOptions] = useState<{ value: number, label: string }[]>([]);
+  const [wardOptions, setWardOptions] = useState<
+    { value: number; label: string }[]
+  >([]);
 
   useEffect(() => {
-    setWardOptions(wards?.data.map(w => ({
-      value: w.WardCode,
-      label: w.WardName,
-    })) || []);
+    setWardOptions(
+      wards?.data.map((w) => ({
+        value: w.WardCode,
+        label: w.WardName,
+      })) || []
+    );
   }, [wards]);
 
   useEffect(() => {
@@ -88,6 +131,7 @@ const ModalAddressUpdate = ({ show, handleClose, refetch, action, addressId }: P
       districtRefetch();
       setDistrictId(0);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provinceID]);
 
   useEffect(() => {
@@ -97,54 +141,69 @@ const ModalAddressUpdate = ({ show, handleClose, refetch, action, addressId }: P
     } else {
       setWardOptions([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [districtID]);
 
   const handleAddAddress = async () => {
     try {
       await addAddress({
         addressDefault: false,
-        district: districts?.data.find(d => d.DistrictID === districtID)?.DistrictName || '',
-        province: provinces?.data.find(p => p.ProvinceID === provinceID)?.ProvinceName || '',
-        ward: wards?.data.find(w => w.WardCode === wardID)?.WardName || '',
+        district:
+          districts?.data.find((d) => d.DistrictID === districtID)
+            ?.DistrictName || "",
+        province:
+          provinces?.data.find((p) => p.ProvinceID === provinceID)
+            ?.ProvinceName || "",
+        ward: wards?.data.find((w) => w.WardCode === wardID)?.WardName || "",
         addressDetail: detail,
-        userId: user?.data?.id || '',
+        userId: user?.data?.id || "",
         phoneNumber: phone,
-        receiverName: name
+        receiverName: name,
       }).unwrap();
       refetch();
       handleClose();
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   const handleUpdate = async () => {
     try {
       await trigger({
         updateUserAddress: {
-          userId: user?.data?.id || '',
-          receiverName: name || '',
-          phoneNumber: phone || '',
+          userId: user?.data?.id || "",
+          receiverName: name || "",
+          phoneNumber: phone || "",
           addressDefault: address?.addressDefault ?? false,
-          addressDetail: detail || '',
-          district: districts?.data.find(d => d.DistrictID === districtID)?.DistrictName || '',
-          province: provinces?.data.find(p => p.ProvinceID === provinceID)?.ProvinceName || '',
-          ward: wards?.data.find(w => w.WardCode === wardID)?.WardName || '',
+          addressDetail: detail || "",
+          district:
+            districts?.data.find((d) => d.DistrictID === districtID)
+              ?.DistrictName || "",
+          province:
+            provinces?.data.find((p) => p.ProvinceID === provinceID)
+              ?.ProvinceName || "",
+          ward: wards?.data.find((w) => w.WardCode === wardID)?.WardName || "",
         },
-        addressId: addressId || ''
+        addressId: addressId || "",
       }).unwrap();
       refetch();
       refetchAddress();
       handleClose();
-      dispatch(setNotify({
-        type: 'success', message: 'Cập nhật thành công'
-      }))
+      dispatch(
+        setNotify({
+          type: "success",
+          message: "Cập nhật thành công",
+        })
+      );
     } catch (error) {
       console.error(error);
-      dispatch(setNotify({
-        type: 'error', message: 'Cập nhật Không thành công'
-      }))
+      dispatch(
+        setNotify({
+          type: "error",
+          message: "Cập nhật Không thành công",
+        })
+      );
     }
-  }
+  };
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -159,7 +218,10 @@ const ModalAddressUpdate = ({ show, handleClose, refetch, action, addressId }: P
             onChange={(e) => {
               setProvinceId(e?.value || 0);
             }}
-            value={provinceOptions.find(option => option.value === provinceID) || null}
+            value={
+              provinceOptions.find((option) => option.value === provinceID) ||
+              null
+            }
           />
 
           <Select
@@ -168,19 +230,24 @@ const ModalAddressUpdate = ({ show, handleClose, refetch, action, addressId }: P
             onChange={(e) => {
               setDistrictId(e?.value || 0);
             }}
-            value={districtOptions.find(option => option.value === districtID) || null}
+            value={
+              districtOptions.find((option) => option.value === districtID) ||
+              null
+            }
           />
 
           <Select
             options={wardOptions}
             placeholder="Phường/Xã"
             onChange={(e) => setWardId(e?.value || 0)}
-            value={wardOptions.find(option => option.value === wardID) || null}
+            value={
+              wardOptions.find((option) => option.value === wardID) || null
+            }
           />
 
           <input
             value={detail}
-            onChange={e => setDetail(e.target.value)}
+            onChange={(e) => setDetail(e.target.value)}
             placeholder="Số nhà, tên đường, hẻm, ngõ, ngách..."
             className="form-control no-shadow text-normal"
           />
@@ -205,13 +272,15 @@ const ModalAddressUpdate = ({ show, handleClose, refetch, action, addressId }: P
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={action === 'update' ? handleUpdate : handleAddAddress}>
+        <Button
+          variant="primary"
+          onClick={action === "update" ? handleUpdate : handleAddAddress}
+        >
           Lưu
         </Button>
-
       </Modal.Footer>
     </Modal>
   );
-}
+};
 
 export default ModalAddressUpdate;

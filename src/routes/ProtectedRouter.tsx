@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Role } from "../models/user";
 import { useCheckLoginQuery } from "../services/auth.service";
 import { Navigate } from "react-router-dom";
@@ -14,7 +14,7 @@ const ProtectedRouter: React.FC<ProtectedRouterProps> = (props) => {
     const queryUserMe = useCheckLoginQuery();
 
     if (queryUserMe.isLoading || queryUserMe.isFetching) {
-        return <div>Loading...</div>;
+        return <Suspense></Suspense>;
     }
 
     if(queryUserMe.data === null) {

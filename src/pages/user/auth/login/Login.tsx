@@ -3,10 +3,11 @@ import './Login.scss'; // Optional, if you want to add custom styles
 import { FaFacebook, FaGoogle } from 'react-icons/fa';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; // Import icon mới
 import { Link } from 'react-router-dom';
-import { useLoginMutation } from '../../../../services/auth.service';
+import { useLazyCheckLoginQuery, useLoginMutation } from '../../../../services/auth.service';
 import ModalLoading from '../../../../components/loading/ModalLoading';
 import useGetParam from '../../../../hooks/useGetParam';
 import { loginWithSocial } from '../../../../utils/auth';
+import { Role } from '../../../../models/user';
 
 
 
@@ -17,6 +18,7 @@ function Login() {
   const [error, setError] = useState("");
   const [loginRequest, { isLoading }] = useLoginMutation();
   const redirectUrl = useGetParam('redirect-url');
+  const [triggerCheckLogin] = useLazyCheckLoginQuery();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -27,6 +29,11 @@ function Login() {
         setError("");
         try {
           await loginRequest({ username, password }).unwrap();
+          const queryUserLogin = await triggerCheckLogin().unwrap();
+          if(queryUserLogin.data?.roles.includes(Role.ROLE_ADMIN || Role.ROLE_EMPLOYEE)) {
+            window.location.href = `/admin`;
+            return;
+          }
           if(redirectUrl) {
             window.location.href = `/${redirectUrl}`
           } else { 
