@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -57,6 +57,7 @@ import { useGetCommentsQuery } from "../../../services/comment.service";
 import ListProduct from "../../../components/products/ListProduct";
 import { useGetBrandsQuery } from "../../../services/brand.service";
 import SimpleBar from "simplebar-react";
+import logo from "../../../assets/logo/logo.jpg";
 
 function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
@@ -76,13 +77,13 @@ function ProductDetail() {
 
   useEffect(() => {
     if (getProductSuccess && resProduct.data.productName) {
-      document.title = resProduct.data.productName
+      document.title = resProduct.data.productName;
     }
     return () => {
       document.title = "oson";
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProductSuccess])
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProductSuccess]);
 
   const product = resProduct?.data;
   const paramsBrand = pageQueryHanlder(1, 40, [
@@ -99,26 +100,12 @@ function ProductDetail() {
   const [productPrice, setProductPrice] = useState(0);
   const [disabledBtn, setDisabledBtn] = useState<boolean>(true);
   const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
-  const { refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
+  const { data: queryCart, refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
     skip: !loginSuccess || !user?.data?.id,
   });
-  // const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-  // const descriptionRef = useRef<HTMLDivElement | null>(null);
-  // const toggleCollapse = () => {
-  //   if (descriptionRef.current) {
-  //     // Ghi lại vị trí cuộn hiện tại
-  //     const currentScrollPosition = descriptionRef.current.scrollTop;
-
-  //     setIsCollapsed(!isCollapsed);
-
-  //     // Sau khi trạng thái collapsed thay đổi, điều chỉnh lại vị trí cuộn
-  //     setTimeout(() => {
-  //       if (descriptionRef.current) {
-  //         descriptionRef.current.scrollTop = currentScrollPosition;
-  //       }
-  //     }, 0); // Trì hoãn một chút để DOM kịp thay đổi
-  //   }
-  // };
+  const cart = useMemo(() => {
+    return queryCart?.data || []
+  }, [queryCart?.data])
   const [addToCart] = useAddToCartMutation();
   const dispatch = useDispatch();
   const [x, setX] = useState(0);
@@ -337,6 +324,39 @@ function ProductDetail() {
         "/auth/login?redirect-url=" + encodeURIComponent("product/" + key);
     } else {
       try {
+        if(variant) {
+          if(quantity > variant.quantity) {
+            dispatch(
+              setNotify({
+                type: "error",
+                message: "Không thể thêm vì số lượng sản phẩm không đủ",
+              })
+            );
+            return;
+          }
+          if(quantity === 0) {
+            dispatch(
+              setNotify({
+                type: "error",
+                message: "Số lượng sản phẩm phải lớn hơn 0",
+              })
+            );
+            return;
+          }
+          const cartItem = cart.find(c => c.variantResponse.id === variant.id);
+          if(cartItem) {
+            if(quantity > variant.quantity - cartItem.quantity) {
+              dispatch(
+                setNotify({
+                  type: "error",
+                  message: "Số lượng trong giỏ hàng vượt quá số lượng sản phẩm",
+                })
+              );
+              return;
+            }
+
+          }
+        }
         await addToCart({
           userId: user.data.id,
           productCart: {
@@ -528,16 +548,16 @@ function ProductDetail() {
                   <Col className="d-flex justify-content-between">
                     <div className="d-flex align-items-center w-100 pb-2 border-bottom ">
                       <div className="d-flex align-items-center w-100 ">
-                        <img
-                          src="https://vcdn.tikicdn.com/cache/w100/ts/seller/4b/54/1a/f385a79a716cb3505f152e7af8c769aa.png.webp"
-                          alt="Product"
-                          className="img-fluid img-ft"
-                        />
-                        <div className="pe-4">
-                          <span className="fw bold">OSOOS</span> <br />
-                          4.4 <i className="bi bi-star-fill primary"></i>{" "}
-                          <small>(720 đánh giá)</small>
-                        </div>
+                        <Link to={"/"}>
+                          <img
+                            src={logo}
+                            width={80}
+                            height={50}
+                            style={{
+                              borderRadius: 30,
+                            }}
+                          />
+                        </Link>
                       </div>
                       <div>
                         {/* <div className="border p-2 border-radius-small">
@@ -667,7 +687,13 @@ function ProductDetail() {
                             <Form.Control
                               type="text"
                               value={quantity}
-                              readOnly
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const numberValue = Number(value);
+                                if (!isNaN(numberValue)) {
+                                  setQuantity(numberValue); 
+                                } 
+                              }}
                               className="text-center"
                               style={{
                                 width: "3rem",
@@ -784,21 +810,19 @@ function ProductDetail() {
                     // ref={descriptionRef}
                     style={{ overflowY: "auto", maxHeight: "500px" }}
                   >
-                  
-                      <div>
-                        {product?.description.trimStart().startsWith("<") ? (
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: product.description,
-                            }}
-                          />
-                        ) : (
-                          <pre className="text-align-start">
-                            {product?.description}
-                          </pre>
-                        )}
-                      </div>
-      
+                    <div>
+                      {product?.description.trimStart().startsWith("<") ? (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: product.description,
+                          }}
+                        />
+                      ) : (
+                        <pre className="text-align-start">
+                          {product?.description}
+                        </pre>
+                      )}
+                    </div>
                   </SimpleBar>
 
                   {/* <div className=" d-flex justify-content-end">

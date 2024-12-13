@@ -13,11 +13,9 @@ import { isMobile } from "../../../utils/responsive";
 import logo from "../../../assets/logo/logo.jpg";
 import { Link } from "react-router-dom";
 
-type Props = {
-  fixedSearch: boolean;
-};
 
-const Header = ({ fixedSearch }: Props) => {
+
+const Header = () => {
   const mobile = isMobile();
   const redirect = useRedirect();
   const [isOpenPopover, setIsOpenPopover] = useState(false);
@@ -81,7 +79,7 @@ const Header = ({ fixedSearch }: Props) => {
     <>
       {/* <SideBar /> */}
 
-      <div className={fixedSearch ? `search fixed-search` : `search`}>
+      <div className={ `search fixed-search`}>
         <div className="search-arround">
           <Link to={"/"}>
             <img
