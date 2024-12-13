@@ -7,7 +7,7 @@ export interface VoucherItemProps {
 }
 
 const VoucherItem: React.FC<VoucherItemProps> = (props) => {
-    const { voucher, handleSelect } = props;
+    const { voucher } = props;
     return (
         <div className="d-flex gap-2">
             <div>

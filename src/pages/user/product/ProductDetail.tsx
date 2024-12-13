@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Card,
   Col,
-  Collapse,
+  // Collapse,
   Container,
   Form,
   Row,
 } from "react-bootstrap";
-import { BsChatDots } from "react-icons/bs";
 import ImageDetails from "../../../components/image-details/ImageDetails";
 import Rating from "../../../components/rating/Rating";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -93,23 +92,23 @@ function ProductDetail() {
   const { refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
     skip: !loginSuccess || !user?.data?.id,
   });
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-  const descriptionRef = useRef<HTMLDivElement | null>(null);
-  const toggleCollapse = () => {
-    if (descriptionRef.current) {
-      // Ghi lại vị trí cuộn hiện tại
-      const currentScrollPosition = descriptionRef.current.scrollTop;
+  // const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  // const descriptionRef = useRef<HTMLDivElement | null>(null);
+  // const toggleCollapse = () => {
+  //   if (descriptionRef.current) {
+  //     // Ghi lại vị trí cuộn hiện tại
+  //     const currentScrollPosition = descriptionRef.current.scrollTop;
 
-      setIsCollapsed(!isCollapsed);
+  //     setIsCollapsed(!isCollapsed);
 
-      // Sau khi trạng thái collapsed thay đổi, điều chỉnh lại vị trí cuộn
-      setTimeout(() => {
-        if (descriptionRef.current) {
-          descriptionRef.current.scrollTop = currentScrollPosition;
-        }
-      }, 0); // Trì hoãn một chút để DOM kịp thay đổi
-    }
-  };
+  //     // Sau khi trạng thái collapsed thay đổi, điều chỉnh lại vị trí cuộn
+  //     setTimeout(() => {
+  //       if (descriptionRef.current) {
+  //         descriptionRef.current.scrollTop = currentScrollPosition;
+  //       }
+  //     }, 0); // Trì hoãn một chút để DOM kịp thay đổi
+  //   }
+  // };
   const [addToCart] = useAddToCartMutation();
   const dispatch = useDispatch();
   const [x, setX] = useState(0);
@@ -358,9 +357,9 @@ function ProductDetail() {
     }
   };
   // Cắt ngắn phần mô tả ban đầu (100 ký tự)
-  const truncatedDescription =
-    product?.description?.slice(0, 1000) +
-    (product && product?.description?.length > 1000 ? "..." : "");
+  // const truncatedDescription =
+  //   product?.description?.slice(0, 1000) +
+  //   (product && product?.description?.length > 1000 ? "..." : "");
   return (
     <Container className="mt-4 bg-light  border-radius-small">
       {/* {isLoading && <ModalLoading loading={isLoading} />} */}
@@ -771,15 +770,16 @@ function ProductDetail() {
                 <div className="card-body border-radius-medium product-detail">
                   <h5 className="card-title">Mô tả sản phẩm</h5>
                   <SimpleBar
-                    ref={descriptionRef}
+                    // TODO: fix descriptionRef type safe
+                    // ref={descriptionRef}
                     style={{ overflowY: "auto", maxHeight: "500px" }}
                   >
-                    <Collapse in={!isCollapsed}>
+                  
                       <div>
                         {product?.description.trimStart().startsWith("<") ? (
                           <div
                             dangerouslySetInnerHTML={{
-                              __html: product?.description || "",
+                              __html: product.description,
                             }}
                           />
                         ) : (
@@ -788,29 +788,14 @@ function ProductDetail() {
                           </pre>
                         )}
                       </div>
-                    </Collapse>
-                    {isCollapsed && (
-                      <div>
-                        {product?.description.trimStart().startsWith("<") ? (
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: truncatedDescription,
-                            }}
-                          />
-                        ) : (
-                          <pre className="text-align-start">
-                            {truncatedDescription}
-                          </pre>
-                        )}
-                      </div>
-                    )}
+      
                   </SimpleBar>
 
-                  <div className=" d-flex justify-content-end">
+                  {/* <div className=" d-flex justify-content-end">
                     <button className="toggle-btn" onClick={toggleCollapse}>
                       {isCollapsed ? "Xem thêm" : "Thu gọn"}
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

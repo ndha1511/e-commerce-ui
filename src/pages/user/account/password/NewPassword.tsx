@@ -12,7 +12,7 @@ function NewPassword() {
     const [hasLength, hasUppercase, hasDigit, hasSpecialChar] = validatePassword(password);
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorConfirmPassword, setErrorConfirmPassword] = useState("");
-    const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
+    const { data: user } = useCheckLoginQuery();
     const [resetPasswordApi, {isLoading}] = useCreateNewPasswordMutation();
     const email = user?.data?.email;
     const dispatch = useDispatch();

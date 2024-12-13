@@ -18,8 +18,6 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
   const mobile = isMobile();
   const { files, previewUrls, handleFileChange, shouldHideInput, handleDeleteImage, setPreviewUrls } = useChangeFile(9, [], []);
   const imgRedux = useSelector((state: RootState) => state.product.images)
-  const videoRedux = useSelector((state: RootState) => state.product.video)
-  const [videoFile, setVideoFile] = useState<File>();
   const hasEmptyImg = imgRedux.length === 0;
   const dispatch = useDispatch();
   const handleDeleteVideo = () => {
@@ -31,7 +29,7 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
     if (file) {
       const videoUrl = URL.createObjectURL(file);
       setPreviewVideoUrl(videoUrl); // Lưu URL vào state
-      setVideoFile(file);
+      
     }
   };
 
@@ -62,6 +60,7 @@ function ImgAndVideo({ addProductClick }: AddProductClick) {
     if (!addProductClick) {
       setPreviewUrls([]);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addProductClick])
   return (
     <div>
