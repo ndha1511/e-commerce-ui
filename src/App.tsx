@@ -10,6 +10,7 @@ import { pageQueryHanlder } from "./utils/query-handler";
 import { useGetRoomQuery } from "./services/room.service";
 import { useLazyGetMessageQuery } from "./services/message.service";
 import { useGetNotificationsQuery } from "./services/notification.service";
+import { useGetCartByUserIdQuery } from "./services/cart.service";
 
 const App = ({ children }: { children: ReactNode }) => {
   const { data, isSuccess } = useCheckLoginQuery();
@@ -28,6 +29,9 @@ const App = ({ children }: { children: ReactNode }) => {
   );
   const paramsMessage = pageQueryHanlder(1, 1000);
   const [trigger] = useLazyGetMessageQuery();
+  const { refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
+    skip: !loginSuccess || !user?.data?.id,
+  });
 
   //////Notification
   const paramNotification = pageQueryHanlder(1, 40);
@@ -52,7 +56,6 @@ const App = ({ children }: { children: ReactNode }) => {
   }, [isSuccess]);
 
   const onConnected = () => {
-    console.log("Connected to websocket server");
     if (isConnected() && stompClient) {
       stompClient.subscribe(
         "/user/" + data?.data?.email + "/queue/messages",
@@ -70,6 +73,14 @@ const App = ({ children }: { children: ReactNode }) => {
   const onMessageReceived = (message: Message) => {
     const messageResponse = JSON.parse(message.body);
     console.log(messageResponse);
+    if ("type" in messageResponse) {
+      console.log("ok")
+      if (messageResponse.type === "cart") {
+        console.log("ok ref")
+        refetch();
+      } ;
+    }
+
     if (room && room?.data.items.length > 0) {
       trigger({
         roomId: room?.data?.items?.[0]?.conversationId || "",

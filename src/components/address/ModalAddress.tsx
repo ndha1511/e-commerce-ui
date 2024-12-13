@@ -139,6 +139,7 @@ const ModalAddressUpdate = ({ show, handleClose, refetch, action, addressId }: P
         type: 'success', message: 'Cập nhật thành công'
       }))
     } catch (error) {
+      console.error(error);
       dispatch(setNotify({
         type: 'error', message: 'Cập nhật Không thành công'
       }))

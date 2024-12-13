@@ -29,7 +29,7 @@ const Payment = () => {
     const selectVariant = useGetParam('select-variant');
     const variantIds = selectVariant?.split(";") || [];
     const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
-    const { data: cart, refetch: cartRefetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
+    const { data: cart } = useGetCartByUserIdQuery(user?.data?.id || "", {
         skip: !loginSuccess || !user?.data?.id,
     });
     const { data: address, refetch: addressRefetch, isSuccess } = useGetAddressByUserIdQuery(user?.data?.id || "", {
@@ -110,7 +110,7 @@ const Payment = () => {
             try {
                 const response = await createOrder(orderRequest).unwrap();
                 const newOrder = response.data;
-                cartRefetch();
+                
                 if (newOrder.paymentMethod === PaymentMethod.ATM) {
                     const responsePayment = await getUrlPayment({
                         orderId: newOrder.id,

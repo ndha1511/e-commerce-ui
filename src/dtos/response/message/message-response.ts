@@ -1,4 +1,4 @@
-export type MessageResponse<T> = {
-    data: T;
+export type MessageResponse = {
+    data: string;
     type: string;
 }

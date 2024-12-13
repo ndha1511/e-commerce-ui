@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ResetPassword from "../../auth/reset-password/ResetPassword";
 import FormEmail from "./FormEmail";
 import FormOtp from "./FormOtp";
 import NewPassword from "./NewPassword";
