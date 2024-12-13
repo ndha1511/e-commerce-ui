@@ -74,6 +74,16 @@ function ProductDetail() {
         resProduct?.data.categories.length === 0,
     });
 
+  useEffect(() => {
+    if (getProductSuccess && resProduct.data.productName) {
+      document.title = resProduct.data.productName
+    }
+    return () => {
+      document.title = "oson";
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProductSuccess])
+
   const product = resProduct?.data;
   const paramsBrand = pageQueryHanlder(1, 40, [
     { filed: "id", operator: "=", value: product?.brandId || "" },
