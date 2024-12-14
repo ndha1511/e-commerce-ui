@@ -46,6 +46,11 @@ const menu: Menu[] = [
                 fontSize: 13
             },
             {
+                name: '● Lịch sử nhập hàng',
+                path: '/admin/import-history',
+                fontSize: 13
+            },
+            {
                 name: '● Thêm sản phẩm hàng loạt',
                 path: '/admin/product/batch',
                 fontSize: 13

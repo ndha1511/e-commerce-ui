@@ -62,7 +62,7 @@ const ProductTable = () => {
     return (
         <div className=" mt-3">
             <Table className='table-bordered table-responsive  custom-table' >
-                <thead >
+                <thead>
                     <tr className='text-center' >
                         <th>{productAttributeDto?.[0]?.attributeName ? productAttributeDto[0]?.attributeName : 'Phân loại 1'}</th>
                         <th>{productAttributeDto?.[1]?.attributeName ? productAttributeDto[1]?.attributeName : 'Phân loại 2'}</th>

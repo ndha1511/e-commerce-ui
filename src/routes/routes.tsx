@@ -44,6 +44,7 @@ import { Role } from "../models/user";
 import ProductKeyword from "../pages/user/product/ProductKeyword";
 import Statistics from "../pages/admin/statistics/Statistics";
 import Promotion from "../pages/user/promotion/Promotion";
+import ImportHistory from "../pages/admin/product/ImportHistory";
 
 
 interface RouterRole {
@@ -231,6 +232,10 @@ const privateAdminRouters: RouterRole[] = [
     {
         path: "/admin/statistics",
         element: <Statistics/>
+    },
+    {
+        path: "/admin/import-history",
+        element: <ImportHistory/>
     }
 
 ];

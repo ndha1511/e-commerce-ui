@@ -11,7 +11,9 @@ import Select from 'react-select';
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { pageQueryHanlder } from "../../../utils/query-handler";
 import useDebounce from "../../../hooks/useDebounce";
+import useRedirect from "../../../hooks/useRedirect";
 function ProductStock() {
+    const redirect = useRedirect();
     const [searchKeyword, setSearchKeyword] = useState<string>('');
     const debounce = useDebounce(searchKeyword, 200)
     const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +34,7 @@ function ProductStock() {
             <div className=" d-flex justify-content-between">
                 <div className="d-flex gap-1"><h5>Kho Sản Phẩm </h5>
                 </div>
-                <button className="btn-stock">Lịch sử tồn kho</button>
+                <button className="btn-stock" onClick={()=>redirect("/admin/import-history")}>Lịch sử nhập hàng</button>
             </div>
             <div className="bg-white p-2 border-radius-small mt-3">
                 <div className=" mt-1 mb-3 d-flex justify-content-between">

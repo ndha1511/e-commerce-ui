@@ -538,3 +538,48 @@
     }
   
 }
+.custom-table-history>:not(caption)>*>* {
+    padding: 0;
+}
+
+.custom-table-history thead tr th {
+    vertical-align: middle;
+    height: 50px;
+    background-color: #a6c9cf;
+}
+.custom-table-history tbody tr td {
+    vertical-align: middle;
+    height: 50px;
+    // background-color: #a6c9cf;
+    text-align: center;
+    font-size: $font-normal;
+    background-color: #ffffff;  
+    cursor: pointer;
+}
+.custom-table-history tbody tr:nth-child(odd) td {
+    background-color: #f2f2f2; /* Màu nền cho dòng lẻ */
+    transition: background-color 0.3s ease;
+}
+
+.custom-table-history tbody tr:nth-child(odd):hover td {
+    background-color: #d9d9d9; /* Màu nền tối hơn khi hover vào dòng lẻ */
+}
+
+.custom-table-history tbody tr:nth-child(even) td {
+    background-color: #ffffff; /* Màu nền cho dòng chẵn */
+    transition: background-color 0.3s ease;
+}
+
+.custom-table-history tbody tr:nth-child(even):hover td {
+    background-color: #e6e6e6; /* Màu nền tối hơn khi hover vào dòng chẵn */
+}
+.modal-body-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Khoảng cách giữa các phần tử */
+}
+
+.modal-body-content span {
+  width: 48%; /* Mỗi phần chiếm 48% chiều rộng */
+  box-sizing: border-box; /* Đảm bảo không bị tràn */
+}
