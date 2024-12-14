@@ -16,7 +16,7 @@ function Promotion() {
             </div>
             <div className="mb-3">
                 <img src={data?.data.image} className="banner-promotion mb-3" alt="" />
-                <span>{data?.data.description}</span>
+                <pre>{data?.data.description}</pre>
             </div>
             <div>
                 <ListProduct products={product.data?.data} title={data?.data.promotionName} />
