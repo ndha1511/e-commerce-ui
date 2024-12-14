@@ -281,7 +281,7 @@ function ProductImport() {
 
 
                 </Table>
-                {variants?.data.length && variants?.data.length > 0 &&
+                {/* {variants?.data.length && variants?.data.length > 0 &&
                     <div className="  d-flex justify-content-end pe-4">
                         <Row className={`${mobile? 'w-100':'w-25'}`} >
                             <Col xs={6} md={6}>
@@ -301,7 +301,7 @@ function ProductImport() {
                                 </div>
                             </Col>
                         </Row>
-                    </div>}
+                    </div>} */}
                 {variants?.data && variants.data.length > 0 &&
                     <div className="p-2  d-flex justify-content-start ">
                         <button onClick={() => handleAddInventory()} className="btn-save-all-category p-2" style={{ width: mobile ? '20%':'12%' }} >Hoàn tất</button>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   Card,
   Col,
-  Image,
+
   Pagination,
   ProgressBar,
   Row,
@@ -14,6 +14,7 @@ import Avatar from "../../../components/avatar/Avatar";
 import { useReplyCommentMutation } from "../../../services/comment.service";
 import { Product } from "../../../models/product";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
+
 
 const CommentComp = ({
   user,
@@ -54,6 +55,7 @@ const CommentComp = ({
       });
       setIsReply(null);
     } catch (error) {
+      console.error(error);
       alert("khoong thành công");
     }
   };

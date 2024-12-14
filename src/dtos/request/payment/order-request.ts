@@ -19,4 +19,5 @@ export interface OrderRequest {
     orderFrom?: string;
     note: string;
     deliveryFee: number;
+    voucherCode:string;
 }

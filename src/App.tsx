@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { useCheckLoginQuery } from "./services/auth.service";
 import {
   connect,
@@ -10,15 +10,22 @@ import { pageQueryHanlder } from "./utils/query-handler";
 import { useGetRoomQuery } from "./services/room.service";
 import { useLazyGetMessageQuery } from "./services/message.service";
 import { useGetNotificationsQuery } from "./services/notification.service";
+import { useGetCartByUserIdQuery } from "./services/cart.service";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./rtk/store/store";
+import { setConnected, setDisConnected } from "./rtk/slice/socket-slice";
 
 const App = ({ children }: { children: ReactNode }) => {
   const { data, isSuccess } = useCheckLoginQuery();
-  const [connectFinish, setConnectFinish] = useState<boolean>(false);
+  const { connected } = useSelector((state: RootState) => state.socket);
+  const dispatch = useDispatch();
 
-  ///////////// message
+
+  const paramsRoom = pageQueryHanlder(1, 100);
+  const paramsMessage = pageQueryHanlder(1, 1000);
+  const paramNotification = pageQueryHanlder(1, 40);
 
   const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
-  const paramsRoom = pageQueryHanlder(1, 100);
   const { data: room, refetch: refetchRoom } = useGetRoomQuery(
     {
       email: user?.data?.email || "",
@@ -26,11 +33,10 @@ const App = ({ children }: { children: ReactNode }) => {
     },
     { skip: !loginSuccess || !user?.data?.id }
   );
-  const paramsMessage = pageQueryHanlder(1, 1000);
   const [trigger] = useLazyGetMessageQuery();
-
-  //////Notification
-  const paramNotification = pageQueryHanlder(1, 40);
+  const { refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
+    skip: !loginSuccess || !user?.data?.id,
+  });
   const { refetch: notificationRefetch } = useGetNotificationsQuery(
     {
       id: user?.data?.id || "",
@@ -38,38 +44,39 @@ const App = ({ children }: { children: ReactNode }) => {
     },
     { skip: !user?.data }
   );
-  ///////////
+
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && !connected) {
       if (data.data) {
         connect(onConnected, onError);
-      } else {
-        setConnectFinish(true);
+        dispatch(setConnected());
       }
-    } else {
-      setConnectFinish(true);
     }
-  }, [isSuccess]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, connected]);
 
   const onConnected = () => {
-    console.log("Connected to websocket server");
     if (isConnected() && stompClient) {
       stompClient.subscribe(
-        "/user/" + data?.data?.email + "/queue/messages",
+        `/user/${data?.data?.email}/queue/messages`,
         onMessageReceived
       );
       stompClient.subscribe(
-        "/topic/notification/" + data?.data?.id,
+        `/topic/notification/${data?.data?.id}`,
         onNotification
       );
-      // stompClient.subscribe("/topic/order/" + data?.data?.id , onOrder);
     }
-    setConnectFinish(true);
   };
 
   const onMessageReceived = (message: Message) => {
     const messageResponse = JSON.parse(message.body);
     console.log(messageResponse);
+    if ("type" in messageResponse) {
+      if (messageResponse.type === "cart") {
+        refetch();
+      }
+    }
+
     if (room && room?.data.items.length > 0) {
       trigger({
         roomId: room?.data?.items?.[0]?.conversationId || "",
@@ -78,22 +85,19 @@ const App = ({ children }: { children: ReactNode }) => {
     }
     refetchRoom();
   };
+
   const onNotification = (notification: Message) => {
     const notificationResponse = JSON.parse(notification.body);
     console.log(notificationResponse);
     notificationRefetch();
   };
-  // const onNonOrdertification = (order: Message) => {
-  //     const orderResponse = JSON.parse(order.body);
-  //     console.log(orderResponse);
-  //     notificationRefetch();
-  // }
 
   const onError = () => {
     console.log("Error connecting to websocket server");
+    dispatch(setDisConnected());
   };
 
-  return connectFinish ? children : <></>;
+  return children;
 };
 
 export default App;

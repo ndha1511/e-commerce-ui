@@ -48,9 +48,9 @@ const UserLayout = ({ children }: Props) => {
 
     return <>
         <MenuFixed fixedSearch={fixedSearch} />
-        <Header fixedSearch={fixedSearch} />
+        <Header />
         <div style={{
-            marginTop: fixedSearch ? '100px' : 0,
+            marginTop: 80,
             paddingBottom: 20,
             paddingTop: 20
         }}>{children}</div>

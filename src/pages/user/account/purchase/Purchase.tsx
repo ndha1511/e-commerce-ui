@@ -83,7 +83,7 @@ const Purchase = () => {
         </div>
         <div className="d-flex justify-content-center align-items-center flex-1" style={{width: mobile?'45%':'100%'}}>
             {(purchase?.data?.items && purchase?.data?.items.length > 0) ?
-                <Table className={`table-bordered table-responsive  ${orderStatus === OrderStatus.AWAITING_PICKUP ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
+                <Table className={`table-bordered table-responsive  ${(orderStatus === OrderStatus.AWAITING_PICKUP || orderStatus === OrderStatus.SHIPPED_CONFIRMATION) ? 'custom-table-purchase-ss' : 'custom-table-purchase'}`}>
                     <thead>
                         <tr>
                             <th>Mã đơn hàng</th>

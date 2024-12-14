@@ -26,7 +26,9 @@ const CartItem: React.FC<CartItemProps> = ({ item, refetch, index, addVariant, r
     const [getVariant] = useLazyGetVariantsQuery();
     const [trigger] = useUpdateCartMutation();
     const [deleteItem] = useDeleteCartItemMutation();
+    console.log(selectVariant);
     const checked = selectVariant.findIndex(v => v === item.variantResponse.id) !== -1;
+    console.log(checked);
     const variantOptionsRef = useRef<HTMLDivElement | null>(null);
 
     const toggleOptions = () => {

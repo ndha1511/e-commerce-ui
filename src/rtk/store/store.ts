@@ -24,7 +24,11 @@ import voucherApi from '../../services/voucher.service'
 import { orderSlice } from '../slice/order-slice'
 import statisticsApi from '../../services/statistics.service'
 import { loadingSlice } from '../slice/loading-slice'
+
 import purchaseApi from '../../services/purchase.service'
+
+import { socketSlice } from '../slice/socket-slice'
+
 
 
 
@@ -35,6 +39,7 @@ export const store = configureStore({
     notification: Notification.reducer,
     order: orderSlice.reducer,
     loading: loadingSlice.reducer,
+    socket: socketSlice.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,

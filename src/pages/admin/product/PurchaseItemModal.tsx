@@ -32,30 +32,36 @@ const PurchaseItemModal = ({ id, show, onHide }: ModalPurchaseItem) => {
         <div>
           <div className="d-flex gap-5 flex-wrap ">
             <span>
-              Mã đơn hàng: <span>{data?.data.purchaseOrder.id}</span>
+              Mã đơn hàng: <br /> <span>{data?.data.purchaseOrder.id}</span>
             </span>
             <span>
               Ngày nhập:{" "}
-              {new Date(
+             <br />
+             <span> {new Date(
                 data?.data.purchaseOrder.createdAt || ""
-              ).toLocaleString() || ""}
+              ).toLocaleString() || ""}</span>
             </span>
 
-            <span>Số lượng nhập: {data?.data.purchaseOrder.totalQuantity}</span>
+            <span>Số lượng nhập: <br /> <span>{data?.data.purchaseOrder.totalQuantity}</span></span>
             <span>
               Tổng tiền nhập:{" "}
-              {convertPrice(data?.data.purchaseOrder.totalPrice)}
+            <br /> <span className="primary">
+            {convertPrice(data?.data.purchaseOrder.totalPrice)}
+            </span>
             </span>
             <span>
-              Nhân viên nhập: {data?.data.purchaseOrder.importStaffName}
+              Nhân viên nhập: <br />
+              <span> {data?.data.purchaseOrder.importStaffName}</span>
             </span>
-            <span>Danh sách sản phẩm</span>
+     
           </div>
+    
           <Table className="table-bordered table-responsive custom-table-history mt-3">
             <thead>
               <tr className="text-center">
                 <th>Hình ảnh</th>
                 <th>Tên sản phẩm</th>
+                <th>Phân loại</th>
                 <th>Giá nhập</th>
                 <th>Số lượng</th>
               </tr>
@@ -91,6 +97,12 @@ const PurchaseItemModal = ({ id, show, onHide }: ModalPurchaseItem) => {
                           )}
                         </div>
                       )}
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      {item.variant.attributeValue1} <br />
+                      {item.variant.attributeValue2}
                     </div>
                   </td>
                   <td>{convertPrice(item.importPrice)}</td>

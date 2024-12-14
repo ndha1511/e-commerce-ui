@@ -1,6 +1,7 @@
+import { BaseModel } from "./base-model";
 import { DiscountType } from "./promotion";
 
-export interface Voucher {
+export interface Voucher extends BaseModel {
     voucherName: string;
     code: string;
     discountType: DiscountType;

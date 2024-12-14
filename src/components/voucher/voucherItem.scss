@@ -1,0 +1,7 @@
+.bonus-hover{
+    transition: background-color 0.3s ease; // Thêm hiệu ứng mượt
+    &:hover{
+        background-color: #f0f0f0; 
+
+    }
+}

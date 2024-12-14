@@ -22,7 +22,6 @@ import CustomTooltip from "../../../components/tooltip/CustomTooltipProps";
 import useRedirect from "../../../hooks/useRedirect";
 import PromotionRow from "../../../components/promotion/PromotionRow";
 import BrandModal from "./BrandModal";
-import { BiCheckCircle, BiRadioCircle } from "react-icons/bi";
 import { FaRegCheckCircle } from "react-icons/fa";
 
 function InsertProduct() {

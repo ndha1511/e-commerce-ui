@@ -238,7 +238,7 @@ const MessageView: React.FC = () => {
                   style={{ borderRadius: "50%", border: "1px solid white" }}
                   alt=""
                 />
-                <span>SHOP OOSC</span>
+                <span>SHOP OSON</span>
               </div>
               <i className="bi bi-x" onClick={toggleVisibility}></i>
             </div>

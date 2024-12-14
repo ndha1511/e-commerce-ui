@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
   Col,
-  Collapse,
+  // Collapse,
   Container,
   Form,
   Row,
 } from "react-bootstrap";
-import { BsChatDots } from "react-icons/bs";
 import ImageDetails from "../../../components/image-details/ImageDetails";
 import Rating from "../../../components/rating/Rating";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -58,6 +57,8 @@ import { useGetCommentsQuery } from "../../../services/comment.service";
 import ListProduct from "../../../components/products/ListProduct";
 import { useGetBrandsQuery } from "../../../services/brand.service";
 import SimpleBar from "simplebar-react";
+import logo from "../../../assets/logo/logo.jpg";
+import { redirect } from "../../../utils/location";
 
 function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
@@ -75,6 +76,16 @@ function ProductDetail() {
         resProduct?.data.categories.length === 0,
     });
 
+  useEffect(() => {
+    if (getProductSuccess && resProduct.data.productName) {
+      document.title = resProduct.data.productName;
+    }
+    return () => {
+      document.title = "oson";
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProductSuccess]);
+
   const product = resProduct?.data;
   const paramsBrand = pageQueryHanlder(1, 40, [
     { filed: "id", operator: "=", value: product?.brandId || "" },
@@ -90,26 +101,15 @@ function ProductDetail() {
   const [productPrice, setProductPrice] = useState(0);
   const [disabledBtn, setDisabledBtn] = useState<boolean>(true);
   const { data: user, isSuccess: loginSuccess } = useCheckLoginQuery();
-  const { refetch } = useGetCartByUserIdQuery(user?.data?.id || "", {
-    skip: !loginSuccess || !user?.data?.id,
-  });
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-  const descriptionRef = useRef<HTMLDivElement | null>(null);
-  const toggleCollapse = () => {
-    if (descriptionRef.current) {
-      // Ghi lại vị trí cuộn hiện tại
-      const currentScrollPosition = descriptionRef.current.scrollTop;
-
-      setIsCollapsed(!isCollapsed);
-
-      // Sau khi trạng thái collapsed thay đổi, điều chỉnh lại vị trí cuộn
-      setTimeout(() => {
-        if (descriptionRef.current) {
-          descriptionRef.current.scrollTop = currentScrollPosition;
-        }
-      }, 0); // Trì hoãn một chút để DOM kịp thay đổi
+  const { data: queryCart, refetch } = useGetCartByUserIdQuery(
+    user?.data?.id || "",
+    {
+      skip: !loginSuccess || !user?.data?.id,
     }
-  };
+  );
+  const cart = useMemo(() => {
+    return queryCart?.data || [];
+  }, [queryCart?.data]);
   const [addToCart] = useAddToCartMutation();
   const dispatch = useDispatch();
   const [x, setX] = useState(0);
@@ -328,6 +328,40 @@ function ProductDetail() {
         "/auth/login?redirect-url=" + encodeURIComponent("product/" + key);
     } else {
       try {
+        if (variant) {
+          if (quantity > variant.quantity) {
+            dispatch(
+              setNotify({
+                type: "error",
+                message: "Không thể thêm vì số lượng sản phẩm không đủ",
+              })
+            );
+            return;
+          }
+          if (quantity === 0) {
+            dispatch(
+              setNotify({
+                type: "error",
+                message: "Số lượng sản phẩm phải lớn hơn 0",
+              })
+            );
+            return;
+          }
+          const cartItem = cart.find(
+            (c) => c.variantResponse.id === variant.id
+          );
+          if (cartItem) {
+            if (quantity > variant.quantity - cartItem.quantity) {
+              dispatch(
+                setNotify({
+                  type: "error",
+                  message: "Số lượng trong giỏ hàng vượt quá số lượng sản phẩm",
+                })
+              );
+              return;
+            }
+          }
+        }
         await addToCart({
           userId: user.data.id,
           productCart: {
@@ -357,10 +391,74 @@ function ProductDetail() {
       }
     }
   };
+
+  const handleAddBuy = async () => {
+    setDisabledBtn(true);
+    if (!user?.data) {
+      window.location.href =
+        "/auth/login?redirect-url=" + encodeURIComponent("product/" + key);
+    } else {
+      try {
+        if (variant) {
+          if (quantity > variant.quantity) {
+            dispatch(
+              setNotify({
+                type: "error",
+                message: "Không thể thêm vì số lượng sản phẩm không đủ",
+              })
+            );
+            return;
+          }
+          if (quantity === 0) {
+            dispatch(
+              setNotify({
+                type: "error",
+                message: "Số lượng sản phẩm phải lớn hơn 0",
+              })
+            );
+            return;
+          }
+          const cartItem = cart.find(
+            (c) => c.variantResponse.id === variant.id
+          );
+          if (cartItem) {
+            if (quantity > variant.quantity - cartItem.quantity) {
+              dispatch(
+                setNotify({
+                  type: "error",
+                  message: "Số lượng trong giỏ hàng vượt quá số lượng sản phẩm",
+                })
+              );
+              return;
+            }
+          }
+        }
+        await addToCart({
+          userId: user.data.id,
+          productCart: {
+            variantId: variant?.id || "",
+            quantity: quantity,
+          },
+        }).unwrap();
+        await refetch();
+        redirect("/cart?variant-id=" + variant?.id);
+      } catch (error) {
+        dispatch(
+          setNotify({
+            type: "error",
+            message: "Thêm sản phẩm vào giỏ hàng thất bại",
+          })
+        );
+        console.log(error);
+      } finally {
+        setDisabledBtn(false); // Đảm bảo nút được bật lại dù có lỗi hay không
+      }
+    }
+  };
   // Cắt ngắn phần mô tả ban đầu (100 ký tự)
-  const truncatedDescription =
-    product?.description?.slice(0, 1000) +
-    (product && product?.description?.length > 1000 ? "..." : "");
+  // const truncatedDescription =
+  //   product?.description?.slice(0, 1000) +
+  //   (product && product?.description?.length > 1000 ? "..." : "");
   return (
     <Container className="mt-4 bg-light  border-radius-small">
       {/* {isLoading && <ModalLoading loading={isLoading} />} */}
@@ -519,16 +617,16 @@ function ProductDetail() {
                   <Col className="d-flex justify-content-between">
                     <div className="d-flex align-items-center w-100 pb-2 border-bottom ">
                       <div className="d-flex align-items-center w-100 ">
-                        <img
-                          src="https://vcdn.tikicdn.com/cache/w100/ts/seller/4b/54/1a/f385a79a716cb3505f152e7af8c769aa.png.webp"
-                          alt="Product"
-                          className="img-fluid img-ft"
-                        />
-                        <div className="pe-4">
-                          <span className="fw bold">OSOOS</span> <br />
-                          4.4 <i className="bi bi-star-fill primary"></i>{" "}
-                          <small>(720 đánh giá)</small>
-                        </div>
+                        <Link to={"/"}>
+                          <img
+                            src={logo}
+                            width={80}
+                            height={50}
+                            style={{
+                              borderRadius: 30,
+                            }}
+                          />
+                        </Link>
                       </div>
                       <div>
                         {/* <div className="border p-2 border-radius-small">
@@ -658,7 +756,13 @@ function ProductDetail() {
                             <Form.Control
                               type="text"
                               value={quantity}
-                              readOnly
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const numberValue = Number(value);
+                                if (!isNaN(numberValue)) {
+                                  setQuantity(numberValue);
+                                }
+                              }}
                               className="text-center"
                               style={{
                                 width: "3rem",
@@ -703,6 +807,7 @@ function ProductDetail() {
                           disabled={disabledBtn}
                           variant="danger"
                           className="w-100"
+                          onClick={handleAddBuy}
                         >
                           Mua ngay
                         </Button>
@@ -771,46 +876,30 @@ function ProductDetail() {
                 <div className="card-body border-radius-medium product-detail">
                   <h5 className="card-title">Mô tả sản phẩm</h5>
                   <SimpleBar
-                    ref={descriptionRef}
+                    // TODO: fix descriptionRef type safe
+                    // ref={descriptionRef}
                     style={{ overflowY: "auto", maxHeight: "500px" }}
                   >
-                    <Collapse in={!isCollapsed}>
-                      <div>
-                        {product?.description.trimStart().startsWith("<") ? (
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: product?.description || "",
-                            }}
-                          />
-                        ) : (
-                          <pre className="text-align-start">
-                            {product?.description}
-                          </pre>
-                        )}
-                      </div>
-                    </Collapse>
-                    {isCollapsed && (
-                      <div>
-                        {product?.description.trimStart().startsWith("<") ? (
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: truncatedDescription,
-                            }}
-                          />
-                        ) : (
-                          <pre className="text-align-start">
-                            {truncatedDescription}
-                          </pre>
-                        )}
-                      </div>
-                    )}
+                    <div>
+                      {product?.description.trimStart().startsWith("<") ? (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: product.description,
+                          }}
+                        />
+                      ) : (
+                        <pre className="text-align-start">
+                          {product?.description}
+                        </pre>
+                      )}
+                    </div>
                   </SimpleBar>
 
-                  <div className=" d-flex justify-content-end">
+                  {/* <div className=" d-flex justify-content-end">
                     <button className="toggle-btn" onClick={toggleCollapse}>
                       {isCollapsed ? "Xem thêm" : "Thu gọn"}
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
