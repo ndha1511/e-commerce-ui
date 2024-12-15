@@ -175,7 +175,7 @@ const Header = () => {
           </div>
           <div className="">
             {userData?.data ? (
-              <Account username={userData.data.email} />
+              <Account username={userData.data.email} avatar={userData.data.avatar}/>
             ) : (
               <>
                 {mobile ? (

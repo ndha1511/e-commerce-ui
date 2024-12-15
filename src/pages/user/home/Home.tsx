@@ -19,7 +19,7 @@ const Home = () => {
     isError: getProductRecommendsError,
   } = useGetProductsRecommendQuery({
     type: "hybrid-filltering",
-    nRecommend: 40,
+    nRecommend: 60,
   });
 
   const {
