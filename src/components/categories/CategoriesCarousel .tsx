@@ -10,7 +10,7 @@ import { isMobile } from '../../utils/responsive';
 const CategoriesCarousel = () => {
   const mobile = isMobile();
   const redirect = useRedirect();
-  const params: string = pageQueryHanlder(1, 1000, [{ filed: 'parentId', operator: '=', value: 'null' }]);
+  const params: string = pageQueryHanlder(1, 1000, [{ field: 'parentId', operator: '=', value: 'null' }]);
   const { data: parentCategory, isSuccess: getCategoriesSuccess } = useGetCategoriesQuery(params);
   const itemsPerSlide = mobile ?10:20; // Number of items per slide
   const totalSlides = Math.ceil((parentCategory?.data.items.length || 0) / itemsPerSlide);

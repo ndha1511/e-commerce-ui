@@ -1,4 +1,4 @@
-import { Col, Row, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { convertPrice } from "../../../utils/convert-price";
 import { ChangeEvent, useState } from "react";
 import { pageQueryHanlder } from "../../../utils/query-handler";
@@ -19,7 +19,7 @@ function ProductImport() {
     const mobile = isMobile();
     const [open, setOpen] = useState<boolean>(false);
     const debounce = useDebounce(searchKeyword, 500)
-    const params: string = pageQueryHanlder(1, 100, [{ filed: 'productName', operator: ':', value: debounce }]);
+    const params: string = pageQueryHanlder(1, 100, [{ field: 'productName', operator: ':', value: debounce }]);
     const { data } = useGetProductsPageQuery(params);
     const [inputQuantity, setInputQuantity] = useState<number>(0);
     const [inputPrice, setInputPrice] = useState<number>(0);
@@ -56,9 +56,7 @@ function ProductImport() {
             [variantId]: value,
         }));
     };
-    const totalAmount = Object.keys(quantities).reduce((acc, id) => {
-        return acc + (quantities[id] || 0) * (prices[id] || 0);
-    }, 0);
+
     const handleAddInventory = async () => {
         const newInventory: InventoryDto[] = [];
         if (variants?.data) {

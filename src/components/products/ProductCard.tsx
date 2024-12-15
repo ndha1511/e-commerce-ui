@@ -1,10 +1,12 @@
+import useRedirect from '../../hooks/useRedirect';
 import { Product } from '../../models/product';
 import { calcPercentDiscount, calcPromotion, convertPrice } from '../../utils/convert-price';
 import './product-card.scss';
 
 const ProductCard = ({ product }: { product: Product }) => {
+    const redirect = useRedirect();
     return <div className='card-container card-container-size a-disable-default' onClick={() => {
-        window.location.href = '/product/' + product.urlPath;
+        redirect('/product/' + product.urlPath);
     }} >
         <div className='img-container'>
             <img src={product.thumbnail}

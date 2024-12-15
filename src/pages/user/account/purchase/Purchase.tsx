@@ -16,7 +16,7 @@ const Purchase = () => {
 
     // default order status is pending
     const param = pageQueryHanlder(1, 40, [{
-        filed: "orderStatus",
+        field: "orderStatus",
         operator: "=",
         value: orderStatus
     }], [{ field: "createdAt", order: "desc" }])

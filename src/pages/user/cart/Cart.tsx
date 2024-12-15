@@ -85,6 +85,7 @@ const Cart: React.FC = () => {
     } else {
       setSelectVariant(variantIdUrl ? [variantIdUrl] : []);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checked]);
 
   useEffect(() => {

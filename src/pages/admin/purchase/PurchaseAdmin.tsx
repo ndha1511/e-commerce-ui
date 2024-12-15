@@ -15,7 +15,7 @@ const PurchaseAdmin = () => {
     const [orderStatus, setOrderStatus] = React.useState(OrderStatus.RECEIVED);
     // default order status is .AWAITING_PICKUP
     const param = pageQueryHanlder(1, 40, [{
-        filed: "orderStatus",
+        field: "orderStatus",
         operator: "=",
         value: orderStatus
     }], [{ field: "createdAt", order: "desc" }])

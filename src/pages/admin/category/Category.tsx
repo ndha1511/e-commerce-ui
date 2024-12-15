@@ -10,6 +10,7 @@ import { pageQueryHanlder } from "../../../utils/query-handler";
 import ClipLoader from "react-spinners/ClipLoader";
 import { Category as CategoryModel } from "../../../models/category";
 import SimpleBar from "simplebar-react";
+import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
 
 
 interface ItemProps {
@@ -22,7 +23,7 @@ const CategoryItem = ({ category }: ItemProps) => {
     const [getCategory] = useLazyGetCategoriesQuery();
     const [showModal, setShowModal] = React.useState(false);
     const [childCategory, setChildCategory] = React.useState<CategoryModel[]>([]);
-    const paramsChild: string = pageQueryHanlder(1, 100, [{ filed: 'parentId', operator: '=', value: category.id }]);
+    const paramsChild: string = pageQueryHanlder(1, 100, [{ field: 'parentId', operator: '=', value: category.id }]);
 
     const openCollapse = async () => {
         setOpen(!open);
@@ -106,13 +107,14 @@ const Category = () => {
     const pageParams = useGetParam('page');
     const [show, setShow] = React.useState(false);
     const [page] = React.useState<number>(pageParams ? Number(pageParams) : 1);
-    const { data, isFetching, refetch } = useGetCategoriesQuery(pageQueryHanlder(page, 20, [{ filed: 'parentId', operator: ':', value: 'null' }]));
+    const { data, isFetching, refetch, isError } = useGetCategoriesQuery(pageQueryHanlder(page, 20, [{ field: 'parentId', operator: ':', value: 'null' }]));
 
     const handleClose = () => {
         setShow(false);
     };
 
     return (
+        <QueryWrapper queriesError={[isError]} queriesSuccess={[!isFetching]}>
         <div className="d-flex flex-column  bg-light">
             <div className="p-3">
                 <SimpleBar style={{ height: 600 }}>
@@ -151,6 +153,7 @@ const Category = () => {
             </div>
             {show && <CreateCategoryModal refetch={refetch} show={show} handleClose={handleClose} />}
         </div>
+        </QueryWrapper>
     );
 };
 

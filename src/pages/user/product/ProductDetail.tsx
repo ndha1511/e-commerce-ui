@@ -59,6 +59,7 @@ import { useGetBrandsQuery } from "../../../services/brand.service";
 import SimpleBar from "simplebar-react";
 import logo from "../../../assets/logo/logo.jpg";
 import { redirect } from "../../../utils/location";
+import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
 
 function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
@@ -68,13 +69,18 @@ function ProductDetail() {
     data: resProduct,
     isSuccess: getProductSuccess,
     isFetching: getProductFetching,
+    isError: getProductError,
   } = useGetProductByUrlQuery(key || "");
-  const { data: categories, isSuccess: getCategoriesSuccess } =
-    useGetListCategoryQuery(resProduct?.data.categories || [], {
-      skip:
-        !Array.isArray(resProduct?.data.categories) ||
-        resProduct?.data.categories.length === 0,
-    });
+  const {
+    data: categories,
+    isSuccess: getCategoriesSuccess,
+    isFetching: getCategoriesFetching,
+    isError: getCategoriesError,
+  } = useGetListCategoryQuery(resProduct?.data.categories || [], {
+    skip:
+      !Array.isArray(resProduct?.data.categories) ||
+      resProduct?.data.categories.length === 0,
+  });
 
   useEffect(() => {
     if (getProductSuccess && resProduct.data.productName) {
@@ -88,7 +94,7 @@ function ProductDetail() {
 
   const product = resProduct?.data;
   const paramsBrand = pageQueryHanlder(1, 40, [
-    { filed: "id", operator: "=", value: product?.brandId || "" },
+    { field: "id", operator: "=", value: product?.brandId || "" },
   ]);
   const { data: brandData } = useGetBrandsQuery(paramsBrand);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,7 +125,7 @@ function ProductDetail() {
   const [rating, setRanting] = useState<string>("");
   const [ratingSearch, setRantingSearch] = useState<string>("");
   const param = pageQueryHanlder(1, 10, [
-    { filed: ratingSearch, operator: "=", value: rating },
+    { field: ratingSearch, operator: "=", value: rating },
   ]);
   const { data: dataComment, refetch: refetchComment } = useGetCommentsQuery(
     {
@@ -133,7 +139,10 @@ function ProductDetail() {
   const handlePageChange = (page: number) => {
     setCurrentPageComment(page);
   };
-  const { data: queryRecommendResult } = useGetProductsRecommendQuery(
+  const {
+    data: queryRecommendResult,
+    isFetching: getProductRecommendFetching,
+  } = useGetProductsRecommendQuery(
     {
       productId: product?.numId,
       type: "content-filtering",
@@ -455,480 +464,491 @@ function ProductDetail() {
       }
     }
   };
-  // Cắt ngắn phần mô tả ban đầu (100 ký tự)
-  // const truncatedDescription =
-  //   product?.description?.slice(0, 1000) +
-  //   (product && product?.description?.length > 1000 ? "..." : "");
+
   return (
-    <Container className="mt-4 bg-light  border-radius-small">
-      {/* {isLoading && <ModalLoading loading={isLoading} />} */}
+    <QueryWrapper
+      queriesError={[getCategoriesError, getProductError]}
+      queriesSuccess={[!getCategoriesFetching, !getProductFetching]}
+    >
+      <Container className="mt-4 bg-light  border-radius-small">
+        {/* {isLoading && <ModalLoading loading={isLoading} />} */}
 
-      <div className="p-1 text-meidum d-flex gap-2 text-muted">
+        <div className="p-1 text-meidum d-flex gap-2 text-muted">
+          <SkeletonWrapper
+            queriesStatus={[getCategoriesSuccess && !getCategoriesFetching]}
+            skHeight={20}
+            skWidth={300}
+          >
+            <>
+              {" "}
+              <Link to={"/"} className="link-all">
+                Trang chủ <FontAwesomeIcon icon={faChevronRight} />
+              </Link>
+              {categories?.data?.map((category) => {
+                return (
+                  <Link
+                    className="link-all"
+                    key={category.id}
+                    to={"/" + category.urlPath}
+                  >
+                    {category.categoryName}{" "}
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </Link>
+                );
+              })}
+            </>
+          </SkeletonWrapper>
+        </div>
         <SkeletonWrapper
-          queriesStatus={[getCategoriesSuccess]}
-          skHeight={20}
-          skWidth={300}
+          queriesStatus={[getProductSuccess && !getProductFetching]}
+          skHeight={500}
         >
-          <>
-            {" "}
-            <Link to={"/"} className="link-all">
-              Trang chủ <FontAwesomeIcon icon={faChevronRight} />
-            </Link>
-            {categories?.data?.map((category) => {
-              return (
-                <Link
-                  className="link-all"
-                  key={category.id}
-                  to={"/" + category.urlPath}
-                >
-                  {category.categoryName}{" "}
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </Link>
-              );
-            })}
-          </>
-        </SkeletonWrapper>
-      </div>
-      <SkeletonWrapper queriesStatus={[getProductSuccess]} skHeight={500}>
-        <Row className="align-center ">
-          <Col md={4} className="">
-            <div className="border-radius-medium bg-white p-3">
-              <div>
-                {" "}
-                <ImageDetails startIndex={startIndex} images={images} />
+          <Row className="align-center ">
+            <Col md={4} className="">
+              <div className="border-radius-medium bg-white p-3">
+                <div>
+                  {" "}
+                  <ImageDetails startIndex={startIndex} images={images} />
+                </div>
               </div>
-            </div>
-          </Col>
-          <Col md={5} className=" ">
-            <div className=" position-relative">
-              {product?.totalQuantity === 0 && (
-                <div
-                  className="position-absolute top-50 start-50 translate-middle"
-                  style={{ zIndex: 50 }}
-                >
-                  <ProductEmpty />
-                </div>
-              )}
-              <div
-                className={`bg-white border-radius-medium p-3 ${
-                  product?.totalQuantity === 0 ? "blurred" : ""
-                }`}
-              >
-                <div className="d-flex align-items-center mb-2 ">
-                  {product?.brandId && (
-                    <span className="text-muted">
-                      Thương hiệu: {brandData?.data.items?.[0]?.brandName}
-                    </span>
-                  )}
-                </div>
-                <h5 className="mb-1">{product?.productName}</h5>
-
-                {product?.rating ? (
-                  <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
-                    <span className="text-medium">{product.rating}</span>
-                    <Rating
-                      size="text-medium"
-                      variant="secondary"
-                      star={product.rating}
-                    />
-                    <span className=" text-muted">({product.reviews})</span>
-                    <span></span>
-                    <span className=" text-muted">
-                      Đã bán: {product?.buyQuantity}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="d-flex gap-2 pt-2 pb-2 align-items-center">
-                    <span className="text-muted">Chưa có đánh giá</span>
-                    <span className=" text-muted">
-                      Đã bán: {product?.buyQuantity}
-                    </span>
+            </Col>
+            <Col md={5} className=" ">
+              <div className=" position-relative">
+                {product?.totalQuantity === 0 && (
+                  <div
+                    className="position-absolute top-50 start-50 translate-middle"
+                    style={{ zIndex: 50 }}
+                  >
+                    <ProductEmpty />
                   </div>
                 )}
-                <div className="d-flex align-items-center mb-2">
-                  <h4
-                    className={
-                      product?.promotion
-                        ? "text-line-through text-large mb-0"
-                        : "text-large mb-0"
-                    }
-                  >
-                    {convertPrice(productPrice)}
-                  </h4>
-                  <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
-                    - {calcPercentDiscount(productPrice, product?.promotion)}%
-                  </small>
-
-                  {product &&
-                    product.promotion &&
-                    product.promotion.endDate && (
-                      <div className="ms-2">
-                        Kết thúc trong:{" "}
-                        <Countdown
-                          date={
-                            Date.now() +
-                            (new Date(
-                              product.promotion.endDate.toString()
-                            ).getTime() - new Date().getTime() || 0)
-                          }
-                        />
-                      </div>
+                <div
+                  className={`bg-white border-radius-medium p-3 ${
+                    product?.totalQuantity === 0 ? "blurred" : ""
+                  }`}
+                >
+                  <div className="d-flex align-items-center mb-2 ">
+                    {product?.brandId && (
+                      <span className="text-muted">
+                        Thương hiệu: {brandData?.data.items?.[0]?.brandName}
+                      </span>
                     )}
-                </div>
-                <div className="mb-2">
-                  {product?.promotion && (
-                    <div className="p-2 border border-radius-small">
-                      <span className="text-medium">Giá sau khi giảm:</span>{" "}
-                      <br />
-                      <span className="text-large primary">
-                        {calcPromotion(productPrice, product.promotion)}
-                      </span>{" "}
-                      <br />
-                      <FontAwesomeIcon
-                        color="blue"
-                        icon={faCheck}
-                        className="pe-2 ps-1 "
+                  </div>
+                  <h5 className="mb-1">{product?.productName}</h5>
+
+                  {product?.rating ? (
+                    <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
+                      <span className="text-medium">{product.rating}</span>
+                      <Rating
+                        size="text-medium"
+                        variant="secondary"
+                        star={product.rating}
                       />
-                      <span>
-                        Giảm{" "}
-                        {calcDiscountPrice(productPrice, product.promotion)}{" "}
+                      <span className=" text-muted">({product.reviews})</span>
+                      <span></span>
+                      <span className=" text-muted">
+                        Đã bán: {product?.buyQuantity}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="d-flex gap-2 pt-2 pb-2 align-items-center">
+                      <span className="text-muted">Chưa có đánh giá</span>
+                      <span className=" text-muted">
+                        Đã bán: {product?.buyQuantity}
                       </span>
                     </div>
                   )}
-                </div>
-                <div className="mt-4">
-                  {product?.attributes?.map((attribute, index) => (
-                    <ProductAttribute
-                      productId={resProduct?.data.id || ""}
-                      index={index}
-                      attribute={attribute}
-                      key={attribute.id}
-                      onSelect={onSelect}
-                    />
-                  ))}
+                  <div className="d-flex align-items-center mb-2">
+                    <h4
+                      className={
+                        product?.promotion
+                          ? "text-line-through text-large mb-0"
+                          : "text-large mb-0"
+                      }
+                    >
+                      {convertPrice(productPrice)}
+                    </h4>
+                    <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
+                      - {calcPercentDiscount(productPrice, product?.promotion)}%
+                    </small>
+
+                    {product &&
+                      product.promotion &&
+                      product.promotion.endDate && (
+                        <div className="ms-2">
+                          Kết thúc trong:{" "}
+                          <Countdown
+                            date={
+                              Date.now() +
+                              (new Date(
+                                product.promotion.endDate.toString()
+                              ).getTime() - new Date().getTime() || 0)
+                            }
+                          />
+                        </div>
+                      )}
+                  </div>
+                  <div className="mb-2">
+                    {product?.promotion && (
+                      <div className="p-2 border border-radius-small">
+                        <span className="text-medium">Giá sau khi giảm:</span>{" "}
+                        <br />
+                        <span className="text-large primary">
+                          {calcPromotion(productPrice, product.promotion)}
+                        </span>{" "}
+                        <br />
+                        <FontAwesomeIcon
+                          color="blue"
+                          icon={faCheck}
+                          className="pe-2 ps-1 "
+                        />
+                        <span>
+                          Giảm{" "}
+                          {calcDiscountPrice(productPrice, product.promotion)}{" "}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-4">
+                    {product?.attributes?.map((attribute, index) => (
+                      <ProductAttribute
+                        productId={resProduct?.data.id || ""}
+                        index={index}
+                        attribute={attribute}
+                        key={attribute.id}
+                        onSelect={onSelect}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </Col>
-          <Col md={3}>
-            <div className="d-flex justify-content-center border-radius-medium ">
-              <Card style={{ width: "100%", padding: "1rem", border: "none" }}>
-                <Row>
-                  <Col className="d-flex justify-content-between">
-                    <div className="d-flex align-items-center w-100 pb-2 border-bottom ">
-                      <div className="d-flex align-items-center w-100 ">
-                        <Link to={"/"}>
-                          <img
-                            src={logo}
-                            width={80}
-                            height={50}
-                            style={{
-                              borderRadius: 30,
-                            }}
-                          />
-                        </Link>
-                      </div>
-                      <div>
-                        {/* <div className="border p-2 border-radius-small">
+            </Col>
+            <Col md={3}>
+              <div className="d-flex justify-content-center border-radius-medium ">
+                <Card
+                  style={{ width: "100%", padding: "1rem", border: "none" }}
+                >
+                  <Row>
+                    <Col className="d-flex justify-content-between">
+                      <div className="d-flex align-items-center w-100 pb-2 border-bottom ">
+                        <div className="d-flex align-items-center w-100 ">
+                          <Link to={"/"}>
+                            <img
+                              src={logo}
+                              width={80}
+                              height={50}
+                              style={{
+                                borderRadius: 30,
+                              }}
+                            />
+                          </Link>
+                        </div>
+                        <div>
+                          {/* <div className="border p-2 border-radius-small">
                                                     <BsChatDots style={{ fontSize: 20 }} color="#f05d23" />
                                                 </div> */}
+                        </div>
                       </div>
-                    </div>
-                  </Col>
-                </Row>
-                <div style={{ position: "relative", height: "80px" }}>
-                  <motion.div
-                    className="box "
-                    initial={{ opacity: 1 }}
-                    style={{
-                      opacity: "50%",
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                    }}
-                  >
-                    {variant && (
-                      <Row className="mt-3  ">
-                        <Col>
-                          <div className="d-flex  ">
-                            <img
-                              src={variant.image || product?.thumbnail}
-                              alt="variant"
-                              className="img-fluid img-ft"
-                            />
-                            <div className="ps-1">
-                              <span>{variant.attributeValue1}</span> <br />
-                              <span>{variant.attributeValue2}</span>
-                            </div>
-                          </div>
-                        </Col>
-                        <Col>
-                          <div className="ps-1">
-                            <span>Kho hàng: {variant.quantity}</span> <br />
-                          </div>
-                        </Col>
-                      </Row>
-                    )}
-                  </motion.div>
-
-                  {isVisible && (
+                    </Col>
+                  </Row>
+                  <div style={{ position: "relative", height: "80px" }}>
                     <motion.div
-                      className="box border"
-                      animate={{
-                        x: x, // Giảm giá trị x
-                        y: y,
-                        rotate,
-                        scale: [1.5, 0.1],
-                        opacity: [1, 0.5],
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 700,
-                        damping: 100,
-                        duration: 0.2,
-                      }}
+                      className="box "
+                      initial={{ opacity: 1 }}
                       style={{
                         opacity: "50%",
                         position: "absolute",
                         top: 0,
                         left: 0,
                       }}
-                      onAnimationComplete={() => setIsVisible(false)}
                     >
-                      {product?.attributes && product.attributes.length > 0 ? (
-                        variant && (
-                          <Row className="mt-3 border ">
-                            <Col>
-                              <div className="d-flex  ">
-                                <img
-                                  src={variant.image || product?.thumbnail}
-                                  alt="variant"
-                                  className="img-fluid img-ft"
-                                />
-                                <div className="ps-1">
-                                  <span>{variant.attributeValue1}</span> <br />
-                                  <span>{variant.attributeValue2}</span>
-                                </div>
-                              </div>
-                            </Col>
-                            <Col>
-                              <div className="ps-1">
-                                <span>Kho hàng: {variant.quantity}</span> <br />
-                              </div>
-                            </Col>
-                          </Row>
-                        )
-                      ) : (
-                        <Row className="mt-3 border ">
+                      {variant && (
+                        <Row className="mt-3  ">
                           <Col>
                             <div className="d-flex  ">
                               <img
-                                src={product?.thumbnail}
+                                src={variant.image || product?.thumbnail}
                                 alt="variant"
                                 className="img-fluid img-ft"
                               />
+                              <div className="ps-1">
+                                <span>{variant.attributeValue1}</span> <br />
+                                <span>{variant.attributeValue2}</span>
+                              </div>
                             </div>
                           </Col>
                           <Col>
                             <div className="ps-1">
-                              <span>Kho hàng: {product?.totalQuantity}</span>{" "}
-                              <br />
+                              <span>Kho hàng: {variant.quantity}</span> <br />
                             </div>
                           </Col>
                         </Row>
                       )}
                     </motion.div>
-                  )}
-                </div>
-                {variant ? (
-                  variant.quantity > 0 ? (
-                    <>
-                      <Row className="mt-3 ">
-                        <Col className="d-flex justify-content-between align-items-center">
-                          <span>Số Lượng</span>
-                          <div>
-                            <Button
-                              variant="outline-secondary"
-                              onClick={decreaseQuantity}
-                            >
-                              -
-                            </Button>
-                            <Form.Control
-                              type="text"
-                              value={quantity}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                const numberValue = Number(value);
-                                if (!isNaN(numberValue)) {
-                                  setQuantity(numberValue);
-                                }
-                              }}
-                              className="text-center"
-                              style={{
-                                width: "3rem",
-                                display: "inline-block",
-                                margin: "0 0.5rem",
-                              }}
-                            />
-                            <Button
-                              variant="outline-secondary"
-                              onClick={increaseQuantity}
-                            >
-                              +
-                            </Button>
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row className="mt-3">
-                        <Col className="d-flex justify-content-between">
-                          <span>Tạm tính</span>
-                          <span className="text-large">
-                            {calcPromotion(
-                              quantity * variant.price,
-                              product?.promotion
-                            )}
-                          </span>
-                        </Col>
-                      </Row>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-muted">Hết hàng</span>
-                    </>
-                  )
-                ) : (
-                  <></>
-                )}
-                {variant && (
-                  <>
-                    <Row className="mt-3">
-                      <Col>
-                        <Button
-                          disabled={disabledBtn}
-                          variant="danger"
-                          className="w-100"
-                          onClick={handleAddBuy}
-                        >
-                          Mua ngay
-                        </Button>
-                      </Col>
-                    </Row>
-                    <Row className="mt-2">
-                      <Col>
-                        <Button
-                          onClick={handleAddToCart}
-                          disabled={disabledBtn}
-                          variant="outline-primary"
-                          className="w-100"
-                        >
-                          Thêm vào giỏ hàng
-                        </Button>
-                      </Col>
-                    </Row>
-                  </>
-                )}
-              </Card>
-            </div>
 
-            {address?.data && address?.data.length > 0 ? (
-              <div className="bg-white mt-3 border-radius-medium p-1">
-                {" "}
-                <Address info={address.data[0]} />{" "}
+                    {isVisible && (
+                      <motion.div
+                        className="box border"
+                        animate={{
+                          x: x, // Giảm giá trị x
+                          y: y,
+                          rotate,
+                          scale: [1.5, 0.1],
+                          opacity: [1, 0.5],
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 700,
+                          damping: 100,
+                          duration: 0.2,
+                        }}
+                        style={{
+                          opacity: "50%",
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                        }}
+                        onAnimationComplete={() => setIsVisible(false)}
+                      >
+                        {product?.attributes &&
+                        product.attributes.length > 0 ? (
+                          variant && (
+                            <Row className="mt-3 border ">
+                              <Col>
+                                <div className="d-flex  ">
+                                  <img
+                                    src={variant.image || product?.thumbnail}
+                                    alt="variant"
+                                    className="img-fluid img-ft"
+                                  />
+                                  <div className="ps-1">
+                                    <span>{variant.attributeValue1}</span>{" "}
+                                    <br />
+                                    <span>{variant.attributeValue2}</span>
+                                  </div>
+                                </div>
+                              </Col>
+                              <Col>
+                                <div className="ps-1">
+                                  <span>Kho hàng: {variant.quantity}</span>{" "}
+                                  <br />
+                                </div>
+                              </Col>
+                            </Row>
+                          )
+                        ) : (
+                          <Row className="mt-3 border ">
+                            <Col>
+                              <div className="d-flex  ">
+                                <img
+                                  src={product?.thumbnail}
+                                  alt="variant"
+                                  className="img-fluid img-ft"
+                                />
+                              </div>
+                            </Col>
+                            <Col>
+                              <div className="ps-1">
+                                <span>Kho hàng: {product?.totalQuantity}</span>{" "}
+                                <br />
+                              </div>
+                            </Col>
+                          </Row>
+                        )}
+                      </motion.div>
+                    )}
+                  </div>
+                  {variant ? (
+                    variant.quantity > 0 ? (
+                      <>
+                        <Row className="mt-3 ">
+                          <Col className="d-flex justify-content-between align-items-center">
+                            <span>Số Lượng</span>
+                            <div>
+                              <Button
+                                variant="outline-secondary"
+                                onClick={decreaseQuantity}
+                              >
+                                -
+                              </Button>
+                              <Form.Control
+                                type="text"
+                                value={quantity}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  const numberValue = Number(value);
+                                  if (!isNaN(numberValue)) {
+                                    setQuantity(numberValue);
+                                  }
+                                }}
+                                className="text-center"
+                                style={{
+                                  width: "3rem",
+                                  display: "inline-block",
+                                  margin: "0 0.5rem",
+                                }}
+                              />
+                              <Button
+                                variant="outline-secondary"
+                                onClick={increaseQuantity}
+                              >
+                                +
+                              </Button>
+                            </div>
+                          </Col>
+                        </Row>
+                        <Row className="mt-3">
+                          <Col className="d-flex justify-content-between">
+                            <span>Tạm tính</span>
+                            <span className="text-large">
+                              {calcPromotion(
+                                quantity * variant.price,
+                                product?.promotion
+                              )}
+                            </span>
+                          </Col>
+                        </Row>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-muted">Hết hàng</span>
+                      </>
+                    )
+                  ) : (
+                    <></>
+                  )}
+                  {variant && (
+                    <>
+                      <Row className="mt-3">
+                        <Col>
+                          <Button
+                            disabled={disabledBtn}
+                            variant="danger"
+                            className="w-100"
+                            onClick={handleAddBuy}
+                          >
+                            Mua ngay
+                          </Button>
+                        </Col>
+                      </Row>
+                      <Row className="mt-2">
+                        <Col>
+                          <Button
+                            onClick={handleAddToCart}
+                            disabled={disabledBtn}
+                            variant="outline-primary"
+                            className="w-100"
+                          >
+                            Thêm vào giỏ hàng
+                          </Button>
+                        </Col>
+                      </Row>
+                    </>
+                  )}
+                </Card>
               </div>
-            ) : (
-              <></>
+
+              {address?.data && address?.data.length > 0 ? (
+                <div className="bg-white mt-3 border-radius-medium p-1">
+                  {" "}
+                  <Address info={address.data[0]} />{" "}
+                </div>
+              ) : (
+                <></>
+              )}
+            </Col>
+          </Row>
+          <Row>
+            {product?.tags && (
+              <Col md={9}>
+                <div className="mt-3 border-radius-medium ">
+                  <div
+                    style={{ border: "none" }}
+                    className="card border-radius-medium "
+                  >
+                    <div className="card-body border-radius-medium ">
+                      <h5 className="card-title">Thông tin chi tiết</h5>
+                      <table className="table text-muted ">
+                        <tbody>
+                          {product?.tags?.map((tag, idx) => (
+                            <tr key={idx}>
+                              <th scope="row">{tag.tagName}</th>
+                              <td>{tag.tagValue}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </Col>
             )}
-          </Col>
-        </Row>
-        <Row>
-          {product?.tags && (
+          </Row>
+          <Row>
             <Col md={9}>
-              <div className="mt-3 border-radius-medium ">
+              <div className=" mt-3 border-radius-medium ">
                 <div
                   style={{ border: "none" }}
                   className="card border-radius-medium "
                 >
-                  <div className="card-body border-radius-medium ">
-                    <h5 className="card-title">Thông tin chi tiết</h5>
-                    <table className="table text-muted ">
-                      <tbody>
-                        {product?.tags?.map((tag, idx) => (
-                          <tr key={idx}>
-                            <th scope="row">{tag.tagName}</th>
-                            <td>{tag.tagValue}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </Col>
-          )}
-        </Row>
-        <Row>
-          <Col md={9}>
-            <div className=" mt-3 border-radius-medium ">
-              <div
-                style={{ border: "none" }}
-                className="card border-radius-medium "
-              >
-                <div className="card-body border-radius-medium product-detail">
-                  <h5 className="card-title">Mô tả sản phẩm</h5>
-                  <SimpleBar
-                    // TODO: fix descriptionRef type safe
-                    // ref={descriptionRef}
-                    style={{ overflowY: "auto", maxHeight: "500px" }}
-                  >
-                    <div>
-                      {product?.description.trimStart().startsWith("<") ? (
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: product.description,
-                          }}
-                        />
-                      ) : (
-                        <pre className="text-align-start">
-                          {product?.description}
-                        </pre>
-                      )}
-                    </div>
-                  </SimpleBar>
+                  <div className="card-body border-radius-medium product-detail">
+                    <h5 className="card-title">Mô tả sản phẩm</h5>
+                    <SimpleBar
+                      // TODO: fix descriptionRef type safe
+                      // ref={descriptionRef}
+                      style={{ overflowY: "auto", maxHeight: "500px" }}
+                    >
+                      <div>
+                        {product?.description.trimStart().startsWith("<") ? (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: product.description,
+                            }}
+                          />
+                        ) : (
+                          <pre className="text-align-start">
+                            {product?.description}
+                          </pre>
+                        )}
+                      </div>
+                    </SimpleBar>
 
-                  {/* <div className=" d-flex justify-content-end">
+                    {/* <div className=" d-flex justify-content-end">
                     <button className="toggle-btn" onClick={toggleCollapse}>
                       {isCollapsed ? "Xem thêm" : "Thu gọn"}
                     </button>
                   </div> */}
+                  </div>
                 </div>
               </div>
-            </div>
+            </Col>
+          </Row>
+        </SkeletonWrapper>
+
+        <Row>
+          <Col md={9}>
+            {product && (
+              <Comment
+                user={user?.data?.email || ""}
+                comments={dataComment?.data.items || []}
+                product={product}
+                handleFilterCommnet={handleFilterCommnet}
+                currentPageComment={currentPageComment}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
+            )}
           </Col>
         </Row>
-      </SkeletonWrapper>
-
-      <Row>
-        <Col md={9}>
-          {product && (
-            <Comment
-              user={user?.data?.email || ""}
-              comments={dataComment?.data.items || []}
-              product={product}
-              handleFilterCommnet={handleFilterCommnet}
-              currentPageComment={currentPageComment}
-              totalPages={totalPages}
-              handlePageChange={handlePageChange}
-            />
-          )}
-        </Col>
-      </Row>
-      <Row>
-        <ListProduct
-          products={queryRecommendResult?.data}
-          title="Sản phẩm tương tự"
-        />
-      </Row>
-    </Container>
+        <Row>
+          <ListProduct
+            products={queryRecommendResult?.data}
+            title="Sản phẩm tương tự"
+            loading={!getProductRecommendFetching}
+          />
+        </Row>
+      </Container>
+    </QueryWrapper>
   );
 }
 

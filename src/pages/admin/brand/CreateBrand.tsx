@@ -21,7 +21,7 @@ function Brand() {
     const [descriptionBrand, setDescriptionBrand] = useState<string>("");
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [categories, setCategories] = useState<CategoryItems[]>([]);
-    const params: string = pageQueryHanlder(1, 40, [{ filed: 'parentId', operator: '=', value: 'null' }]);
+    const params: string = pageQueryHanlder(1, 40, [{ field: 'parentId', operator: '=', value: 'null' }]);
     const { data } = useGetCategoriesQuery(params);
     const product = useSelector((state: RootState) => state.product);
     console.log(product);

@@ -30,7 +30,7 @@ const AnimationComponent: React.FC = () => {
         if (animationA && animationB) {
             setTimeout(() => {
                 setAnimationComplete(true);
-            }, 500); // Đợi đủ thời gian để B hoàn thành
+            }, 500);
         }
     }, [animationA, animationB]);
 
@@ -47,7 +47,9 @@ const AnimationComponent: React.FC = () => {
     }, [animationComplete, dispatch]);
 
     return (
-        <div className='loading-cs'>
+        <div className='loading-cs' style={{
+            zIndex: 1000
+        }}>
             <div className="d-flex">
                 <div
                     className={`div-background ${animationA ? 'animateA' : ''} ${animationComplete ? 'hidden' : ''}`}

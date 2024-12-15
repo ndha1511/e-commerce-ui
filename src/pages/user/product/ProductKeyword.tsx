@@ -101,13 +101,21 @@ const ProductKeyword: React.FC = () => {
         <div className="mt-3 p-3  d-flex gap-3 align-items-center">
           <div className="text-muted">Sắp xếp theo</div>
           <button
-            className={`${activeButton === "latest" ? "btn-filter-cate-user-active" : "btn-filter-cate-user"}`}
+            className={`${
+              activeButton === "latest"
+                ? "btn-filter-cate-user-active"
+                : "btn-filter-cate-user"
+            }`}
             onClick={() => handleSubmit("latest")}
           >
             Mới nhất
           </button>
           <button
-            className={`${activeButton === "best-seller" ? "btn-filter-cate-user-active" : "btn-filter-cate-user"}`}
+            className={`${
+              activeButton === "best-seller"
+                ? "btn-filter-cate-user-active"
+                : "btn-filter-cate-user"
+            }`}
             onClick={() => handleSubmit("best-seller")}
           >
             Bán chạy
@@ -130,7 +138,10 @@ const ProductKeyword: React.FC = () => {
           </div>
         </div>
       </SkeltetonWrapper>
-      <ListProduct products={queryResultGetProductByKeyword.data?.data.items} />
+      <ListProduct
+        products={queryResultGetProductByKeyword.data?.data.items}
+        loading={!queryResultGetProductByKeyword.isFetching}
+      />
       <PaginationComponent
         currentPage={page}
         totalPages={queryResultGetProductByKeyword.data?.data.totalPage || 0}

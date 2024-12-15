@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../rtk/store/store";
 import { clearNotify } from "../../rtk/slice/notify-slice";
 import { isMobile } from "../../utils/responsive";
+import AnimationComponent from "../../components/animation/AnimationComponent";
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
     const isMB = isMobile();
@@ -32,6 +33,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             <div className="content-navbar-admin">{children}</div>
         </div>
         {notify.type && <NotificationButton type={notify.type} message={notify.message} />}
+        <AnimationComponent />
     </div>
 }
 
