@@ -10,7 +10,7 @@ import { pageQueryHanlder } from "../../../utils/query-handler";
 const Batch = () => {
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [category, setCategory] = useState<string | null>('');
-    const params: string = pageQueryHanlder(1, 40, [{ filed: 'parentId', operator: '=', value: 'null' }]);
+    const params: string = pageQueryHanlder(1, 40, [{ field: 'parentId', operator: '=', value: 'null' }]);
     const { data } = useGetCategoriesQuery(params);
 
     const handleOpenCategoryModal = () => {

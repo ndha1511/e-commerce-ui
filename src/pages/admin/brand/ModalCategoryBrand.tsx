@@ -42,7 +42,7 @@ const ModalCategoryBrand = forwardRef<DeleteCategoryItems, CategoryModalProps>(
         const dispatch = useDispatch();
         const [getCategory] = useLazyGetCategoriesQuery();
         const paramsParent = pageQueryHanlder(1, 100, categoryId.length > 0
-            ? [{ filed: 'parentId', operator: '=', value: categoryId[categoryId.length - 1] }]
+            ? [{ field: 'parentId', operator: '=', value: categoryId[categoryId.length - 1] }]
             : []
         );
         useEffect(() => {
@@ -74,7 +74,7 @@ const ModalCategoryBrand = forwardRef<DeleteCategoryItems, CategoryModalProps>(
         console.log(category)
         const paramsParent1 = pageQueryHanlder(1, 100,
             categoryId1.length > 0
-                ? [{ filed: 'parentId', operator: '=', value: categoryId1[categoryId1.length - 1] }]
+                ? [{ field: 'parentId', operator: '=', value: categoryId1[categoryId1.length - 1] }]
                 : []
         );
         const toggleCategory = (id: string, categoryName: string, setCategoryId: React.Dispatch<React.SetStateAction<string[]>>) => {

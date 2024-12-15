@@ -78,7 +78,7 @@ const productApi = createApi({
                 url: `/recommend?productId=${params.productId ? params.productId : 0}&nRecommend=${params.nRecommend ? params.nRecommend : 20}&type=${params.type}`,
                 method: 'get',
             }),
-            keepUnusedDataFor: 180,
+            keepUnusedDataFor: 0,
         }),
         getProductByKeyword: build.query<BaseResponse<PageResponse<Product>>, {keyWord: string, param?: string, rangeRegularPrice?: string, rangeRating?: string}>({
             query: (params) => ({
@@ -97,6 +97,7 @@ export const {
     useGetProductByUrlQuery,
     useCreateAttributeMutation,
     useGetAttributeByIdQuery,
+    useLazyGetAttributeByIdQuery,
     useGetAttributeByProductIdQuery,
     useGetProductsPageQuery,
     useGetProductsRecommendQuery,

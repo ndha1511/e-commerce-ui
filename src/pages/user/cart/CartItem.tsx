@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Row, Col, Form, Button, Dropdown, Image } from "react-bootstrap";
+import { Row, Col, Form, Button, Image } from "react-bootstrap";
 import "./cart-item.scss";
 import { ProductCartResponse } from "../../../dtos/response/cart/product-cart-response";
 import { calcPromotion, convertPrice } from "../../../utils/convert-price";
@@ -39,7 +39,7 @@ const CartItem: React.FC<CartItemProps> = ({
   const [getVariant] = useLazyGetVariantsQuery();
   const [trigger] = useUpdateCartMutation();
   const [deleteItem] = useDeleteCartItemMutation();
-  const [productRecomment, { data }] = useLazyGetProductsRecommendQuery();
+  const [productRecomment, { data, isFetching }] = useLazyGetProductsRecommendQuery();
   const checked =
     selectVariant.findIndex((v) => v === item.variantResponse.id) !== -1;
   const variantOptionsRef = useRef<HTMLDivElement | null>(null);
@@ -288,13 +288,14 @@ const CartItem: React.FC<CartItemProps> = ({
                 style={{ transition: "transform 0.3s ease-in-out" }}
               ></i>
               <div>
-                {" "}
+             
                 {showOptions1 && (
                   <ProductSimilar
                     products={data?.data || []}
                     ProductSimilarCompRef={variantOptionsRef1}
                     isVisible={showOptions1}
                     setIsVisible={setShowOptions1}
+                    isFetching={!isFetching}
                   />
                 )}
               </div>

@@ -15,7 +15,7 @@ interface ProductApplyProps {
 const UserApplyModal: React.FC<ProductApplyProps> = ({ show, handleClose, selectedUsers, handleCheckboxChange }) => {
     const [searchKeyword, setSearchKeyword] = useState<string>('');
     const debounce = useDebounce(searchKeyword, 300)
-    const params: string = pageQueryHanlder(1, 40, [{ filed: 'email', operator: ':', value: debounce }]);
+    const params: string = pageQueryHanlder(1, 40, [{ field: 'email', operator: ':', value: debounce }]);
     const { data, } = useGetUsersQuery(params);
     const handleSearchProduct = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchKeyword(e.target.value);

@@ -31,7 +31,6 @@ import Batch from "../pages/admin/product/Batch";
 import BrandList from "../pages/admin/brand/BrandList";
 import CreateEmployee from "../pages/admin/employee/CreateEmployee";
 import EmployeeList from "../pages/admin/employee/EmployeeList";
-import App from "../App";
 import NotFound from "../pages/not-found/NotFound";
 import Message from "../pages/admin/message/Message";
 import PaymentSuccess from "../pages/user/payment/PaymentSuccess";
@@ -245,7 +244,7 @@ export const getRouters = () => {
     const routerUsers = publicUserRouters.map((router) => {
         return {
             path: router.path,
-            element: <App><UserLayout>{router.element}</UserLayout></App>
+            element: <UserLayout>{router.element}</UserLayout>
         }
     });
 

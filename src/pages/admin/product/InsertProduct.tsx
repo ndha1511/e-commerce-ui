@@ -31,7 +31,7 @@ function InsertProduct() {
   const [category, setCategory] = useState<string | null>("");
   const products = useSelector((state: RootState) => state.product);
   const params: string = pageQueryHanlder(1, 40, [
-    { filed: "parentId", operator: "=", value: "null" },
+    { field: "parentId", operator: "=", value: "null" },
   ]);
   const [trigger, { isLoading }] = useCreateProductMutation();
   const product = useSelector((state: RootState) => state.product);

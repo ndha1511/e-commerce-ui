@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pagination } from 'react-bootstrap';
 import { isMobile } from '../../utils/responsive';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface PaginationComponentProps {
     currentPage: number;
@@ -10,6 +11,9 @@ interface PaginationComponentProps {
 
 const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, totalPages, handlePageChange }) => {
     const mobile = isMobile();
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     // Hàm nhảy lên đầu trang ngay lập tức, tùy thuộc vào smoothScroll
     const jumpToTop = () => {
@@ -22,6 +26,9 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, 
     // Cập nhật handlePageChange để nhảy lên top mỗi khi thay đổi trang
     const handlePageChangeWithJump = (page: number) => {
         handlePageChange(page);  // Gọi hàm handlePageChange để thay đổi trang
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set('page', page.toString());
+        navigate(`${location.pathname}?${searchParams.toString()}`, { replace: true });
         jumpToTop();  // Sau khi thay đổi trang, nhảy lên đầu trang ngay lập tức
     };
 

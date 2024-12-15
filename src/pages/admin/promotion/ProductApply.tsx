@@ -16,7 +16,7 @@ interface ProductApplyProps {
 const ProductApply: React.FC<ProductApplyProps> = ({ show, handleClose, selectedProducts, handleCheckboxChange }) => {
     const [searchKeyword, setSearchKeyword] = useState<string>('');
     const debounce = useDebounce(searchKeyword, 300)
-    const params: string = pageQueryHanlder(1, 40, [{ filed: 'searchNames', operator: ':', value: debounce }]);
+    const params: string = pageQueryHanlder(1, 40, [{ field: 'searchNames', operator: ':', value: debounce }]);
     const { data, } = useGetProductsPageQuery(params);
     const handleSearchProduct = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchKeyword(e.target.value);

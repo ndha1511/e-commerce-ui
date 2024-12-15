@@ -1,5 +1,5 @@
 export interface SearchType {
-    filed: string;
+    field: string;
     operator: '<' | '>' | '<=' | '>=' | '=' | '!' | '-' | ':';
     value: string;
 }
@@ -15,7 +15,7 @@ export const pageQueryHanlder = (page: number = 1, size: number = 40,
     let query = `page=${page}&size=${size}`;
     
     if (search && search.length > 0) {
-        const searchString: string[] = search.map(s => s.filed + s.operator + s.value);
+        const searchString: string[] = search.map(s => s.field + s.operator + s.value);
         searchString.forEach(s => query += `&search=${s}`)
     }
     

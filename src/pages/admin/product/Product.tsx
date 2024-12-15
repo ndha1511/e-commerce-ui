@@ -1,35 +1,41 @@
 import { Dropdown, Table } from "react-bootstrap";
 import { useGetProductsPageQuery } from "../../../services/product.service";
 import { convertPrice } from "../../../utils/convert-price";
-import React, { ChangeEvent, LegacyRef, ReactNode, useState } from "react";
+import React, { ChangeEvent, LegacyRef, ReactNode, useEffect, useState } from "react";
 import useRedirect from "../../../hooks/useRedirect";
-import './insert-product.scss'
-import { pageQueryHanlder } from "../../../utils/query-handler";
+import './insert-product.scss';
 import SimpleBar from "simplebar-react";
 import { isMobile } from "../../../utils/responsive";
 import useDebounce from "../../../hooks/useDebounce";
 import SkeltetonWrapper from "../../../components/query-wrapper/SkeletonWrapper";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
+import useSearchCondition from "../../../hooks/useSearchCondition";
+import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
 
 function Product() {
     const mobile = isMobile();
     const redirect = useRedirect();
     const [searchKeyword, setSearchKeyword] = useState<string>('');
     const debounce = useDebounce(searchKeyword, 200)
-    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-    const itemsPerPage = 40; // Số sản phẩm mỗi trang
-    const params = pageQueryHanlder(currentPage, itemsPerPage, [{ filed: 'searchNames', operator: ':', value: debounce }]);
-    const { data: pageResponse } = useGetProductsPageQuery(params);
+    const {query, page, setPage, size, setSearch} = useSearchCondition(10);
+    const { data: pageResponse, isFetching, isError } = useGetProductsPageQuery(query);
     const products = pageResponse?.data.items;
-    const totalPages = pageResponse?.data.totalPage || 0; // Tổng số trang
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
+    const totalPages = pageResponse?.data.totalPage || 0; 
+
+    useEffect(() => {
+        setSearch([{
+            field: "searchNames",
+            operator: ":",
+            value: debounce,
+        }])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debounce])
+   
     const handleSearchProduct = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchKeyword(e.target.value);
     }
-    console.log(params)
     return (
+        <QueryWrapper queriesError={[isError]} queriesSuccess={[!isFetching]}>
         <div className=" bg-light p-3">
             <h5>Danh sách sản phẩm</h5>
             <div className="bg-white p-3 border-radius-small">
@@ -50,7 +56,7 @@ function Product() {
                 </div>
 
                 <SimpleBar style={{ height: mobile ? 500 : 400 }}>
-                    <SkeltetonWrapper queriesStatus={[products ? true : false]} skCount={4} skHeight={100}>
+                    <SkeltetonWrapper queriesStatus={[!isFetching]} skCount={4} skHeight={100}>
 
                         <Table className='table-bordered table-responsive  custom-table-product '>
                             <thead>
@@ -66,7 +72,7 @@ function Product() {
                             <tbody>
                                 {products?.map((product, index) => (
                                     <tr key={product.id}>
-                                        <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                        <td>{(page - 1) * size + index + 1}</td>
                                         <td className="pt-1 pb-1"><img src={product.thumbnail} alt='anh' width={60} height={60} /></td>
                                         <td >{product.productName.length > 70 ? product.productName.slice(0, 70) + '...' : product.productName}</td>
                                         <td>{convertPrice(product.regularPrice)}</td>
@@ -92,12 +98,13 @@ function Product() {
                     </SkeltetonWrapper>
                 </SimpleBar>
                 <PaginationComponent
-                    currentPage={currentPage}
+                    currentPage={page}
                     totalPages={totalPages}
-                    handlePageChange={handlePageChange}
+                    handlePageChange={(page) => setPage(page)}
                 />
             </div>
         </div>
+        </QueryWrapper>
     );
 }
 const CustomToggle = React.forwardRef(({ children, onClick }: { children: ReactNode, onClick: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void }, ref: LegacyRef<HTMLAnchorElement>) => (

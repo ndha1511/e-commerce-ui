@@ -13,10 +13,10 @@ import SkeletonWrapper from "../../../components/query-wrapper/SkeletonWrapper";
 import ListProduct from "../../../components/products/ListProduct";
 import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
-import { pageQueryHanlder } from "../../../utils/query-handler";
 import { SelectProps } from "../../admin/types";
 
 import { isMobile } from "../../../utils/responsive";
+import useSearchCondition from "../../../hooks/useSearchCondition";
 
 function Category() {
   const mobile = isMobile();
@@ -25,6 +25,7 @@ function Category() {
     data: parentCategory,
     isSuccess: getCategoriesSuccess,
     isError: getCategoriesError,
+    isFetching: getCategoriesFetching,
     error: categoriesError,
   } = useGetCategoryByUrlQuery(categoryPath || "");
   const [activeButton, setActiveButton] = useState<string | null>(null);
@@ -76,34 +77,37 @@ function Category() {
     { value: "5-5", label: "⭐⭐⭐⭐⭐" },
   ];
 
+  const {query, setSort, page, setPage} = useSearchCondition();
+
   const handleSubmit = (buttonName: string) => {
     setActiveButton(buttonName);
     if (buttonName === "best-seller") {
-      setFieldSort("buyQuantity");
+      setSort([{
+        field: "buyQuantity",
+        order: "desc",
+      }]);
     }
     if (buttonName === "latest") {
-      setFieldSort("createdAt");
+      setSort([{
+        field: "createdAt",
+        order: "desc",
+      }]);
     }
   };
-  const [fieldSort, setFieldSort] = useState<string | null>("");
+ 
   const [price, setPrice] = useState<SelectProps | null>(null);
   const [rating, setRating] = useState<SelectProps | null>(null);
-  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-  const itemsPerPage = 40; // Số sản phẩm mỗi trang
 
-  const params = pageQueryHanlder(
-    currentPage,
-    itemsPerPage,
-    [],
-    [{ field: fieldSort || "", order: "desc" }]
-  );
+
+ 
   const {
     data: productByCategory,
     isSuccess: getProductsSuccess,
+    isFetching: getProductsFetching,
     isError: getProductsError,
   } = useGetProductByCategoryQuery({
     categoryUrl: categoryPath || "",
-    param: params,
+    param: query,
     rangeRegularPrice: price?.value,
     rangeRating: rating?.value || "",
   });
@@ -123,9 +127,7 @@ function Category() {
       console.log("Không có lựa chọn nào.");
     }
   };
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+
 
   const [breadcrumb, setBreadcrumb] = useState<{ name: string; url: string }[]>(
     [{ name: "Trang chủ", url: "/" }]
@@ -168,6 +170,7 @@ function Category() {
   return (
     <QueryWrapper
       queriesError={[getCategoriesError, getProductsError]}
+      queriesSuccess={[!getCategoriesFetching, !getProductsFetching]}
       error={categoriesError}
     >
       <div className="p-3 bg-light">
@@ -216,7 +219,7 @@ function Category() {
               <div className="bg-white border-radius-small">
                 <div className="text-medium p-3 ">Khám phá theo danh mục</div>
                 {parentCategory?.data.children?.map((item) => (
-                  <MenuCategory key={item.id} item={item} />
+                  <MenuCategory key={item.id} item={item}/>
                 ))}
               </div>
             </SkeletonWrapper>
@@ -307,7 +310,7 @@ function Category() {
               </div>
             </SkeletonWrapper>
 
-            <ListProduct products={productByCategory?.data.items} />
+            <ListProduct products={productByCategory?.data.items} loading={!getProductsFetching}/>
             {getProductsSuccess &&
               productByCategory?.data.items &&
               productByCategory?.data.items.length === 0 && <CategoryEmpty />}
@@ -315,9 +318,9 @@ function Category() {
               productByCategory?.data.items &&
               productByCategory?.data.items.length > 0 && (
                 <PaginationComponent
-                  currentPage={currentPage}
+                  currentPage={page}
                   totalPages={totalPages}
-                  handlePageChange={handlePageChange}
+                  handlePageChange={(page) => setPage(page)}
                 />
               )}
           </Col>

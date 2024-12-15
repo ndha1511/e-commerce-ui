@@ -10,6 +10,7 @@ interface Props {
   ProductSimilarCompRef: React.RefObject<HTMLDivElement>;
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
+  isFetching: boolean;
 }
 
 const ProductSimilar = ({
@@ -17,6 +18,7 @@ const ProductSimilar = ({
   ProductSimilarCompRef,
   isVisible,
   setIsVisible,
+  isFetching
 }: Props) => {
   const ProductSimilarRef = useRef<HTMLDivElement>(null);
 
@@ -35,12 +37,13 @@ const ProductSimilar = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const mobile = isMobile();
   return (
     <>
       {isVisible && (
-        <div className="" ref={ProductSimilarRef}>
+        <div ref={ProductSimilarRef}>
           <AnimatePresence>
             <motion.div
               initial={{ scale: 0, x: 0, y: 0 }} // Bắt đầu từ góc trái trên (thu nhỏ)
@@ -50,7 +53,7 @@ const ProductSimilar = ({
               className="variant-options1"
             >
               <div className={`${mobile ? "" : "p-3"}`}>
-                <ListProduct products={products} loading={false} />
+                <ListProduct products={products} loading={isFetching} skSize={4} />
               </div>
             </motion.div>
           </AnimatePresence>

@@ -32,10 +32,10 @@ function CategoryModal({
   const [categoryId1, setCategoryId1] = useState<string>("");
   const [categoryId2, setCategoryId2] = useState<string>("");
   const paramsParent: string = pageQueryHanlder(1, 100, [
-    { filed: "parentId", operator: "=", value: categoryId },
+    { field: "parentId", operator: "=", value: categoryId },
   ]);
   const paramsParent1: string = pageQueryHanlder(1, 100, [
-    { filed: "parentId", operator: "=", value: categoryId1 },
+    { field: "parentId", operator: "=", value: categoryId1 },
   ]);
   const [childCategory, setChildCategory] = React.useState<CategoryModel[]>([]);
   const [childCategory1, setChildCategory1] = React.useState<CategoryModel[]>(

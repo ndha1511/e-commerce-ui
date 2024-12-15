@@ -28,8 +28,8 @@ const BrandModal: React.FC<ProductApplyProps> = ({ show, handleClose, selectedBr
 
     // Cấu hình params cho API
     const params: string = pageQueryHanlder(1, 40, [
-        { filed: 'categories', operator: '=', value: categoryId },
-        { filed: 'brandName', operator: ':', value: debounce }
+        { field: 'categories', operator: '=', value: categoryId },
+        { field: 'brandName', operator: ':', value: debounce }
     ]);
 
     const { data } = useGetBrandsQuery(params);

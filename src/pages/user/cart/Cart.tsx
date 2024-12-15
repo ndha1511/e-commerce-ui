@@ -34,6 +34,7 @@ const Cart: React.FC = () => {
       if (b.variantResponse.id === variantIdUrl) return 1; // Đặt phần tử có variantId bằng variantIdUrl xuống dưới
       return 0; // Không thay đổi vị trí của các phần tử còn lại
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.data, variantIdUrl]);
 
   const addSelectVariant = (variantId: string) => {
@@ -86,6 +87,7 @@ const Cart: React.FC = () => {
     } else {
       setSelectVariant(variantIdUrl ? [variantIdUrl] : []);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checked]);
 
   useEffect(() => {

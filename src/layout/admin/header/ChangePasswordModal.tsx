@@ -70,6 +70,7 @@ const ChangePasswordModal = ({ user, show, onHide }: UserChange) => {
       alert("Đổi mật khẩu thành công!");
       onHide();
     } catch (error) {
+      console.error(error);
       alert("Có lỗi xảy ra khi đổi mật khẩu. Vui lòng thử lại.");
     }
   };

@@ -30,7 +30,7 @@ const AnimationComponent: React.FC = () => {
         if (animationA && animationB) {
             setTimeout(() => {
                 setAnimationComplete(true);
-            }, 500); // Đợi đủ thời gian để B hoàn thành
+            }, 500);
         }
     }, [animationA, animationB]);
 

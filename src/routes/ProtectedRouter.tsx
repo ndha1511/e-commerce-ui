@@ -2,7 +2,6 @@ import React, { Suspense } from "react";
 import { Role } from "../models/user";
 import { useCheckLoginQuery } from "../services/auth.service";
 import { Navigate } from "react-router-dom";
-import App from "../App";
 
 interface ProtectedRouterProps {
     children: React.ReactNode;
@@ -28,7 +27,7 @@ const ProtectedRouter: React.FC<ProtectedRouterProps> = (props) => {
         return <Navigate to="/auth/login" />;
     }
 
-    return <App>{children}</App>;
+    return children;
 
 }
 

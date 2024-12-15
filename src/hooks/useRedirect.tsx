@@ -4,6 +4,7 @@ const useRedirect = () => {
 
     const navigate = useNavigate();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const redirect = (path: string,data?: any) => {
         navigate(path,{ state: data });
         setTimeout(() => {

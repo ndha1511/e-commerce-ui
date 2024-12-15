@@ -1,11 +1,11 @@
 import { Collapse, Table } from "react-bootstrap";
 import './insert-product.scss'
-import { useGetAttributeByIdQuery, useGetProductsPageQuery } from "../../../services/product.service";
+import {  useGetProductsPageQuery, useLazyGetAttributeByIdQuery } from "../../../services/product.service";
 import React, { ChangeEvent, useState } from "react";
 import { Product } from "../../../models/product";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
-import { useGetVariantsByProductIdQuery } from "../../../services/variant.service";
+import {  useLazyGetVariantsByProductIdQuery } from "../../../services/variant.service";
 import SimpleBar from "simplebar-react";
 import Select from 'react-select';
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
@@ -18,7 +18,7 @@ function ProductStock() {
     const debounce = useDebounce(searchKeyword, 200)
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 40;
-    const params = pageQueryHanlder(currentPage, itemsPerPage, [{ filed: 'searchNames', operator: ':', value: debounce }]);
+    const params = pageQueryHanlder(currentPage, itemsPerPage, [{ field: 'searchNames', operator: ':', value: debounce }]);
     const { data: pageResponse } = useGetProductsPageQuery(params);
     const products = pageResponse?.data.items;
     const totalPages = pageResponse?.data.totalPage || 0;
@@ -89,10 +89,12 @@ interface ProductStockItems {
 }
 function ProductStockItems({ product }: ProductStockItems) {
     const [open, setOpen] = React.useState<boolean>(false);
-    const { data } = useGetVariantsByProductIdQuery(product.id || '');
-    const { data: attributes } = useGetAttributeByIdQuery(product.id || '');
-    const openCollapse = async () => {
+    const [getVariant,  {data} ] = useLazyGetVariantsByProductIdQuery();
+    const [ getAttr, { data: attributes } ] = useLazyGetAttributeByIdQuery();
+    const openCollapse = async (productId: string) => {
         setOpen(!open);
+        await getVariant(productId).unwrap();
+        await getAttr(productId).unwrap();
 
     };
     const sizeOrder: Record<string, number> = {
@@ -130,7 +132,7 @@ function ProductStockItems({ product }: ProductStockItems) {
         <React.Fragment >
             <tr key={product.id}>
                 <td>
-                    <span onClick={openCollapse} className="text-orange text-large cursor-pointer">
+                    <span onClick={() => openCollapse(product.id)} className="text-orange text-large cursor-pointer">
                         {open ? <FontAwesomeIcon className="icon-stock-pr" icon={faAngleUp} /> : <FontAwesomeIcon className="icon-stock-pr" icon={faAngleDown} />}
                     </span>
                 </td>

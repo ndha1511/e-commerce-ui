@@ -35,7 +35,9 @@ const variantApi = createApi({
 export const {
     useLazyGetVariantsQuery,
     useGetVariantsByProductIdQuery,
-    useGetVariantsByProductIAndAttVl1Query
+    useLazyGetVariantsByProductIdQuery,
+    useGetVariantsByProductIAndAttVl1Query,
+    useLazyGetVariantsByProductIAndAttVl1Query
 } = variantApi;
 
 export default variantApi;

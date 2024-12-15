@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { pageQueryHanlder, SearchType, SortType } from "../utils/query-handler";
+import useGetParam from "./useGetParam";
 
 const useSearchCondition = (initSize?:number) => {
-    const [page, setPage] = useState(1);
+    const currentPage = useGetParam("page");
+    const [page, setPage] = useState(Number(currentPage) || 1);
     const [size, setSize] = useState(initSize || 40);
     const [search, setSearch] = useState<SearchType[]>([]);
     const [sort, setSort] = useState<SortType[]>([]);

@@ -165,7 +165,10 @@ const ProductKeyword: React.FC = () => {
           </div>
         </div>
       </SkeltetonWrapper>
-      <ListProduct products={queryResultGetProductByKeyword.data?.data.items} />
+      <ListProduct
+        products={queryResultGetProductByKeyword.data?.data.items}
+        loading={!queryResultGetProductByKeyword.isFetching}
+      />
       <PaginationComponent
         currentPage={page}
         totalPages={queryResultGetProductByKeyword.data?.data.totalPage || 0}
