@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Card,
-  Col,
-
-  Pagination,
-  ProgressBar,
-  Row,
-} from "react-bootstrap";
+import { Card, Col, Pagination, ProgressBar, Row } from "react-bootstrap";
 import "./comment.scss";
 import Rating from "../../../components/rating/Rating";
 import { Comment, MediaType } from "../../../models/comment";
@@ -14,7 +7,7 @@ import Avatar from "../../../components/avatar/Avatar";
 import { useReplyCommentMutation } from "../../../services/comment.service";
 import { Product } from "../../../models/product";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
-
+import { formatRating } from "../../../utils/covert-rating";
 
 const CommentComp = ({
   user,
@@ -156,7 +149,7 @@ const CommentComp = ({
   };
 
   // Cập nhật giá trị averageRating
-  const averageRating = parseFloat(product.rating.toFixed(1)); // Chuyển đổi thành kiểu number
+  const averageRating = parseFloat(formatRating(product.rating));
 
   return (
     <div className="bg-white p-3  border-radius-medium mt-3">
@@ -170,7 +163,14 @@ const CommentComp = ({
             <div>
               <div className="d-flex align-items-center">
                 <h2 className="mb-0">{averageRating}</h2>
-                <div className="ms-2">{renderRatingStars(averageRating)}</div>
+                <div className="ms-2">
+                  {" "}
+                  <Rating
+                    size="text-large"
+                    variant="warning"
+                    star={averageRating}
+                  />
+                </div>
               </div>
               <p className="mb-2 text-muted">
                 ({totalReviews > 0 ? totalReviews : "Chưa có"} đánh giá)
@@ -232,7 +232,7 @@ const CommentComp = ({
               <Card.Body>
                 <Row className="align-items-center">
                   <Col className="">
-                    <div className="d-flex gap-3">
+                    <div className="d-flex align-items-start gap-3">
                       <Avatar
                         name={value?.user?.name || ""}
                         url={value?.user?.avatar}

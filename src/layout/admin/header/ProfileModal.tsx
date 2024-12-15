@@ -244,7 +244,7 @@ const ProfileModal: React.FC<ProfileProps> = ({ showModal, onClose }) => {
             </div>
             <label
               htmlFor="avatar"
-              className="button-flex button-hover background-primary text-medium gap-2"
+              className="button-flex1 button-hover background-primary text-medium gap-2"
               style={{ cursor: "pointer" }}
             >
               <i className="bi bi-camera-fill"></i> <span>Chọn ảnh</span>

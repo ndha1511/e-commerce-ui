@@ -3,6 +3,7 @@ import "./menu.scss";
 import { Link } from "react-router-dom";
 import { isAbsoluteLocation } from "../../../../utils/location";
 import { useCheckLoginQuery } from "../../../../services/auth.service";
+import Avatar from "../../../../components/avatar/Avatar";
 
 type MenuItem = {
   icon?: ReactElement;
@@ -13,7 +14,7 @@ type MenuItem = {
 
 const menu: MenuItem[] = [
   {
-    icon: <i className="bi bi-person text-info"></i>,
+    icon: <i className="bi bi-person me-2"></i>,
     text: "Tài khoản của tôi",
     children: [
       {
@@ -31,17 +32,17 @@ const menu: MenuItem[] = [
     ],
   },
   {
-    icon: <i className="bi bi-bag text-info"></i>,
+    icon: <i className="bi bi-cart"></i>,
     text: "Đơn mua",
     path: "/user/purchase",
   },
   {
-    icon: <i className="bi bi-bell secondary"></i>,
+    icon: <i className="bi bi-bell"></i>,
     text: "Thông báo",
     path: "/user/notifications",
   },
   {
-    icon: <i className="bi bi-tags primary"></i>,
+    icon: <i className="bi bi-gift"></i>,
     text: "Kho voucher",
     path: "/user/vouchers",
   },
@@ -52,16 +53,18 @@ const Menu = () => {
   return (
     <div className="d-flex flex-column align-items-center gap-3 pt-2">
       <div className="d-flex flex-column align-items-center">
-        <img
-          className="border"
-          style={{
-            borderRadius: "50%",
-          }}
-          src={user?.data?.avatar}
+        <div>
+        <Avatar
+ 
+          url={user?.data?.avatar}
           width={80}
           height={80}
         />
-        <span className="text-medium">{user?.data?.email}</span>
+        </div>
+    
+        <span className="text-medium text-break text-center p-2">
+          {user?.data?.email}
+        </span>
       </div>
       <div>
         {menu.map((menuItem, index) => {

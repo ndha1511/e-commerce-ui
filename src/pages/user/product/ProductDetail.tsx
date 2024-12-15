@@ -59,6 +59,7 @@ import { useGetBrandsQuery } from "../../../services/brand.service";
 import SimpleBar from "simplebar-react";
 import logo from "../../../assets/logo/logo.jpg";
 import { redirect } from "../../../utils/location";
+import { formatRating } from "../../../utils/covert-rating";
 
 function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
@@ -525,7 +526,9 @@ function ProductDetail() {
 
                 {product?.rating ? (
                   <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
-                    <span className="text-medium">{product.rating}</span>
+                    <span className="text-medium">
+                      {formatRating(product.rating)}
+                    </span>
                     <Rating
                       size="text-medium"
                       variant="secondary"
@@ -555,9 +558,11 @@ function ProductDetail() {
                   >
                     {convertPrice(productPrice)}
                   </h4>
-                  <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
-                    - {calcPercentDiscount(productPrice, product?.promotion)}%
-                  </small>
+                  {product?.promotion && (
+                    <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
+                      - {calcPercentDiscount(productPrice, product?.promotion)}%
+                    </small>
+                  )}
 
                   {product &&
                     product.promotion &&
