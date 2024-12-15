@@ -1,8 +1,7 @@
 import Avatar from '../../../components/avatar/Avatar';
-import Dropdown from '../../../components/dropdown/Dropdown';
+import { Dropdown } from 'react-bootstrap';  // Thay đổi ở đây
 import useRedirect from '../../../hooks/useRedirect';
 import { useLazyLogoutQuery } from '../../../services/auth.service';
-import './side-bar.scss';
 
 
 const Account = ({ username, avatar }: { username: string, avatar?: string }) => {
@@ -29,15 +28,25 @@ const Account = ({ username, avatar }: { username: string, avatar?: string }) =>
                 }
             }
         }
-    ]
-    return <>
-        <div  >
-            <Dropdown dropDownItem={dropDownItems}>
-                <div className='side-bar-item'>
-                    <Avatar name={username} url={avatar} />
-                </div>
+    ];
+
+    return (
+        <div>
+            <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                    <Avatar name={username} url={avatar} width={25} height={25} />
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                    {dropDownItems.map((item, index) => (
+                        <Dropdown.Item key={index} onClick={item.event}>
+                            {item.item}
+                        </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
             </Dropdown>
         </div>
-    </>
+    );
 }
+
 export default Account;

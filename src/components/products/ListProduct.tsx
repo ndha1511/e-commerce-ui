@@ -11,9 +11,10 @@ const SkeletonCustom: React.FC<SkeletonCustomProps> = (props) => {
             height: "300px"
         }} />)}
     </div>
-}
+};
 
 const ListProduct: React.FC<ListProductProps> = (props) => {
+
     const { products, title, loading, skSize } = props;
     const viewSkeleton = loading ? loading : false;
     return <SkeletonWrapper queriesStatus={[viewSkeleton]} skeleton={<SkeletonCustom size={skSize}/>}>
@@ -26,6 +27,7 @@ const ListProduct: React.FC<ListProductProps> = (props) => {
                 {products?.map((product) => <ProductCard key={product.id} product={product} />)}
             </div>
         </div>
+      
     </SkeletonWrapper>
-}
+};
 export default ListProduct;

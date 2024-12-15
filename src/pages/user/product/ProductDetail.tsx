@@ -60,6 +60,7 @@ import SimpleBar from "simplebar-react";
 import logo from "../../../assets/logo/logo.jpg";
 import { redirect } from "../../../utils/location";
 import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
+import { formatRating } from "../../../utils/covert-rating";
 
 function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
@@ -511,83 +512,88 @@ function ProductDetail() {
                   <ImageDetails startIndex={startIndex} images={images} />
                 </div>
               </div>
-            </Col>
-            <Col md={5} className=" ">
-              <div className=" position-relative">
-                {product?.totalQuantity === 0 && (
-                  <div
-                    className="position-absolute top-50 start-50 translate-middle"
-                    style={{ zIndex: 50 }}
-                  >
-                    <ProductEmpty />
+          </Col>
+          <Col md={5} className=" ">
+            <div className=" position-relative">
+              {product?.totalQuantity === 0 && (
+                <div
+                  className="position-absolute top-50 start-50 translate-middle"
+                  style={{ zIndex: 50 }}
+                >
+                  <ProductEmpty />
+                </div>
+              )}
+              <div
+                className={`bg-white border-radius-medium p-3 ${
+                  product?.totalQuantity === 0 ? "blurred" : ""
+                }`}
+              >
+                <div className="d-flex align-items-center mb-2 ">
+                  {product?.brandId && (
+                    <span className="text-muted">
+                      Thương hiệu: {brandData?.data.items?.[0]?.brandName}
+                    </span>
+                  )}
+                </div>
+                <h5 className="mb-1">{product?.productName}</h5>
+
+                {product?.rating ? (
+                  <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
+                    <span className="text-medium">
+                      {formatRating(product.rating)}
+                    </span>
+                    <Rating
+                      size="text-medium"
+                      variant="secondary"
+                      star={product.rating}
+                    />
+                    <span className=" text-muted">({product.reviews})</span>
+                    <span></span>
+                    <span className=" text-muted">
+                      Đã bán: {product?.buyQuantity}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="d-flex gap-2 pt-2 pb-2 align-items-center">
+                    <span className="text-muted">Chưa có đánh giá</span>
+                    <span className=" text-muted">
+                      Đã bán: {product?.buyQuantity}
+                    </span>
                   </div>
                 )}
-                <div
-                  className={`bg-white border-radius-medium p-3 ${
-                    product?.totalQuantity === 0 ? "blurred" : ""
-                  }`}
-                >
-                  <div className="d-flex align-items-center mb-2 ">
-                    {product?.brandId && (
-                      <span className="text-muted">
-                        Thương hiệu: {brandData?.data.items?.[0]?.brandName}
-                      </span>
-                    )}
-                  </div>
-                  <h5 className="mb-1">{product?.productName}</h5>
-
-                  {product?.rating ? (
-                    <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
-                      <span className="text-medium">{product.rating}</span>
-                      <Rating
-                        size="text-medium"
-                        variant="secondary"
-                        star={product.rating}
-                      />
-                      <span className=" text-muted">({product.reviews})</span>
-                      <span></span>
-                      <span className=" text-muted">
-                        Đã bán: {product?.buyQuantity}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="d-flex gap-2 pt-2 pb-2 align-items-center">
-                      <span className="text-muted">Chưa có đánh giá</span>
-                      <span className=" text-muted">
-                        Đã bán: {product?.buyQuantity}
-                      </span>
-                    </div>
-                  )}
-                  <div className="d-flex align-items-center mb-2">
-                    <h4
-                      className={
-                        product?.promotion
-                          ? "text-line-through text-large mb-0"
-                          : "text-large mb-0"
-                      }
-                    >
-                      {convertPrice(productPrice)}
-                    </h4>
+                <div className="d-flex align-items-center mb-2">
+                  <h4
+                    className={
+                      product?.promotion
+                        ? "text-line-through text-large mb-0"
+                        : "text-large mb-0"
+                    }
+                  >
+                    {convertPrice(productPrice)}
+                  </h4>
+                  {product?.promotion && (
                     <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
                       - {calcPercentDiscount(productPrice, product?.promotion)}%
                     </small>
+                  )}
 
-                    {product &&
-                      product.promotion &&
-                      product.promotion.endDate && (
-                        <div className="ms-2">
-                          Kết thúc trong:{" "}
-                          <Countdown
-                            date={
-                              Date.now() +
-                              (new Date(
-                                product.promotion.endDate.toString()
-                              ).getTime() - new Date().getTime() || 0)
-                            }
-                          />
-                        </div>
-                      )}
+                  {product &&
+                    product.promotion &&
+                    product.promotion.endDate && (
+                      <div className="ms-2">
+                        Kết thúc trong:{" "}
+                        <Countdown
+                          date={
+                            Date.now() +
+                            (new Date(
+                              product.promotion.endDate.toString()
+                            ).getTime() - new Date().getTime() || 0)
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
+                  
                   <div className="mb-2">
                     {product?.promotion && (
                       <div className="p-2 border border-radius-small">

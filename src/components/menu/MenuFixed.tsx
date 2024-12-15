@@ -7,6 +7,7 @@ import { useGetCartByUserIdQuery } from "../../services/cart.service";
 import { useCheckLoginQuery } from "../../services/auth.service";
 import { pageQueryHanlder } from "../../utils/query-handler";
 import { useGetNotificationsQuery } from "../../services/notification.service";
+import Avatar from "../avatar/Avatar";
 
 type Props = {
     fixedSearch: boolean;
@@ -72,12 +73,8 @@ const MenuFixed = ({ fixedSearch }: Props) => {
                 <span className="text-small">Trang chủ</span>
             </div>}
             {!isLocation('/user') && <div className="menu-item" onClick={() => redirect('/user/account/profile')}>
-                {user?.data?.avatar ? <img src={user.data.avatar} style={{
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                }} /> : <i className="bi bi-person-circle"></i>}
+                <Avatar url={user?.data?.avatar} width={25} height={25}/>
+         
                 <span className="text-small">Tài khoản</span>
             </div>}
             {!isLocation('/cart') && <div className="menu-item"  onClick={() => redirect('/cart')}>

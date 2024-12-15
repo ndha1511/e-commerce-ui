@@ -1,10 +1,10 @@
 // Importing external styles
-@import 'bootstrap/dist/css/bootstrap.min.css';
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
-@import 'variables.scss'; // Custom variables
+@import "variables.scss"; // Custom variables
 @import "react-image-gallery/styles/scss/image-gallery.scss";
-@import 'simplebar-react/dist/simplebar.min.css';
+@import "simplebar-react/dist/simplebar.min.css";
 
 // Global styles and custom classes
 body,
@@ -37,18 +37,17 @@ span {
 
 /* Để thêm hiệu ứng bo góc cho mũi tên */
 .custom-tooltip .tooltip-arrow::before {
-  content: '';
+  content: "";
   position: absolute;
   border-width: 5px;
   /* Độ dày của mũi tên */
   border-style: solid;
   border-color: transparent transparent red transparent;
   /* Màu mũi tên */
-
 }
 
 .custom-tooltip1 .tooltip-arrow::before {
-  content: '';
+  content: "";
   position: absolute;
   border-width: 5px;
   /* Độ dày của mũi tên */
@@ -92,13 +91,12 @@ span {
   color: $warning-color;
 }
 
-
 .muted {
   color: $muted-color;
 }
 
 .text-light-cs {
-  color: rgb(129, 121, 121)
+  color: rgb(129, 121, 121);
 }
 
 .success {
@@ -106,7 +104,7 @@ span {
 }
 
 .text-blur {
-  color: rgba(0, 0, 0, 0.5)
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .text-orange {
@@ -167,7 +165,6 @@ span {
 }
 
 .bg-main {
-
   background-color: rgb(246, 246, 246);
 }
 
@@ -229,6 +226,17 @@ span {
   transition: background-color 0.3s ease;
   border: none;
 }
+.button-flex1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 5px;
+  padding: 5px 15px 5px 15px;
+  border-radius: $border-radius-small;
+  transition: background-color 0.3s ease;
+  border: 1px dashed red;
+  color: red;
+}
 
 .button-hover {
   transition: opacity 0.3s ease;
@@ -266,7 +274,6 @@ span {
 
 // ================================================================
 
-
 @media (max-width: 768px) {
   body {
     font-size: $font-small;
@@ -281,9 +288,7 @@ span {
   }
 }
 
-
 pre {
-
   white-space: pre;
   /* Đảm bảo giữ nguyên định dạng dòng và khoảng trắng */
 }
@@ -328,7 +333,7 @@ pre {
   margin-bottom: 0;
 }
 
-.pagination .active>.page-link {
+.pagination .active > .page-link {
   box-shadow: none !important;
   background-color: rgb(241, 124, 61); // Màu nền
   color: white; // Màu chữ
@@ -353,7 +358,7 @@ pre {
   }
 }
 
-@media(max-width:768px) {
+@media (max-width: 768px) {
   .page-link {
     font-size: 12px !important;
   }
@@ -367,7 +372,6 @@ pre {
   pointer-events: none;
   user-select: none;
 }
-
 
 .products {
   display: grid;
@@ -400,4 +404,35 @@ pre {
   &:hover {
     color: red;
   }
+}
+/* Ẩn phần mũi tên dropdown */
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+/* Hiển thị chỉ Avatar */
+.dropdown-toggle {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Đảm bảo avatar có thể hiển thị đúng */
+.side-bar-item {
+  display: inline-block;
+  &:hover{
+    color:red
+  }
+}
+
+/* Thay đổi màu khi hover lên item */
+.dropdown-item:hover {
+  background-color: #f0f0f0 !important; /* Màu nền xám khi hover */
+  color: black !important; /* Màu chữ khi hover */
+}
+
+/* Thay đổi màu khi item được chọn (active) */
+.dropdown-item.active {
+  background-color: #dcdcdc !important; /* Màu nền xám khi được chọn */
+  color: black !important; /* Màu chữ khi chọn */
 }
