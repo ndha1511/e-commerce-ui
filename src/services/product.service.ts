@@ -100,7 +100,8 @@ export const {
     useGetAttributeByProductIdQuery,
     useGetProductsPageQuery,
     useGetProductsRecommendQuery,
-    useGetProductByKeywordQuery
+    useGetProductByKeywordQuery,
+    useLazyGetProductsRecommendQuery
 } = productApi;
 
 export default productApi;

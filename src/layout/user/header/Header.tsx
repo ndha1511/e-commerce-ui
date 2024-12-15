@@ -13,8 +13,6 @@ import { isMobile } from "../../../utils/responsive";
 import logo from "../../../assets/logo/logo.jpg";
 import { Link } from "react-router-dom";
 
-
-
 const Header = () => {
   const mobile = isMobile();
   const redirect = useRedirect();
@@ -79,7 +77,7 @@ const Header = () => {
     <>
       {/* <SideBar /> */}
 
-      <div className={ `search fixed-search`}>
+      <div className={`search fixed-search`}>
         <div className="search-arround">
           <Link to={"/"}>
             <img
@@ -103,6 +101,7 @@ const Header = () => {
               id="search-input"
               className="search-input col-8"
               placeholder="Tìm kiếm sản phẩm"
+              autoComplete="off"
             />
             <button
               onClick={handleSearch}

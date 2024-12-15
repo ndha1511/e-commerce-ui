@@ -12,7 +12,7 @@ const AnimationComponent: React.FC = () => {
     const [animationA, setAnimationA] = useState(false);
     const [animationB, setAnimationB] = useState(false);
     const [animationComplete, setAnimationComplete] = useState(false);
-
+    console.log(animationA, animationB)
     useEffect(() => {
         if (triggerA) {
             setAnimationA(true);
@@ -47,7 +47,7 @@ const AnimationComponent: React.FC = () => {
     }, [animationComplete, dispatch]);
 
     return (
-        <div className='loading-cs'>
+        <div className='loading-cs' style={{zIndex:99999999}}>
             <div className="d-flex">
                 <div
                     className={`div-background ${animationA ? 'animateA' : ''} ${animationComplete ? 'hidden' : ''}`}
