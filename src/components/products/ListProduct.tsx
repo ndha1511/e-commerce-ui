@@ -11,7 +11,8 @@ const SkeletonCustom: React.FC<SkeletonCustomProps> = (props) => {
             height: "300px"
         }} />)}
     </div>
-}
+  );
+};
 
 const ListProduct: React.FC<ListProductProps> = (props) => {
     const { products, title, loading, skSize } = props;
@@ -25,7 +26,10 @@ const ListProduct: React.FC<ListProductProps> = (props) => {
             <div className="products">
                 {products?.map((product) => <ProductCard key={product.id} product={product} />)}
             </div>
+
         </div>
+      </div>
     </SkeletonWrapper>
-}
+  );
+};
 export default ListProduct;

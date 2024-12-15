@@ -10,6 +10,7 @@ import Select, { SingleValue } from "react-select";
 import { ratingOptions, regularPriceOptions } from "../utils";
 import { SelectProps } from "../../admin/types";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
+import { isMobile } from "../../../utils/responsive";
 
 export interface ProductKeywordSearchParams {
   rangeRegularPrice: SelectProps;
@@ -90,7 +91,7 @@ const ProductKeyword: React.FC = () => {
       ]);
     }
   };
-
+  const mobile = isMobile();
   return (
     <Container className="bg-light pt-2">
       <SkeltetonWrapper
@@ -98,43 +99,70 @@ const ProductKeyword: React.FC = () => {
         skHeight={50}
       >
         <span>Kết quả tìm kiếm cho từ khóa: {keyword || "Tất cả"}</span>
-        <div className="mt-3 p-3  d-flex gap-3 align-items-center">
-          <div className="text-muted">Sắp xếp theo</div>
-          <button
-            className={`${
-              activeButton === "latest"
-                ? "btn-filter-cate-user-active"
-                : "btn-filter-cate-user"
-            }`}
-            onClick={() => handleSubmit("latest")}
-          >
-            Mới nhất
-          </button>
-          <button
-            className={`${
-              activeButton === "best-seller"
-                ? "btn-filter-cate-user-active"
-                : "btn-filter-cate-user"
-            }`}
-            onClick={() => handleSubmit("best-seller")}
-          >
-            Bán chạy
-          </button>
-          <div style={{ minWidth: 200 }}>
-            <Select
-              options={regularPriceOptions}
-              placeholder="Giá"
-              value={detailCondition.rangeRegularPrice}
-              onChange={(val) => handleChangeSelect(val, "price")}
-            />
+
+        <div
+          className={`mt-3 option-filter-user p-3 ${
+            mobile ? "d-flex flex-column" : "d-flex gap-3 align-items-center"
+          } `}
+        >
+          <div className="d-flex gap-3 align-items-center">
+            <div className="text-muted">Sắp xếp theo</div>
+            <button
+              className={`${
+                activeButton === "latest"
+                  ? "btn-filter-cate-user-active"
+                  : "btn-filter-cate-user"
+              }`}
+              onClick={() => handleSubmit("latest")}
+            >
+              Mới nhất
+            </button>
+            <button
+              className={`${
+                activeButton === "best-seller"
+                  ? "btn-filter-cate-user-active"
+                  : "btn-filter-cate-user"
+              }`}
+              onClick={() => handleSubmit("best-seller")}
+            >
+              Bán chạy
+            </button>
           </div>
-          <div style={{ minWidth: 200 }}>
-            <Select
-              options={ratingOptions}
-              value={detailCondition.rangeRating}
-              onChange={(val) => handleChangeSelect(val, "rating")}
-              placeholder="Đánh giá"
-            />
+          <div className={`d-flex gap-3 ${mobile ? "mt-2" : ""}`}>
+            <div
+              className={` ${
+                mobile
+                  ? "d-flex flex-column "
+                  : "d-flex gap-2 align-items-center"
+              }`}
+            >
+              <span>Phân loại theo giá:</span>
+              <div style={{ minWidth: mobile ? 150 : 200 }}>
+                <Select
+                  options={regularPriceOptions}
+                  placeholder="Giá"
+                  value={detailCondition.rangeRegularPrice}
+                  onChange={(val) => handleChangeSelect(val, "price")}
+                />
+              </div>
+            </div>
+            <div
+              className={` ${
+                mobile
+                  ? "d-flex flex-column "
+                  : "d-flex gap-2 align-items-center"
+              }`}
+            >
+              <span>Phân loại theo đánh giá:</span>
+              <div style={{ minWidth: mobile ? 150 : 200 }}>
+                <Select
+                  options={ratingOptions}
+                  value={detailCondition.rangeRating}
+                  onChange={(val) => handleChangeSelect(val, "rating")}
+                  placeholder="Đánh giá"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </SkeltetonWrapper>

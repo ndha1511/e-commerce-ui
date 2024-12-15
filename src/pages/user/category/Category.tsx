@@ -179,12 +179,18 @@ function Category() {
             {breadcrumb.map((item, index) => (
               <div
                 key={index}
-                className={`d-flex gap-1 ${index < breadcrumb.length - 1 ? "" : "reonly-link"}`}
+                className={`d-flex gap-1 ${
+                  index < breadcrumb.length - 1 ? "" : "reonly-link"
+                }`}
               >
                 <div onClick={() => handleBreadcrumbClick(index)}>
                   {" "}
                   <Link
-                    className={`${index < breadcrumb.length - 1 ? "link-category" : "link-category-active"}`}
+                    className={`${
+                      index < breadcrumb.length - 1
+                        ? "link-category"
+                        : "link-category-active"
+                    }`}
                     to={"" + item.url || ""}
                   >
                     {" "}
@@ -236,18 +242,30 @@ function Category() {
             </div>
             <SkeletonWrapper queriesStatus={[getProductsSuccess]} skHeight={50}>
               <div
-                className={`mt-3 option-filter-user p-3 ${mobile ? "d-flex flex-column" : "d-flex gap-3 align-items-center"} `}
+                className={`mt-3 option-filter-user p-3 ${
+                  mobile
+                    ? "d-flex flex-column"
+                    : "d-flex gap-3 align-items-center"
+                } `}
               >
                 <div className="d-flex gap-3 ">
                   <div className="text-muted">Sắp xếp theo</div>
                   <button
-                    className={`${activeButton === "latest" ? "btn-filter-cate-user-active" : "btn-filter-cate-user"}`}
+                    className={`${
+                      activeButton === "latest"
+                        ? "btn-filter-cate-user-active"
+                        : "btn-filter-cate-user"
+                    }`}
                     onClick={() => handleSubmit("latest")}
                   >
                     Mới nhất
                   </button>
                   <button
-                    className={`${activeButton === "best-seller" ? "btn-filter-cate-user-active" : "btn-filter-cate-user"}`}
+                    className={`${
+                      activeButton === "best-seller"
+                        ? "btn-filter-cate-user-active"
+                        : "btn-filter-cate-user"
+                    }`}
                     onClick={() => handleSubmit("best-seller")}
                   >
                     Bán chạy
@@ -255,7 +273,11 @@ function Category() {
                 </div>
                 <div className={`d-flex gap-3 ${mobile ? "mt-2" : ""}`}>
                   <div
-                    className={` ${mobile ? "d-flex flex-column " : "d-flex gap-2 align-items-center"}`}
+                    className={` ${
+                      mobile
+                        ? "d-flex flex-column "
+                        : "d-flex gap-2 align-items-center"
+                    }`}
                   >
                     <span>Phân loại theo giá:</span>
                     <div style={{ minWidth: mobile ? 150 : 200 }}>
@@ -268,7 +290,11 @@ function Category() {
                     </div>
                   </div>
                   <div
-                    className={` ${mobile ? "d-flex flex-column " : "d-flex gap-2 align-items-center"}`}
+                    className={` ${
+                      mobile
+                        ? "d-flex flex-column "
+                        : "d-flex gap-2 align-items-center"
+                    }`}
                   >
                     <span>Phân loại theo đánh giá:</span>
                     <div style={{ minWidth: mobile ? 150 : 200 }}>

@@ -60,6 +60,8 @@ import SimpleBar from "simplebar-react";
 import logo from "../../../assets/logo/logo.jpg";
 import { redirect } from "../../../utils/location";
 import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
+import { formatRating } from "../../../utils/covert-rating";
+
 
 function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
@@ -571,36 +573,58 @@ function ProductDetail() {
                     <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
                       - {calcPercentDiscount(productPrice, product?.promotion)}%
                     </small>
-
-                    {product &&
-                      product.promotion &&
-                      product.promotion.endDate && (
-                        <div className="ms-2">
-                          Kết thúc trong:{" "}
-                          <Countdown
-                            date={
-                              Date.now() +
-                              (new Date(
-                                product.promotion.endDate.toString()
-                              ).getTime() - new Date().getTime() || 0)
-                            }
-                          />
-                        </div>
-                      )}
+                {product?.rating ? (
+                  <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
+                    <span className="text-medium">
+                      {formatRating(product.rating)}
+                    </span>
+                    <Rating
+                      size="text-medium"
+                      variant="secondary"
+                      star={product.rating}
+                    />
+                    <span className=" text-muted">({product.reviews})</span>
+                    <span></span>
+                    <span className=" text-muted">
+                      Đã bán: {product?.buyQuantity}
+                    </span>
                   </div>
-                  <div className="mb-2">
-                    {product?.promotion && (
-                      <div className="p-2 border border-radius-small">
-                        <span className="text-medium">Giá sau khi giảm:</span>{" "}
-                        <br />
-                        <span className="text-large primary">
-                          {calcPromotion(productPrice, product.promotion)}
-                        </span>{" "}
-                        <br />
-                        <FontAwesomeIcon
-                          color="blue"
-                          icon={faCheck}
-                          className="pe-2 ps-1 "
+                ) : (
+                  <div className="d-flex gap-2 pt-2 pb-2 align-items-center">
+                    <span className="text-muted">Chưa có đánh giá</span>
+                    <span className=" text-muted">
+                      Đã bán: {product?.buyQuantity}
+                    </span>
+                  </div>
+                )}
+                <div className="d-flex align-items-center mb-2">
+                  <h4
+                    className={
+                      product?.promotion
+                        ? "text-line-through text-large mb-0"
+                        : "text-large mb-0"
+                    }
+                  >
+                    {convertPrice(productPrice)}
+                  </h4>
+                  {product?.promotion && (
+                    <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
+                      - {calcPercentDiscount(productPrice, product?.promotion)}%
+                    </small>
+                  )}
+
+                  {product &&
+                    product.promotion &&
+                    product.promotion.endDate && (
+                      <div className="ms-2">
+                        Kết thúc trong:{" "}
+                        <Countdown
+                          date={
+                            Date.now() +
+                            (new Date(
+                              product.promotion.endDate.toString()
+                            ).getTime() - new Date().getTime() || 0)
+                          }
                         />
                         <span>
                           Giảm{" "}

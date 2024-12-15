@@ -21,6 +21,7 @@ const Cart: React.FC = () => {
       skip: !loginSuccess || !user?.data?.id,
     }
   );
+  const reversedData = data ? [...data.data].reverse() : [];
   const [isFooterFixed, setIsFooterFixed] = useState<boolean>(true);
   const [isHeaderFixed, setIsHeaderFixed] = useState<boolean>(false);
   const [selectVariant, setSelectVariant] = useState<string[]>([]);
@@ -28,7 +29,7 @@ const Cart: React.FC = () => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   const cartItems = useMemo(() => {
-    return [...(data?.data || [])].sort((a, b) => {
+    return [...(reversedData || [])].sort((a, b) => {
       if (a.variantResponse.id === variantIdUrl) return -1; // Đặt phần tử có variantId bằng variantIdUrl lên trên đầu
       if (b.variantResponse.id === variantIdUrl) return 1; // Đặt phần tử có variantId bằng variantIdUrl xuống dưới
       return 0; // Không thay đổi vị trí của các phần tử còn lại
