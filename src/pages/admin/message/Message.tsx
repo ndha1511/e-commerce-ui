@@ -11,7 +11,7 @@ import ViewContent from "./ViewContent";
 import moment from "moment";
 import RoomList from "./RoomList ";
 import { isMobile } from "../../../utils/responsive";
-import { Message as MessageModel } from "../../../models/message";
+
 
 function Message() {
   const mobile = isMobile();
@@ -52,22 +52,22 @@ function Message() {
     });
 
   const paramsMessage = pageQueryHanlder(1, 1000);
-  const [trigger, { isSuccess }] = useLazyGetMessageQuery();
-  const [msg, setMsg] = useState<MessageModel[]>([]);
+  const [trigger, {  data: msg }] = useLazyGetMessageQuery();
+
 
   useEffect(() => {
-   const fetch = async()=>{
-    if (room && room?.data.items?.length > 0) {
-        const dataMessages = await trigger({
+    const fetch = async () => {
+      if (room && room?.data.items?.length > 0) {
+        await trigger({
           roomId: roomActive || "",
           params: paramsMessage,
         }).unwrap();
-        setMsg(dataMessages.data.items || []);
-      }
-   }
-   fetch();
-  }, [room?.data.items, paramsMessage]);
 
+      }
+    };
+    fetch();
+  }, [room?.data.items, paramsMessage]);
+  console.log(roomActive);
   const [updateRoom] = useUpdateRoomMutation();
   const handleUpdateRoom = async (id: string, count: number) => {
     if (count === 0) {
@@ -88,19 +88,12 @@ function Message() {
   useEffect(() => {
     if (roomSuccess && room?.data.items.length) {
       trigger({
-        roomId: room?.data?.items?.[0]?.conversationId || "",
+        roomId: roomActive || "",
         params: paramsMessage,
       });
     }
   }, [roomActive]);
-  useEffect(() => {
-    if (isSuccess) {
-      trigger({
-        roomId: room?.data?.items?.[0]?.conversationId || "",
-        params: paramsMessage,
-      });
-    }
-  }, [msg, isSuccess]);
+
   return (
     <div className=" bg-light p-4 " style={{ height: "100%" }}>
       <h6>Danh sách tin nhắn</h6>
@@ -123,9 +116,9 @@ function Message() {
             <div className="col-12">
               {roomActive !== "" ? (
                 <ViewContent
-                  messagesData={msg|| []}
+                  messagesData={msg?.data.items || []}
                   userCurrent={userCurrent || ""}
-                  refetch={()=>{}}
+                  refetch={() => {}}
                   refetchRoom={refetchRoom}
                   handleBack={handleBack}
                 />
@@ -140,9 +133,9 @@ function Message() {
           <div className="col-9">
             {roomActive !== "" ? (
               <ViewContent
-                messagesData={msg || []}
+                messagesData={msg?.data.items || []}
                 userCurrent={userCurrent || ""}
-                refetch={()=>{}}
+                refetch={() => {}}
                 refetchRoom={refetchRoom}
                 handleBack={handleBack}
               />

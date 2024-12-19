@@ -5,9 +5,10 @@ interface Props {
   url?: string;
   width?: number;
   height?: number;
+  hidenName?: boolean;
 }
 
-const Avatar = ({ name, url, width = 30, height = 30 }: Props) => {
+const Avatar = ({ name, url, width = 30, height = 30,hidenName=false }: Props) => {
   const mobile = isMobile();
   return (
     <div className="d-flex gap-1 align-items-center">
@@ -26,7 +27,7 @@ const Avatar = ({ name, url, width = 30, height = 30 }: Props) => {
         <></>
       ) : (
         <span className="side-bar-item text-white" style={{ fontSize: 12 }}>
-          {name}
+          {hidenName ? '':name}
         </span>
       )}
     </div>

@@ -3,10 +3,14 @@ import useRedirect from "../../../hooks/useRedirect";
 
 import OffcanvasRight from "../../../components/offcanvas/OffcanvasRight";
 import { isMobile } from "../../../utils/responsive";
-import { useCheckLoginQuery, useLazyLogoutQuery } from "../../../services/auth.service";
+import {
+  useCheckLoginQuery,
+  useLazyLogoutQuery,
+} from "../../../services/auth.service";
 import { Dropdown, Navbar } from "react-bootstrap";
 import ChangePasswordModal from "./ChangePasswordModal";
 import ProfileModal from "./ProfileModal";
+import Avatar from "../../../components/avatar/Avatar";
 
 const Header = () => {
   const redirect = useRedirect();
@@ -34,21 +38,24 @@ const Header = () => {
   const offcanvasContent = <Navbar />;
 
   return (
-    <div className="p-2 ps-3" style={{ backgroundColor: 'rgb(244, 110, 39)', height: 80 }}>
+    <div
+      className="p-2 ps-3"
+      style={{ backgroundColor: "rgb(244, 110, 39)", height: 80 }}
+    >
       <div
         className="p-1 d-flex gap-2 cursor-pointer"
-        style={{ position: 'relative' }}
-        onClick={() => redirect('/')}
+        style={{ position: "relative" }}
+        onClick={() => redirect("/")}
       >
         {mobile && (
           <i
             style={{
               fontSize: 30,
-              color: 'white',
-              position: 'absolute',
+              color: "white",
+              position: "absolute",
               right: 0,
-              transform: 'rotateY(180deg)',
-              transition: 'transform 0.5s ease',
+              transform: "rotateY(180deg)",
+              transition: "transform 0.5s ease",
             }}
             className="bi bi-list-ul"
             onClick={(e) => {
@@ -61,21 +68,15 @@ const Header = () => {
 
       <Dropdown
         align="end"
-        style={{ position: 'absolute', right: 30, bottom: 1 }}
+        style={{ position: "absolute", right: 30, bottom: -5 }}
         onClick={(e) => e.stopPropagation()}
       >
         <Dropdown.Toggle
           variant="link"
           bsPrefix="avatar-dropdown-toggle"
-          style={{ padding: 0, background: 'none', border: 'none' }}
+          style={{ padding: 0, background: "none", border: "none" }}
         >
-          <img
-            src={user?.data?.avatar}
-            alt=""
-            style={{ borderRadius: '50%', border: '1px solid white', cursor: 'pointer' }}
-            width={50}
-            height={50}
-          />
+          <Avatar url={user?.data?.avatar} width={50} height={50} />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item href="#profile" onClick={() => setShowProfile(true)}>
@@ -95,11 +96,15 @@ const Header = () => {
       </Dropdown>
 
       {/* Offcanvas */}
-      <OffcanvasRight show={show} onHide={handleClose} content={offcanvasContent} />
+      <OffcanvasRight
+        show={show}
+        onHide={handleClose}
+        content={offcanvasContent}
+      />
 
       {showModalChangePassword && (
         <ChangePasswordModal
-          user={user?.data?.email || ''}
+          user={user?.data?.email || ""}
           show={showModalChangePassword}
           onHide={handleCloseModal}
         />

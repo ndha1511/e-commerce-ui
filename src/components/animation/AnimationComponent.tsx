@@ -12,7 +12,7 @@ const AnimationComponent: React.FC = () => {
     const [animationA, setAnimationA] = useState(false);
     const [animationB, setAnimationB] = useState(false);
     const [animationComplete, setAnimationComplete] = useState(false);
-    console.log(animationA, animationB)
+
     useEffect(() => {
         if (triggerA) {
             setAnimationA(true);

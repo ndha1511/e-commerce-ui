@@ -98,7 +98,7 @@ const ProductKeyword: React.FC = () => {
         queriesStatus={[queryResultGetProductByKeyword.isSuccess]}
         skHeight={50}
       >
-        <span>Kết quả tìm kiếm cho từ khóa: {keyword || "Tất cả"}</span>
+        <span>Kết quả tìm kiếm cho từ khóa: <i className="primary">{keyword || "Tất cả"}</i></span>
         <div
           className={`mt-3 option-filter-user p-3 ${
             mobile ? "d-flex flex-column" : "d-flex gap-3 align-items-center"

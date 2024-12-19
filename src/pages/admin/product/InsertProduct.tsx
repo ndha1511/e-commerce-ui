@@ -152,7 +152,7 @@ function InsertProduct() {
       redirect(
         "/admin/products/attribute?id=" +
           res.data.id +
-          "&name==" +
+          "&name=" +
           res.data.productName
       );
     } catch (error) {
@@ -383,7 +383,7 @@ function InsertProduct() {
                       </div>
                       <input
                         className="select-sale-info"
-                        placeholder="Giá nhập"
+                        placeholder="Giá hiển thị"
                         type="text"
                         value={products.regularPrice || ""}
                         onChange={(e) => handleChange(Number(e.target.value))}

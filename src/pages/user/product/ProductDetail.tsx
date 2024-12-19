@@ -28,7 +28,10 @@ import {
 } from "../../../utils/convert-price";
 import RenderVideo from "../../../components/image-details/RenderVideo";
 import ProductAttribute from "./ProductAttribute";
-import { useLazyGetVariantsQuery } from "../../../services/variant.service";
+import {
+  useLazyGetVariantsByProductIdQuery,
+  useLazyGetVariantsQuery,
+} from "../../../services/variant.service";
 import { VariantResponse } from "../../../dtos/response/variant/variant-response";
 import { useCheckLoginQuery } from "../../../services/auth.service";
 import {
@@ -56,7 +59,6 @@ import { pageQueryHanlder } from "../../../utils/query-handler";
 import { useGetCommentsQuery } from "../../../services/comment.service";
 import ListProduct from "../../../components/products/ListProduct";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import SimpleBar from "simplebar-react";
 import logo from "../../../assets/logo/logo.jpg";
 import { redirect } from "../../../utils/location";
 import QueryWrapper from "../../../components/query-wrapper/QueryWrapper";
@@ -92,7 +94,7 @@ function ProductDetail() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProductSuccess]);
-
+  const [variantByProductId, { data }] = useLazyGetVariantsByProductIdQuery();
   const product = resProduct?.data;
   const paramsBrand = pageQueryHanlder(1, 40, [
     { field: "id", operator: "=", value: product?.brandId || "" },
@@ -465,7 +467,19 @@ function ProductDetail() {
       }
     }
   };
-
+  useEffect(() => {
+    const resVariantByProductId = async () => {
+      if (resProduct?.data.attributes?.length === 0) {
+        try {
+          const resVariant = await variantByProductId(resProduct.data.id || "");
+          if (resVariant.data?.data && resVariant?.data?.data.length > 0) {
+            setVariant(resVariant?.data.data[0]);
+          }
+        } catch (error) {}
+      }
+    };
+    resVariantByProductId();
+  }, [resProduct?.data.attributes]);
   return (
     <QueryWrapper
       queriesError={[getCategoriesError, getProductError]}
@@ -483,7 +497,8 @@ function ProductDetail() {
             <>
               {" "}
               <Link to={"/"} className="link-all">
-                Trang chủ <FontAwesomeIcon icon={faChevronRight} />
+                Trang chủ{" "}
+                <i style={{ fontSize: 10 }} className="bi bi-chevron-right"></i>
               </Link>
               {categories?.data?.map((category) => {
                 return (
@@ -493,7 +508,10 @@ function ProductDetail() {
                     to={"/" + category.urlPath}
                   >
                     {category.categoryName}{" "}
-                    <FontAwesomeIcon icon={faChevronRight} />
+                    <i
+                      style={{ fontSize: 10 }}
+                      className="bi bi-chevron-right"
+                    ></i>
                   </Link>
                 );
               })}
@@ -512,88 +530,89 @@ function ProductDetail() {
                   <ImageDetails startIndex={startIndex} images={images} />
                 </div>
               </div>
-          </Col>
-          <Col md={5} className=" ">
-            <div className=" position-relative">
-              {product?.totalQuantity === 0 && (
-                <div
-                  className="position-absolute top-50 start-50 translate-middle"
-                  style={{ zIndex: 50 }}
-                >
-                  <ProductEmpty />
-                </div>
-              )}
-              <div
-                className={`bg-white border-radius-medium p-3 ${
-                  product?.totalQuantity === 0 ? "blurred" : ""
-                }`}
-              >
-                <div className="d-flex align-items-center mb-2 ">
-                  {product?.brandId && (
-                    <span className="text-muted">
-                      Thương hiệu: {brandData?.data.items?.[0]?.brandName}
-                    </span>
-                  )}
-                </div>
-                <h5 className="mb-1">{product?.productName}</h5>
-
-                {product?.rating ? (
-                  <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
-                    <span className="text-medium">
-                      {formatRating(product.rating)}
-                    </span>
-                    <Rating
-                      size="text-medium"
-                      variant="secondary"
-                      star={product.rating}
-                    />
-                    <span className=" text-muted">({product.reviews})</span>
-                    <span></span>
-                    <span className=" text-muted">
-                      Đã bán: {product?.buyQuantity}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="d-flex gap-2 pt-2 pb-2 align-items-center">
-                    <span className="text-muted">Chưa có đánh giá</span>
-                    <span className=" text-muted">
-                      Đã bán: {product?.buyQuantity}
-                    </span>
+            </Col>
+            <Col md={5} className=" ">
+              <div className=" position-relative">
+                {product?.totalQuantity === 0 && (
+                  <div
+                    className="position-absolute top-50 start-50 translate-middle"
+                    style={{ zIndex: 50 }}
+                  >
+                    <ProductEmpty />
                   </div>
                 )}
-                <div className="d-flex align-items-center mb-2">
-                  <h4
-                    className={
-                      product?.promotion
-                        ? "text-line-through text-large mb-0"
-                        : "text-large mb-0"
-                    }
-                  >
-                    {convertPrice(productPrice)}
-                  </h4>
-                  {product?.promotion && (
-                    <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
-                      - {calcPercentDiscount(productPrice, product?.promotion)}%
-                    </small>
-                  )}
-
-                  {product &&
-                    product.promotion &&
-                    product.promotion.endDate && (
-                      <div className="ms-2">
-                        Kết thúc trong:{" "}
-                        <Countdown
-                          date={
-                            Date.now() +
-                            (new Date(
-                              product.promotion.endDate.toString()
-                            ).getTime() - new Date().getTime() || 0)
-                          }
-                        />
-                      </div>
+                <div
+                  className={`bg-white border-radius-medium p-3 ${
+                    product?.totalQuantity === 0 ? "blurred" : ""
+                  }`}
+                >
+                  <div className="d-flex align-items-center mb-2 ">
+                    {product?.brandId && (
+                      <span className="text-muted">
+                        Thương hiệu: {brandData?.data.items?.[0]?.brandName}
+                      </span>
                     )}
                   </div>
-                  
+                  <h5 className="mb-1">{product?.productName}</h5>
+
+                  {product?.rating ? (
+                    <div className="d-flex gap-2 pt-2 pb-2 w-100 align-items-center">
+                      <span className="text-medium">
+                        {formatRating(product.rating)}
+                      </span>
+                      <Rating
+                        size="text-medium"
+                        variant="secondary"
+                        star={product.rating}
+                      />
+                      <span className=" text-muted">({product.reviews})</span>
+                      <span></span>
+                      <span className=" text-muted">
+                        Đã bán: {product?.buyQuantity}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="d-flex gap-2 pt-2 pb-2 align-items-center">
+                      <span className="text-muted">Chưa có đánh giá</span>
+                      <span className=" text-muted">
+                        Đã bán: {product?.buyQuantity}
+                      </span>
+                    </div>
+                  )}
+                  <div className="d-flex align-items-center mb-2">
+                    <h4
+                      className={
+                        product?.promotion
+                          ? "text-line-through text-large mb-0"
+                          : "text-large mb-0"
+                      }
+                    >
+                      {convertPrice(productPrice)}
+                    </h4>
+                    {product?.promotion && (
+                      <small className=" ms-2 bg-light p-1 ps-2 pe-2 border-radius-medium">
+                        -{" "}
+                        {calcPercentDiscount(productPrice, product?.promotion)}%
+                      </small>
+                    )}
+
+                    {product &&
+                      product.promotion &&
+                      product.promotion.endDate && (
+                        <div className="ms-2">
+                          Kết thúc trong:{" "}
+                          <Countdown
+                            date={
+                              Date.now() +
+                              (new Date(
+                                product.promotion.endDate.toString()
+                              ).getTime() - new Date().getTime() || 0)
+                            }
+                          />
+                        </div>
+                      )}
+                  </div>
+
                   <div className="mb-2">
                     {product?.promotion && (
                       <div className="p-2 border border-radius-small">
@@ -891,7 +910,7 @@ function ProductDetail() {
             )}
           </Row>
           <Row>
-            <Col md={9}>
+            <Col md={12}>
               <div className=" mt-3 border-radius-medium ">
                 <div
                   style={{ border: "none" }}
@@ -899,25 +918,25 @@ function ProductDetail() {
                 >
                   <div className="card-body border-radius-medium product-detail">
                     <h5 className="card-title">Mô tả sản phẩm</h5>
-                    <SimpleBar
+                    {/* <SimpleBar
                       // TODO: fix descriptionRef type safe
                       // ref={descriptionRef}
                       style={{ overflowY: "auto", maxHeight: "500px" }}
-                    >
-                      <div>
-                        {product?.description.trimStart().startsWith("<") ? (
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: product.description,
-                            }}
-                          />
-                        ) : (
-                          <pre className="text-align-start">
-                            {product?.description}
-                          </pre>
-                        )}
-                      </div>
-                    </SimpleBar>
+                    > */}
+                    <div>
+                      {product?.description.trimStart().startsWith("<") ? (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: product.description,
+                          }}
+                        />
+                      ) : (
+                        <pre className="text-align-start">
+                          {product?.description}
+                        </pre>
+                      )}
+                    </div>
+                    {/* </SimpleBar> */}
 
                     {/* <div className=" d-flex justify-content-end">
                     <button className="toggle-btn" onClick={toggleCollapse}>
@@ -932,7 +951,7 @@ function ProductDetail() {
         </SkeletonWrapper>
 
         <Row>
-          <Col md={9}>
+          <Col md={12}>
             {product && (
               <Comment
                 user={user?.data?.email || ""}

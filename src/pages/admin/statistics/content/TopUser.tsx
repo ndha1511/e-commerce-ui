@@ -10,7 +10,7 @@ const TopUser: React.FC<TopUserProps> = (props) => {
       <h6>
         Top khách hàng <span style={{ fontSize: 12 }}>({users.length})</span>
       </h6>
-      <SimpleBar style={{ height: 300 }}>
+      <SimpleBar style={{ overflowY:'auto', maxHeight: 300 }}>
         <Table className="mb-0 mt-2 table-bordered table-responsive custom-table-dashboard">
           <thead>
             <tr>

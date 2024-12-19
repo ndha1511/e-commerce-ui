@@ -18,7 +18,9 @@ interface GroupedDataItem {
 const ProductTable = () => {
     const [groupedData, setGroupedData] = useState<{ [key: string]: GroupedDataItem[] }>({});
     const productAttributeDto: ProductAttributeDto[] = useSelector((state: RootState) => state.product.attributesDto);
+    console.log(productAttributeDto);
     const variants: VariantDto[] = useSelector((state: RootState) => state.product.variantsDto);
+    console.log(variants);
     const dispatch = useDispatch();
     useEffect(() => {
         const groupedVariants = variants?.reduce((acc, curr) => {

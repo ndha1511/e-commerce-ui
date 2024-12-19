@@ -59,8 +59,22 @@ const statisticsApi = createApi({
                 method: 'get',
             }),
             keepUnusedDataFor: 180
+        }),
+        
+        getTopProductSelling: build.query<BaseResponse<ProductSelling[]>, void>({
+            query: () => ({
+                url: `/statistics/top-product-selling`,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180
+        }),
+        getBottomProductSelling: build.query<BaseResponse<ProductSelling[]>, void>({
+            query: () => ({
+                url: `/statistics/bottom-product-selling`,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180
         })
-       
 
     })
 })
@@ -71,7 +85,9 @@ export const {
     useGetRevenueDayQuery,
     useGetTotalRevenueQuery,
     useGetTopUserQuery,
-    useGetTopProductQuery
+    useGetTopProductQuery,
+    useGetTopProductSellingQuery,
+    useGetBottomProductSellingQuery
 } = statisticsApi;
 
 export default statisticsApi;

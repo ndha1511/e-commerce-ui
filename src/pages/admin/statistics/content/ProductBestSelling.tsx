@@ -10,7 +10,7 @@ const ProductBestSelling: React.FC<ProductBestSellingProps> = (props) => {
         Top sản phẩm bán chạy{" "}
         <span style={{ fontSize: 12 }}>({products.length})</span>
       </h6>
-      <SimpleBar style={{ height: 800 }}>
+      <SimpleBar style={{overflowY:'auto', maxHeight: 800 }}>
         <Table className="mb-0 mt-2 table-bordered table-responsive custom-table-dashboard">
           <thead>
             <tr>

@@ -12,6 +12,7 @@ import {
 import MessageContent from "./MessageContent";
 import { Message, MessageStatus, MessageType } from "../../../models/message";
 import moment from "moment";
+import LoginMessage from "./LoginMessage.";
 export interface MessageProps {
   id: number;
   text: string;
@@ -59,7 +60,6 @@ const MessageView: React.FC = () => {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const messageListRef = useRef<HTMLDivElement | null>(null);
-
 
   const handleScroll = () => {
     if (messageListRef.current) {
@@ -129,7 +129,7 @@ const MessageView: React.FC = () => {
         newFormData.append("receiver", "admin@gmail.com");
         const res = await createMessage(newFormData).unwrap();
         if (res.data.content) {
-          console.log('123123')
+          console.log("123123");
           // await trigger({
           //   roomId: room?.data?.items?.[0]?.conversationId || "",
           //   params: paramsMessage,
@@ -242,36 +242,49 @@ const MessageView: React.FC = () => {
               </div>
               <i className="bi bi-x" onClick={toggleVisibility}></i>
             </div>
-            <SimpleBar style={{ height: 290, marginTop: 5 }}>
+            {user?.data !== null && (
+              <SimpleBar style={{ height: 290, marginTop: 5 }}>
+                <div
+                  className="message-list"
+                  onScroll={handleScroll}
+                  ref={messageListRef}
+                >
+                  {messages.map((message) => (
+                    <motion.div
+                      key={message.id}
+                      className={`message-${
+                        message.sender === userCurrent ? "sender" : "receiver"
+                      }`}
+                      initial={{ y: -50, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      exit={{ y: 50, opacity: 0 }}
+                    >
+                      <MessageContent
+                        message={message}
+                        userCurrent={userCurrent}
+                        err={err}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+                {/* <div ref={messageListRef} onClick={handleScroll} /> */}
+                <div ref={messagesEndRef} />
+              </SimpleBar>
+            )}
+            {user?.data === null && (
               <div
-                className="message-list"
-                onScroll={handleScroll}
-                ref={messageListRef}
+                style={{
+                  pointerEvents: "auto",
+                }}
               >
-                {messages.map((message) => (
-                  <motion.div
-                    key={message.id}
-                    className={`message-${
-                      message.sender === userCurrent ? "sender" : "receiver"
-                    }`}
-                    initial={{ y: -50, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                    exit={{ y: 50, opacity: 0 }}
-                  >
-                    <MessageContent
-                      message={message}
-                      userCurrent={userCurrent}
-                      err={err}
-                    />
-                  </motion.div>
-                ))}
+                <LoginMessage />
               </div>
-              {/* <div ref={messageListRef} onClick={handleScroll} /> */}
-              <div ref={messagesEndRef} />
-            </SimpleBar>
-
-            <div className="footer-motion">
+            )}
+            <div
+              className="footer-motion"
+              style={{  pointerEvents: (user?.data !== null) ? 'auto': "none" }}
+            >
               <label
                 htmlFor="file-message"
                 className=""

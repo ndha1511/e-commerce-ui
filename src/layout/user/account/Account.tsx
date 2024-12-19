@@ -31,7 +31,7 @@ const Account = ({ username, avatar }: { username: string, avatar?: string }) =>
     ];
 
     return (
-        <div>
+        <div >
             <Dropdown>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                     <Avatar name={username} url={avatar} width={25} height={25} />
