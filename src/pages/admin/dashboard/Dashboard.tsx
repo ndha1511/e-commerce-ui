@@ -106,73 +106,79 @@ const Dashboard = () => {
           </SkeltetonWrapper>
           <Row className="mt-3">
             <Col xs={12} md={7}>
-              <SkeltetonWrapper queriesStatus={[queryResultRevenueMonth.isSuccess]} skHeight={400}>
-              <div className="shadow-all ">
-                <BarChart
-                  data={
-                    queryResultRevenueMonth.data?.data?.map((data) =>
-                      data.profit.toString()
-                    ) || []
-                  }
-                  labels={
-                    queryResultRevenueMonth.data?.data?.map((data) =>
-                      data.month.toString()
-                    ) || []
-                  }
-                  title={`Biểu đồ thống kê doanh thu năm ${today.getFullYear()}`}
-                  labelX="Tháng"
-                  labelY="Doanh thu"
-                />
-              </div>
+              <SkeltetonWrapper
+                queriesStatus={[queryResultRevenueMonth.isSuccess]}
+                skHeight={400}
+              >
+                <div className="shadow-all ">
+                  <BarChart
+                    data={
+                      queryResultRevenueMonth.data?.data?.map((data) =>
+                        data.profit.toString()
+                      ) || []
+                    }
+                    labels={
+                      queryResultRevenueMonth.data?.data?.map((data) =>
+                        data.month.toString()
+                      ) || []
+                    }
+                    title={`Biểu đồ thống kê doanh thu năm ${today.getFullYear()}`}
+                    labelX="Tháng"
+                    labelY="Doanh thu"
+                  />
+                </div>
               </SkeltetonWrapper>
             </Col>
             <Col xs={12} md={5}>
               <div className="shadow-all p-3">
-              <SkeltetonWrapper queriesStatus={[queryResultTopUser.isSuccess]} skHeight={400}>
-                <h6>
-                  Khách hàng hôm nay{" "}
-                  <span style={{ fontSize: 12 }}>
-                    ({queryResultTopUser.data?.data.length})
-                  </span>
-                </h6>
-                <SimpleBar style={{ height: 300 }}>
-                  <Table className="mb-0 mt-2 table-bordered table-responsive custom-table-dashboard">
-                    <thead>
-                      <tr>
-                        <th>STT</th>
-                        <th>Ảnh đại diện</th>
-                        <th>Email khách hàng</th>
-                        <th>Doanh thu</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {queryResultTopUser.data?.data?.map((item, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>
-                            <img
-                              src={item.user.avatar}
-                              width={50}
-                              height={50}
-                            />
-                          </td>
-                          <td>
-                            <span
-                              style={{
-                                wordBreak: "break-word",
-                                whiteSpace: "normal",
-                              }}
-                            >
-                              {item.user.email}
-                            </span>
-                          </td>
-
-                          <td>{convertPrice(item.amount)}</td>
+                <SkeltetonWrapper
+                  queriesStatus={[queryResultTopUser.isSuccess]}
+                  skHeight={400}
+                >
+                  <h6>
+                    Khách hàng hôm nay{" "}
+                    <span style={{ fontSize: 12 }}>
+                      ({queryResultTopUser.data?.data.length})
+                    </span>
+                  </h6>
+                  <SimpleBar style={{overflowY:'auto' , maxHeight: 300 }}>
+                    <Table className="mb-0 mt-2 table-bordered table-responsive custom-table-dashboard">
+                      <thead>
+                        <tr>
+                          <th>STT</th>
+                          <th>Ảnh đại diện</th>
+                          <th>Email khách hàng</th>
+                          <th>Doanh thu</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </SimpleBar>
+                      </thead>
+                      <tbody>
+                        {queryResultTopUser.data?.data?.map((item, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>
+                              <img
+                                src={item.user.avatar}
+                                width={50}
+                                height={50}
+                              />
+                            </td>
+                            <td>
+                              <span
+                                style={{
+                                  wordBreak: "break-word",
+                                  whiteSpace: "normal",
+                                }}
+                              >
+                                {item.user.email}
+                              </span>
+                            </td>
+
+                            <td>{convertPrice(item.amount)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </SimpleBar>
                 </SkeltetonWrapper>
               </div>
             </Col>
@@ -180,41 +186,44 @@ const Dashboard = () => {
 
           <Row>
             <div className="shadow-all p-3">
-            <SkeltetonWrapper queriesStatus={[queryResultTopProduct.isSuccess]} skHeight={400}>
-              <h6>
-                Những sản phẩm bán chạy trong ngày{" "}
-                <span style={{ fontSize: 12 }}>
-                  ({queryResultTopProduct.data?.data.length})
-                </span>
-              </h6>
-              <SimpleBar style={{ height: 800 }}>
-                <Table className="mb-0 mt-2 table-bordered table-responsive custom-table-dashboard">
-                  <thead>
-                    <tr>
-                      <th>STT</th>
-                      <th>Hình ảnh</th>
-                      <th>Tên sản phẩm</th>
-                      <th>Số lượng bán</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {queryResultTopProduct.data?.data?.map((item, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <img
-                            src={item.product.thumbnail}
-                            width={70}
-                            height={70}
-                          />
-                        </td>
-                        <td>{item.product.productName}</td>
-                        <td>{item.quantity}</td>
+              <SkeltetonWrapper
+                queriesStatus={[queryResultTopProduct.isSuccess]}
+                skHeight={400}
+              >
+                <h6>
+                  Những sản phẩm bán chạy trong ngày{" "}
+                  <span style={{ fontSize: 12 }}>
+                    ({queryResultTopProduct.data?.data.length})
+                  </span>
+                </h6>
+                <SimpleBar style={{ overflowY:'auto', maxHeight: 800 }}>
+                  <Table className="mb-0 mt-2 table-bordered table-responsive custom-table-dashboard">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng bán</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </SimpleBar>
+                    </thead>
+                    <tbody>
+                      {queryResultTopProduct.data?.data?.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <img
+                              src={item.product.thumbnail}
+                              width={70}
+                              height={70}
+                            />
+                          </td>
+                          <td>{item.product.productName}</td>
+                          <td>{item.quantity}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </SimpleBar>
               </SkeltetonWrapper>
             </div>
           </Row>

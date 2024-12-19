@@ -39,7 +39,13 @@ const userApi = createApi({
             }),
             keepUnusedDataFor: 180,
         }),
-
+        getUserByEmail: build.query<BaseResponse<User>, string>({
+            query: (email) => ({
+                url: '/users/email/' + email,
+                method: 'get',
+            }),
+            keepUnusedDataFor: 180,
+        }),
     })
 })
 
@@ -47,7 +53,8 @@ export const {
     useUpdateUserMutation,
     useCreateEmployeeMutation,
     useGetEmployeeQuery,
-    useGetUsersQuery
+    useGetUsersQuery,
+    useGetUserByEmailQuery
 } = userApi;
 
 export default userApi;

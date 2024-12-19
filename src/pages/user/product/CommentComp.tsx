@@ -232,10 +232,11 @@ const CommentComp = ({
               <Card.Body>
                 <Row className="align-items-center">
                   <Col className="">
-                    <div className="d-flex align-items-start gap-3">
+                    <div className="d-flex align-items-start gap-1">
                       <Avatar
                         name={value?.user?.name || ""}
                         url={value?.user?.avatar}
+                        hidenName={true}
                       />
                       <div>
                         <h6 className="mb-0">{value?.user?.username}</h6>

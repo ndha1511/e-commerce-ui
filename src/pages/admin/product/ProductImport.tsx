@@ -13,18 +13,22 @@ import { useCreateInventoryMutation } from "../../../services/inventory.service"
 import { useDispatch } from "react-redux";
 import { setNotify } from "../../../rtk/slice/notify-slice";
 import { isMobile } from "../../../utils/responsive";
+import useGetParam from "../../../hooks/useGetParam";
+import { redirect } from "../../../utils/location";
 
 function ProductImport() {
     const [searchKeyword, setSearchKeyword] = useState<string>('');
     const mobile = isMobile();
+    const productIdParam = useGetParam('productId');
     const [open, setOpen] = useState<boolean>(false);
     const debounce = useDebounce(searchKeyword, 500)
     const params: string = pageQueryHanlder(1, 100, [{ field: 'productName', operator: ':', value: debounce }]);
     const { data } = useGetProductsPageQuery(params);
     const [inputQuantity, setInputQuantity] = useState<number>(0);
     const [inputPrice, setInputPrice] = useState<number>(0);
-    const [productId, setProductId] = useState<string>('')
+    const [productId, setProductId] = useState<string>(productIdParam || '')
     const { data: variants, isLoading } = useGetVariantsByProductIdQuery(productId || '', { skip: !productId });
+    console.log(productId);
     const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
     const [prices, setPrices] = useState<{ [key: string]: number }>({});
     const [trigger, { isLoading: addInventory }] = useCreateInventoryMutation();
@@ -73,9 +77,11 @@ function ProductImport() {
         }
         try {
             await trigger({ inventories: newInventory }).unwrap();
+            redirect('/admin/product/stock?'+'productName='+ variants?.data?.[0]?.product.productName);
             dispatch(setNotify({
                 type: 'success', message: 'Thao tác thành công'
             }))
+
         } catch (error) {
             console.error(error)
             dispatch(setNotify({

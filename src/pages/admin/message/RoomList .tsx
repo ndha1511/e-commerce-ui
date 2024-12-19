@@ -2,6 +2,7 @@ import SimpleBar from "simplebar-react";
 import { Room } from "../../../models/room";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import Avatar from "../../../components/avatar/Avatar";
 
 interface RoomListProps {
     sortedRooms: Room[] | undefined;
@@ -39,12 +40,7 @@ const RoomList: React.FC<RoomListProps> = ({ sortedRooms, handleActive, handleUp
                                     className="d-flex align-items-center gap-2 menu-message-items"
                                     onClick={() => { handleActive(item.conversationId); handleUpdateRoom(item.conversationId, item.count); }}
                                 >
-                                    <img
-                                        src={item.avatarSender !== null ? item.avatarSender : 'https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg'}
-                                        width={50}
-                                        height={50}
-                                        alt=""
-                                    />
+                                  <Avatar url={item.avatarReceiver}/>
                                     <div className="d-flex flex-column gap-1">
                                         <span>{item.receiver}</span>
                                         <span className="text-muted">
@@ -65,12 +61,7 @@ const RoomList: React.FC<RoomListProps> = ({ sortedRooms, handleActive, handleUp
                         className="d-flex align-items-center gap-2 menu-message-items"
                         onClick={() => { handleActive(item.conversationId); handleUpdateRoom(item.conversationId, item.count) }}
                     >
-                        <img
-                            src={item.avatarSender !== null ? item.avatarSender : 'https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg'}
-                            width={50}
-                            height={50}
-                            alt=""
-                        />
+                        <Avatar url={item.avatarReceiver}/>
                         <div className="d-flex flex-column gap-1">
                             <span>{item.receiver}</span>
                             <span className="text-muted">

@@ -13,6 +13,8 @@ import { useCreateMessageMutation } from "../../../services/message.service";
 import moment from "moment";
 import SimpleBar from "simplebar-react";
 import { isMobile } from "../../../utils/responsive";
+import Avatar from "../../../components/avatar/Avatar";
+import { useGetUserByEmailQuery } from "../../../services/user.service";
 interface ViewContentProps {
   messagesData: Message[];
   userCurrent: string;
@@ -40,6 +42,7 @@ const ViewContent: React.FC<ViewContentProps> = ({
     messagesData?.[0]?.sender === userCurrent
       ? messagesData?.[0]?.receiver
       : messagesData?.[0]?.sender;
+  const userSenserData = useGetUserByEmailQuery(userSender);
   useEffect(() => {
     if (messagesData) {
       const formattedMessages: MessageProps[] = messagesData.map(
@@ -156,6 +159,7 @@ const ViewContent: React.FC<ViewContentProps> = ({
   useEffect(() => {
     scrollToBottom(true); // Sử dụng `smooth` khi có tin nhắn mới
   }, [messages]);
+  console.log(messagesData)
   return (
     <div className="view-content">
       <div className="sender-message-title">
@@ -165,10 +169,7 @@ const ViewContent: React.FC<ViewContentProps> = ({
             onClick={() => handleBack()}
           ></i>
         )}
-        <img
-          src="https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg"
-          alt="User Avatar"
-        />
+        <Avatar url={userSenserData?.data?.data.avatar} />
         <span>{userSender}</span>
       </div>
       <SimpleBar style={{ height: 430 }}>
